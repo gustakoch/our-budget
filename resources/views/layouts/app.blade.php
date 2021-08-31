@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/global.css') }}">
     <link rel="stylesheet" href="{{ asset('css/template.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/fab.css') }}">
     <title>@yield('title') | Our Budget</title>
 </head>
 <body>

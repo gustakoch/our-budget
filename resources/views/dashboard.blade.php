@@ -65,6 +65,7 @@
                 type="button"
                 data-bs-toggle="modal"
                 data-bs-target="#addRecipeModal"
+                style="display: none"
             >
                 Adicionar receita
             </button>
@@ -152,6 +153,7 @@
                 type="button"
                 data-bs-toggle="modal"
                 data-bs-target="#addExpenseModal"
+                style="display: none"
             >
                 Adicionar despesa
             </button>
@@ -547,5 +549,7 @@
 @include('components.modals.reason-cancellation')
 @include('components.modals.reason-cancellation-all')
 @include('components.modals.info-expense')
+
+@component('components.fab')@endcomponent
 
 @endsection
