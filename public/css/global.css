@@ -1,0 +1,79 @@
+body {
+    background-color: #efefef !important;
+}
+
+body, html {
+    color: #333 !important;
+}
+
+button, select {
+    box-shadow: none !important;
+    cursor: pointer;
+}
+
+button.accordion-button.collapsed {
+    background-color: #fff !important;
+    color: #333 !important;
+}
+
+button.accordion-button {
+    background-color: #eee !important;
+    color: #333 !important;
+}
+
+.no-border-bottom {
+    border-bottom: white !important;
+}
+
+.error-message-modal {
+    display: none;
+    color: red;
+    font-size: 14px;
+    margin-bottom: 1rem;
+}
+
+#referenceYear {
+    width: 100px !important;
+}
+
+.container-custom {
+    margin: 0;
+}
+
+.btn-options {
+    height: 42px !important;
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+.btn-options svg {
+    fill: #fff !important;
+    margin-right: 2rem !important;
+}
+
+.btn-options:hover {
+    background-color: #444 !important;
+}
+
+a {
+    cursor: pointer !important;
+}
+
+.cancelled {
+    text-decoration: line-through !important;
+    color: #ccc;
+}
+
+label {
+    font-weight: 700;
+}
+
+.extend-installment {
+    filter: grayscale(100%);
+    cursor: not-allowed !important;
+}
+
+small.erro {
+    text-align: center;
+    color: red;
+}
