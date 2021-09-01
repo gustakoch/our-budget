@@ -31,8 +31,14 @@ class AuthController extends Controller
         $request->session()->put('user', [
             'id' => $user->id,
             'name' => $user->name,
-            'email' => $user->email
+            'email' => $user->email,
+            'role' => $user->role,
+            'firstAccess' => $user->first_access
         ]);
+
+        if ($user->first_access == 1) {
+            return redirect()->route('initial');
+        }
 
         return redirect()->route('dashboard');
     }

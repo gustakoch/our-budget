@@ -2,13 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Configuration;
+use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    private $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function index()
     {
+        if ($this->user->isFirstAccess()) {
+            return redirect()->route('initial');
+        }
+
         $date = new DateTime();
         $currentMonth = intval($date->format('m'));
         $currentYear = intval($date->format('Y'));
@@ -140,6 +153,54 @@ class DashboardController extends Controller
 
     public function config()
     {
+        if ($this->user->isFirstAccess()) {
+            return redirect()->route('initial');
+        }
+
         return view('config');
+    }
+
+    public function firstAccess()
+    {
+        $data = request()->all();
+
+        User::where('id', session('user')['id'])
+            ->update([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                'first_access' => 0
+            ]);
+
+        Configuration::create([
+            'description' => 'Gradle format',
+            'value' => $data['gradle_format'],
+            'belongs_to' => 'd',
+            'user_id' => session('user')['id']
+        ]);
+
+        $user = User::find(session('user')['id']);
+
+        session()->put('user', [
+            'id' => $user->id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => $user->role,
+            'firstAccess' => 0
+        ]);
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Processo validado com sucesso!',
+        ]);
+    }
+
+    public function initial()
+    {
+        if (!$this->user->isFirstAccess()) {
+            return redirect()->route('dashboard');
+        }
+
+        return view('initial');
     }
 }

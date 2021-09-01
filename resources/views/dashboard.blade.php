@@ -46,7 +46,7 @@
                 </h2>
                 <div id="collapse-resume" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionResume">
                     <div class="accordion-body">
-                        <h6>Em desenvolvimento...</h6>
+                        <h6>Em breve, novidades por aqui, aguarde...</h6>
                     </div>
                 </div>
             </div>
@@ -254,6 +254,10 @@
                                                                     <li><a class="dropdown-item d-flex align-items-center info-expense" id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#infoExpenseModal">
                                                                         <svg class="me-2" enable-background="new 0 0 85 85" height="14" widht="14" id="Layer_1" version="1.1" viewBox="0 0 85 85" style="fill: blue" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M42.5,0.003C19.028,0.003,0,19.031,0,42.503s19.028,42.5,42.5,42.5S85,65.976,85,42.503S65.972,0.003,42.5,0.003z   M42.288,66.27c0,0-1.972,1.311-3.32,1.305c-0.12,0.055-0.191,0.087-0.191,0.087l0.003-0.087c-0.283-0.013-0.568-0.053-0.855-0.125  l-0.426-0.105c-2.354-0.584-3.6-2.918-3.014-5.271l3.277-13.211l1.479-5.967c1.376-5.54-4.363,1.178-5.54-1.374  c-0.777-1.687,4.464-5.227,8.293-7.896c0,0,1.97-1.309,3.319-1.304c0.121-0.056,0.192-0.087,0.192-0.087l-0.005,0.087  c0.285,0.013,0.57,0.053,0.857,0.124l0.426,0.106c2.354,0.584,3.788,2.965,3.204,5.318l-3.276,13.212l-1.482,5.967  c-1.374,5.54,4.27-1.204,5.446,1.351C51.452,60.085,46.116,63.601,42.288,66.27z M50.594,24.976  c-0.818,3.295-4.152,5.304-7.446,4.486c-3.296-0.818-5.305-4.151-4.487-7.447c0.818-3.296,4.152-5.304,7.446-4.486  C49.403,18.346,51.411,21.68,50.594,24.976z"/></svg>
                                                                         Visualizar
+                                                                    </a></li>
+                                                                    <li><a class="dropdown-item d-flex align-items-center revert-installment" id="{{ $expense->id }}">
+                                                                        <svg class="me-2" height="14" width="14" version="1.1" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" xmlns:xlink="http://www.w3.org/1999/xlink"><title/><desc/><defs/><g fill="#42c2d8" fill-rule="evenodd" id="Page-1" stroke="none" stroke-width="1"><g fill="#42c2d8" id="Core" transform="translate(-424.000000, -463.000000)"><g id="undo" transform="translate(424.000000, 464.000000)"><path d="M8,3 L8,-0.5 L3,4.5 L8,9.5 L8,5 C11.3,5 14,7.7 14,11 C14,14.3 11.3,17 8,17 C4.7,17 2,14.3 2,11 L0,11 C0,15.4 3.6,19 8,19 C12.4,19 16,15.4 16,11 C16,6.6 12.4,3 8,3 L8,3 Z" id="Shape"/></g></g></g></svg>
+                                                                        Reverter cancelamento
                                                                     </a></li>
                                                                 @endif
                                                             </ul>
@@ -503,6 +507,10 @@
                                                                     <li><a class="dropdown-item d-flex align-items-center info-expense" id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#infoExpenseModal">
                                                                         <svg class="me-2" enable-background="new 0 0 85 85" height="14" widht="14" id="Layer_1" version="1.1" viewBox="0 0 85 85" style="fill: blue" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M42.5,0.003C19.028,0.003,0,19.031,0,42.503s19.028,42.5,42.5,42.5S85,65.976,85,42.503S65.972,0.003,42.5,0.003z   M42.288,66.27c0,0-1.972,1.311-3.32,1.305c-0.12,0.055-0.191,0.087-0.191,0.087l0.003-0.087c-0.283-0.013-0.568-0.053-0.855-0.125  l-0.426-0.105c-2.354-0.584-3.6-2.918-3.014-5.271l3.277-13.211l1.479-5.967c1.376-5.54-4.363,1.178-5.54-1.374  c-0.777-1.687,4.464-5.227,8.293-7.896c0,0,1.97-1.309,3.319-1.304c0.121-0.056,0.192-0.087,0.192-0.087l-0.005,0.087  c0.285,0.013,0.57,0.053,0.857,0.124l0.426,0.106c2.354,0.584,3.788,2.965,3.204,5.318l-3.276,13.212l-1.482,5.967  c-1.374,5.54,4.27-1.204,5.446,1.351C51.452,60.085,46.116,63.601,42.288,66.27z M50.594,24.976  c-0.818,3.295-4.152,5.304-7.446,4.486c-3.296-0.818-5.305-4.151-4.487-7.447c0.818-3.296,4.152-5.304,7.446-4.486  C49.403,18.346,51.411,21.68,50.594,24.976z"/></svg>
                                                                         Visualizar
+                                                                    </a></li>
+                                                                    <li><a class="dropdown-item d-flex align-items-center revert-installment" id="{{ $expense->id }}">
+                                                                        <svg class="me-2" height="14" width="14" version="1.1" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" xmlns:xlink="http://www.w3.org/1999/xlink"><title/><desc/><defs/><g fill="#42c2d8" fill-rule="evenodd" id="Page-1" stroke="none" stroke-width="1"><g fill="#42c2d8" id="Core" transform="translate(-424.000000, -463.000000)"><g id="undo" transform="translate(424.000000, 464.000000)"><path d="M8,3 L8,-0.5 L3,4.5 L8,9.5 L8,5 C11.3,5 14,7.7 14,11 C14,14.3 11.3,17 8,17 C4.7,17 2,14.3 2,11 L0,11 C0,15.4 3.6,19 8,19 C12.4,19 16,15.4 16,11 C16,6.6 12.4,3 8,3 L8,3 Z" id="Shape"/></g></g></g></svg>
+                                                                        Reverter cancelamento
                                                                     </a></li>
                                                                 @endif
                                                             </ul>

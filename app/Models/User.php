@@ -11,4 +11,13 @@ class User extends Authenticatable
     protected $table = "users";
     protected $primaryKey = "id";
     protected $guarded = [];
+
+    public function isFirstAccess()
+    {
+        if (session('user')['firstAccess'] == 1) {
+            return true;
+        }
+
+        return false;
+    }
 }

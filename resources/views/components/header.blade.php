@@ -10,10 +10,12 @@
 
     <ul class="list-unstyled components">
         <li>
-            <a href="{{ route('dashboard') }}">
-                <i class="fas fa-tachometer-alt"></i>
-                Dashboard
-            </a>
+            @if (session('user')['firstAccess'] != 1)
+                <a href="{{ route('dashboard') }}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            @endif
             {{-- <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                 <i class="fas fa-copy"></i>
                 Pages
@@ -31,13 +33,22 @@
             </ul> --}}
         </li>
         <li>
-            <a href="{{ route('config') }}">
-                <i class="fas fa-cogs"></i>
-                Configurações
-            </a>
+            @if (session('user')['firstAccess'] != 1)
+                <a href="{{ route('config') }}">
+                    <i class="fas fa-cogs"></i>
+                    Configurações
+                </a>
+            @else
+                <a href="{{ route('initial') }}">
+                    <i class="fas fa-cogs"></i>
+                    Bem vindo
+                </a>
+            @endif
+
         </li>
         <hr />
         <li>
+
             <a href="{{ route('logout') }}">
                 <i class="fas fa-sign-out-alt"></i>
                 Sair

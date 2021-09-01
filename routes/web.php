@@ -15,6 +15,8 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/config', [DashboardController::class, 'config'])->name('config');
+    Route::post('/first-access', [DashboardController::class, 'firstAccess'])->name('first-access');
+    Route::get('/initial', [DashboardController::class, 'initial'])->name('initial');
 
     Route::get('/recipes', [RecipesController::class, 'index']);
     Route::get('/recipes/{id}', [RecipesController::class, 'show']);

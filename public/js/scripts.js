@@ -56,6 +56,55 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '#first-access', function(e) {
+        e.preventDefault()
+
+        let name = jQuery('input[name="name"]').val()
+        let email = jQuery('input[name="email"]').val()
+        let password = jQuery('input[name="password"]').val()
+        let password_confirmation = jQuery('input[name="password_confirmation"]').val()
+        let gradle_format = jQuery('input[name="gradle_format"]').is(':checked')
+
+        if (!name || !email || !password || !password_confirmation || !gradle_format) {
+            Swal.fire({
+                title: 'Presta atenção aí',
+                text: "Os dados obrigatórios devem ser preenchidos!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tá, entendi'
+            })
+            return false
+        }
+
+        if (password != password_confirmation) {
+            Swal.fire({
+                title: 'Presta atenção aí',
+                text: "As novas senhas não conferem! Por favor, verifique os dados e tente novamente",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tá, entendi'
+            })
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'first-access',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-first-access').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.reponseText)
+            },
+            success: function(response) {
+                window.location.href = 'http://localhost/budget/public/dashboard'
+            }
+        })
+    })
+
     jQuery(document).on('change', 'select[name="installments_expense"]', function(e) {
         jQuery('input[name="repeat_next_months_expense"]').prop('checked', false)
 
