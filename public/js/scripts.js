@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(xhr.reponseText)
             },
             success: function(response) {
-                window.location.href = 'http://localhost/budget/public/dashboard'
+                window.location.href = 'https://budget.gustakoch.com.br/dashboard'
             }
         })
     })
