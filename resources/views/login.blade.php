@@ -55,19 +55,9 @@
                                 </div>
                             @endif
 
-                            <div class="form-group row">
-                                <div class="col-md-6 offset-md-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="remember"> Lembrar-me
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
-                                    Fazer Login
+                                    Login
                                 </button>
                             </div>
                         </form>

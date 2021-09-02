@@ -20,4 +20,13 @@ class User extends Authenticatable
 
         return false;
     }
+
+    public function isLoggedIn()
+    {
+        if (is_null(session('user'))) {
+            return false;
+        }
+
+        return true;
+    }
 }
