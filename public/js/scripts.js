@@ -6,6 +6,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const formExpenseCancellation = document.querySelector('#form-expense-cancellation')
     const formExpenseCancellations = document.querySelector('#form-expense-cancellation-all')
 
+    function getAppUrl() {
+        let appUrl
+
+        jQuery.ajax({
+            url: 'app/url',
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            async: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            success: function(response) {
+                appUrl = response.appUrl
+            }
+        })
+
+        return appUrl
+    }
+
     jQuery(document).on('click', '.save-recipe', function(e) {
         e.preventDefault()
 
@@ -100,7 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(xhr.reponseText)
             },
             success: function(response) {
-                window.location.href = 'https://budget.gustakoch.com.br/dashboard'
+                let appUrl = getAppUrl()
+
+                window.location.href = `${appUrl}/dashboard`
             }
         })
     })
@@ -691,8 +713,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     jQuery('#referenceMonth').change(function(e) {
         let month = $(this).val()
+        let appUrl = getAppUrl();
 
-        window.location.href = `http://localhost/budget/public/dashboard?month=${month}`
+        window.location.href = `${appUrl}/dashboard?month=${month}`
     })
 
     function amountParseFloat(amount) {

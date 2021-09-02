@@ -203,4 +203,11 @@ class DashboardController extends Controller
 
         return view('initial');
     }
+
+    public function appUrl()
+    {
+        return response()->json([
+            'appUrl' => $_ENV['APP_URL']
+        ]);
+    }
 }
