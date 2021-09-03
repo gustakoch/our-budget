@@ -41,7 +41,7 @@ button.accordion-button {
 }
 
 .btn-options {
-    height: 42px !important;
+    height: 38px !important;
     background-color: #333 !important;
     color: #fff !important;
 }
@@ -53,10 +53,6 @@ button.accordion-button {
 
 .btn-options:hover {
     background-color: #444 !important;
-}
-
-.btn-category {
-    height: 36px !important;
 }
 
 a {
