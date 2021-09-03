@@ -1,5 +1,5 @@
 <div class="modal fade" id="editRecipeModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
                 <h5 class="modal-title" id="exampleModalLabel">Editar receita</h5>
@@ -9,6 +9,7 @@
                     @csrf
 
                     <input type="hidden" name="id_recipe">
+                    <input type="hidden" name="category_active">
                     <div class="mb-3">
                         <label for="description_edit" class="form-label">Descrição da receita</label>
                         <input class="form-control mb-3" type="text" name="description_edit" id="description_edit" placeholder="Informe a descrição" />
@@ -16,10 +17,11 @@
                     <div class="mb-3">
                         <label for="category_edit" class="form-label">Categoria</label>
                         <select class="form-select mb-3" name="category_edit" id="category_edit">
-                            @foreach ($recipeCategories as $category)
+                            @foreach ($allRecipeCategories as $category)
                                 <option value="{{ $category->id }}">{{ $category->description }}</option>
                             @endforeach
                         </select>
+                        <small class="msg-category-cancelled" style="color: red; margin-top: -0.5rem !important; display: none;">Esta categoria foi excluída! Sua alteração náo é possível.</small>
                     </div>
                     <div class="mb-3">
                         <label for="budgeted_amount_edit" class="form-label">Valor</label>

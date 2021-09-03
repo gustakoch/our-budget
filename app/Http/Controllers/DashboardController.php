@@ -45,11 +45,21 @@ class DashboardController extends Controller
             'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
         ];
 
-        $recipeCategories = DB::table('categories')
+        $activeRecipeCategories = DB::table('categories')
+            ->where('belongs_to', 1)
+            ->where('active', 1)
+            ->orderBy('description', 'asc')
+            ->get();
+        $activeExpenseCategories = DB::table('categories')
+            ->where('belongs_to', 2)
+            ->where('active', 1)
+            ->orderBy('description', 'asc')
+            ->get();
+        $allRecipeCategories = DB::table('categories')
             ->where('belongs_to', 1)
             ->orderBy('description', 'asc')
             ->get();
-        $expenseCategories = DB::table('categories')
+        $allExpenseCategories = DB::table('categories')
             ->where('belongs_to', 2)
             ->orderBy('description', 'asc')
             ->get();
@@ -70,10 +80,9 @@ class DashboardController extends Controller
             }
         }
 
-        $typeExpenses = DB::table('configurations')
-            ->where('user_id', session('user')['id'])
-            ->where('id', 1)
-            ->select('value')
+        $typeExpenses = DB::table('users')
+            ->where('id', session('user')['id'])
+            ->select('gradle_format')
             ->first();
 
         $userExpenses = DB::table('expenses')
@@ -131,8 +140,10 @@ class DashboardController extends Controller
         return view('dashboard', [
             'month' => $month,
             'months' => $months,
-            'recipeCategories' => $recipeCategories,
-            'expenseCategories' => $expenseCategories,
+            'activeRecipeCategories' => $activeRecipeCategories,
+            'activeExpenseCategories' => $activeExpenseCategories,
+            'allRecipeCategories' => $allRecipeCategories,
+            'allExpenseCategories' => $allExpenseCategories,
             'recipes' => $currentRecipes,
             'expenses0' => $expensesPeriod0,
             'expenses1' => $expensesPeriod1,
@@ -147,7 +158,7 @@ class DashboardController extends Controller
             'budgeted_amount_expenses2' => $amountExpensesPeriod2,
             'realized_amount_expenses2' => $realizedExpensesPeriod2,
             'pending_amount_expenses2' => $pendingExpensesPeriod2,
-            'type_expenses' => isset($typeExpenses->value) ? $typeExpenses->value : '30'
+            'type_expenses' => isset($typeExpenses->gradle_format) ? $typeExpenses->gradle_format : '30'
         ]);
     }
 
@@ -169,15 +180,9 @@ class DashboardController extends Controller
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-                'first_access' => 0
+                'first_access' => 0,
+                'gradle_format' => $data['gradle_format']
             ]);
-
-        Configuration::create([
-            'description' => 'Gradle format',
-            'value' => $data['gradle_format'],
-            'belongs_to' => 'd',
-            'user_id' => session('user')['id']
-        ]);
 
         $user = User::find(session('user')['id']);
 

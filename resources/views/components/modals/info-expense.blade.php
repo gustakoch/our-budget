@@ -22,7 +22,7 @@
                                 <label class="form-label" for="category_expense">Categoria</label>
                                 <select class="form-select mb-3" name="category_expense_info" disabled>
                                     <option selected>Selecione a categoria</option>
-                                    @foreach ($expenseCategories as $category)
+                                    @foreach ($activeExpenseCategories as $category)
                                         <option value="{{ $category->id }}">{{ $category->description }}</option>
                                     @endforeach
                                 </select>

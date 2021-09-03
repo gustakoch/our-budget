@@ -76,6 +76,44 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '.save-category', function(e) {
+        e.preventDefault()
+
+        let description = jQuery('input[name="description_category"]').val()
+        let belongsTo = Number(jQuery('select[name="belongs_to"]').val())
+
+        if (!description || !belongsTo) {
+            Swal.fire({
+                title: 'Presta atenção aí',
+                text: "Os dados obrigatórios devem ser preenchidos!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tá, entendi'
+            })
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'categories/store',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-new-category').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.reponseText)
+            },
+            success: function(response) {
+                if (response.ok) {
+                    jQuery('#addCategoryModal').modal('hide')
+                    location.reload()
+                }
+            }
+        })
+    })
+
     jQuery(document).on('click', '#first-access', function(e) {
         e.preventDefault()
 
@@ -195,10 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault()
 
         let description = jQuery('input[name="description_edit"]').val()
-        let category = Number(jQuery('select[name="category_edit"]').val())
         let amount = jQuery('input[name="budgeted_amount_edit"]').val()
 
-        if (!description || !category || !amount) {
+        if (!description || !amount) {
             Swal.fire({
                 title: 'Presta atenção aí',
                 text: "Os dados obrigatórios devem estar preenchidos!",
@@ -243,11 +280,50 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '.update-category', function(e) {
+        e.preventDefault()
+
+        let description = jQuery('input[name="description_category_edit"]').val()
+        let belongsTo = Number(jQuery('select[name="belongs_to_edit"]').val())
+
+        if (!description || !belongsTo) {
+            Swal.fire({
+                title: 'Presta atenção aí',
+                text: "Os dados obrigatórios devem estar preenchidos!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Continuar atualização'
+            })
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'categories/update',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-edit-category').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText)
+            },
+            success: function(response) {
+                jQuery('#loadingSpinner').show()
+
+                if (response.ok) {
+                    jQuery('#editCategoryModal').modal('hide')
+                    location.reload()
+                }
+            }
+        })
+    })
+
     jQuery(document).on('click', '.update-expense', function(e) {
         e.preventDefault()
 
         let description = jQuery('input[name="description_expense_edit"]').val()
-        let category = Number(jQuery('select[name="category_expense_edit"]').val())
         let period = Number(jQuery('select[name="period_expense_edit"]').val())
         let budgetedAmount = Number(jQuery('input[name="budgeted_amount_expense_edit"]').val())
         let realizedAmount = Number(jQuery('input[name="realized_amount_expense_edit"]').val())
@@ -327,7 +403,21 @@ document.addEventListener('DOMContentLoaded', function() {
             success: function(response) {
                 jQuery('input[name="description_edit"]').val(response.description)
                 jQuery('input[name="id_recipe"]').val(response.id)
+                jQuery('input[name="category_active"]').val(response.category_active)
+
                 Number(jQuery('select[name="category_edit"]').val(response.category))
+                if (response.category_active != 1) {
+                    jQuery('select[name="category_edit"]')
+                        .attr('disabled', true)
+                        .addClass('border-red')
+                    jQuery('.msg-category-cancelled').css('display', 'block')
+                } else {
+                    jQuery('select[name="category_edit"]')
+                        .attr('disabled', false)
+                        .removeClass('border-red')
+                    jQuery('.msg-category-cancelled').css('display', 'none')
+                }
+
                 Number(jQuery('input[name="repeat_next_months"]').val(response.repeat_next_months))
 
                 jQuery('input[name="repeat_next_months"]').attr('disabled', true)
@@ -340,6 +430,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 jQuery('input[name="budgeted_amount_edit"]').val(response.budgeted_amount)
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.edit-category', function(e) {
+        e.preventDefault()
+
+        let id = $(this).attr('id')
+
+        jQuery.ajax({
+            url: `categories/${id}`,
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.reponseText)
+            },
+            success: function(response) {
+                jQuery('input[name="id_category"]').val(response.id)
+
+                jQuery('input[name="description_category_edit"]').val(response.description)
+                Number(jQuery('select[name="belongs_to_edit"]').val(response.belongs_to))
             }
         })
     })
@@ -467,8 +582,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('#loadingSpinner').hide()
 
                 jQuery('input[name="id_expense"]').val(response.id)
+                jQuery('input[name="category_active"]').val(response.category_active)
                 jQuery('input[name="description_expense_edit"]').val(response.description)
                 Number(jQuery('select[name="category_expense_edit"]').val(response.category))
+
+                if (response.category_active != 1) {
+                    jQuery('select[name="category_expense_edit"]')
+                        .attr('disabled', true)
+                        .addClass('border-red')
+                    jQuery('.msg-category-cancelled').css('display', 'block')
+                } else {
+                    jQuery('select[name="category_expense_edit"]')
+                        .attr('disabled', false)
+                        .removeClass('border-red')
+                    jQuery('.msg-category-cancelled').css('display', 'none')
+                }
 
                 if (response.period == 0) {
                     jQuery('input[name="period_expense_edit"]').val(response.period)
@@ -614,6 +742,49 @@ document.addEventListener('DOMContentLoaded', function() {
                             Swal.fire({
                                 title: 'Removido',
                                 text: "Sua receita foi removida com sucesso",
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.delete-category', function() {
+        let id = jQuery(this).attr('id')
+
+        Swal.fire({
+            title: 'Deseja realmente excluir?',
+            text: "Esta ação não poderá ser desfeita!",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, pode excluir'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: `categories/destroy/${id}`,
+                    type: 'get',
+                    dataType: 'json',
+                    timeout: 20000,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('error', error)
+                    },
+                    success: function(response) {
+                        if (response.ok) {
+                            location.reload()
+
+                            Swal.fire({
+                                title: 'Removido',
+                                text: "Sua categoria foi removida com sucesso",
                                 icon: 'success',
                                 confirmButtonColor: '#3085d6',
                                 confirmButtonText: 'Continuar'

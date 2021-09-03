@@ -94,7 +94,7 @@
                                         <th scope="col">Descrição da receita</th>
                                         <th scope="col">Categoria</th>
                                         <th scope="col">Orçado (R$)</th>
-                                        <th scope="col"></th>
+                                        <th scope="col">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody-recipes">
@@ -187,7 +187,7 @@
                                             <th scope="col">Realizado (R$)</th>
                                             <th scope="col">Pendente (R$)</th>
                                             <th scope="col">Situação</th>
-                                            <th scope="col"></th>
+                                            <th scope="col">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody-expenses-type-0">
@@ -314,7 +314,7 @@
                                             <th scope="col">Realizado (R$)</th>
                                             <th scope="col">Pendente (R$)</th>
                                             <th scope="col">Situação</th>
-                                            <th scope="col"></th>
+                                            <th scope="col">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody-expenses-type-1">
@@ -440,7 +440,7 @@
                                             <th scope="col">Realizado (R$)</th>
                                             <th scope="col">Pendente (R$)</th>
                                             <th scope="col">Situação</th>
-                                            <th scope="col"></th>
+                                            <th scope="col">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody-expenses-type-2">
@@ -542,15 +542,15 @@
     </div>
 </section>
 
-@include('components.modals.add-recipe', ['recipeCategories' => $recipeCategories])
-@include('components.modals.edit-recipe', ['recipeCategories' => $recipeCategories])
+@include('components.modals.add-recipe', ['recipeCategories' => $activeRecipeCategories])
+@include('components.modals.edit-recipe', ['recipeCategories' => $allRecipeCategories])
 
 @include('components.modals.add-expense', [
-    'expenseCategories' => $expenseCategories,
+    'expenseCategories' => $activeExpenseCategories,
     'type_expenses' => $type_expenses
 ])
 @include('components.modals.edit-expense', [
-    'expenseCategories' => $expenseCategories,
+    'expenseCategories' => $allExpenseCategories,
     'type_expenses' => $type_expenses
 ])
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\RecipeModel;
@@ -9,6 +10,13 @@ use DateTime;
 
 class RecipesController extends Controller
 {
+    private $categoryModel;
+
+    public function __construct(CategoryModel $categoryModel)
+    {
+        $this->categoryModel = $categoryModel;
+    }
+
     public function index()
     {
         session_start();
@@ -76,12 +84,20 @@ public function update()
     {
         $data = request()->all();
 
-        RecipeModel::where('id', $data['id_recipe'])
-            ->update([
-                'description' => mb_convert_case($data['description_edit'], MB_CASE_TITLE, "UTF-8"),
-                'category' => $data['category_edit'],
-                'budgeted_amount' => $data['budgeted_amount_edit']
-            ]);
+        if ($data['category_active'] == 1) {
+            RecipeModel::where('id', $data['id_recipe'])
+                ->update([
+                    'description' => mb_convert_case($data['description_edit'], MB_CASE_TITLE, "UTF-8"),
+                    'category' => $data['category_edit'],
+                    'budgeted_amount' => $data['budgeted_amount_edit']
+                ]);
+        } else {
+            RecipeModel::where('id', $data['id_recipe'])
+                ->update([
+                    'description' => mb_convert_case($data['description_edit'], MB_CASE_TITLE, "UTF-8"),
+                    'budgeted_amount' => $data['budgeted_amount_edit']
+                ]);
+        }
 
         return response()->json([
             'ok' => true,
@@ -92,6 +108,7 @@ public function update()
     public function show($id)
     {
         $recipe = RecipeModel::find($id);
+        $recipe['category_active'] = $this->categoryModel->isCategoryActive($recipe['category']);
 
         return response()->json($recipe);
     }

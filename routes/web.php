@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RecipesController;
 use App\Http\Controllers\ExpensesController;
@@ -17,7 +18,14 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/config', [DashboardController::class, 'config'])->name('config');
     Route::post('/first-access', [DashboardController::class, 'firstAccess'])->name('first-access');
     Route::get('/initial', [DashboardController::class, 'initial'])->name('initial');
+
     Route::get('/app/url', [DashboardController::class, 'appUrl']);
+
+    Route::get('/categories', [CategorieController::class, 'index'])->name('categories.index');
+    Route::get('/categories/{id}', [CategorieController::class, 'show']);
+    Route::post('/categories/store', [CategorieController::class, 'store']);
+    Route::post('/categories/update', [CategorieController::class, 'update']);
+    Route::get('/categories/destroy/{id}', [CategorieController::class, 'destroy']);
 
     Route::get('/recipes', [RecipesController::class, 'index']);
     Route::get('/recipes/{id}', [RecipesController::class, 'show']);

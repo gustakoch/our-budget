@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryModel;
 use App\Models\ExpenseInstallmentsModel;
 use App\Models\ExpenseModel;
 use Illuminate\Http\Request;
@@ -10,10 +11,12 @@ use Illuminate\Support\Facades\DB;
 class ExpensesController extends Controller
 {
     private $expenseModel;
+    private $categoryModel;
 
-    public function __construct(ExpenseModel $expenseModel)
+    public function __construct(ExpenseModel $expenseModel, CategoryModel $categoryModel)
     {
         $this->expenseModel = $expenseModel;
+        $this->categoryModel = $categoryModel;
     }
 
     public function index()
@@ -178,8 +181,7 @@ class ExpensesController extends Controller
     public function show($id)
     {
         $expense = ExpenseModel::find($id);
-
-        sleep(0.5);
+        $expense['category_active'] = $this->categoryModel->isCategoryActive($expense['category']);
 
         return response()->json($expense);
     }
@@ -188,19 +190,28 @@ class ExpensesController extends Controller
     {
         $data = request()->all();
 
-        ExpenseModel::where('id', $data['id_expense'])
-            ->update([
-                'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
-                'category' => $data['category_expense_edit'],
-                'period' => $data['period_expense_edit'],
-                'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                'realized_amount' => $data['realized_amount_expense_edit']
-            ]);
+        if ($data['category_active'] == 1) {
+            ExpenseModel::where('id', $data['id_expense'])
+                ->update([
+                    'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
+                    'category' => $data['category_expense_edit'],
+                    'period' => $data['period_expense_edit'],
+                    'budgeted_amount' => $data['budgeted_amount_expense_edit'],
+                    'realized_amount' => $data['realized_amount_expense_edit']
+                ]);
+        } else {
+            ExpenseModel::where('id', $data['id_expense'])
+                ->update([
+                    'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
+                    'period' => $data['period_expense_edit'],
+                    'budgeted_amount' => $data['budgeted_amount_expense_edit'],
+                    'realized_amount' => $data['realized_amount_expense_edit']
+                ]);
+        }
 
         return response()->json([
             'ok' => true,
-            'message' => 'Despesa atualizada com sucesso',
-            'period' => (int) $data['period_expense_edit']
+            'message' => 'Despesa atualizada com sucesso'
         ]);
     }
 }

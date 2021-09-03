@@ -15,6 +15,7 @@
                     @csrf
 
                     <input type="hidden" name="id_expense">
+                    <input type="hidden" name="category_active">
                     <div class="mb-3">
                         <label for="description_expense" class="form-label">Descrição da despesa</label>
                         <input class="form-control mb-3" type="text" name="description_expense_edit" id="description_expense" placeholder="Informe a descrição" />
@@ -22,10 +23,11 @@
                     <div class="b-3">
                         <label class="form-label" for="category_expense">Categoria</label>
                         <select class="form-select mb-3" name="category_expense_edit" id="category_expense">
-                            @foreach ($expenseCategories as $category)
+                            @foreach ($allExpenseCategories as $category)
                                 <option value="{{ $category->id }}">{{ $category->description }}</option>
                             @endforeach
                         </select>
+                        <small class="msg-category-cancelled" style="color: red; margin-top: -0.5rem !important; margin-bottom: 1rem; display: none;">Esta categoria foi excluída! Sua alteração náo é possível.</small>
                     </div>
                     @if ($type_expenses == '15/30')
                         <div class="mb-3">
