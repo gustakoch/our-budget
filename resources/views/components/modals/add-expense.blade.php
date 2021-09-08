@@ -1,4 +1,4 @@
-<div class="modal fade" id="addExpenseModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addExpenseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
@@ -67,7 +67,8 @@
             </div>
             <div class="modal-footer border-top-0">
                 <button type="button" class="btn btn-secondary cancel-expense" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary save-expense">Salvar despesa</button>
+                <button type="button" class="btn btn-primary save-expense-continue">Salvar e continuar</button>
+                <button type="button" class="btn btn-primary save-expense">Salvar e fechar</button>
             </div>
         </div>
     </div>
