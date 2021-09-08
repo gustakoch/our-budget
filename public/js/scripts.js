@@ -270,8 +270,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(xhr.responseText)
             },
             success: function(response) {
-                jQuery('#loadingSpinner').show()
-
                 if (response.ok) {
                     jQuery('#editRecipeModal').modal('hide')
                     location.reload()
@@ -902,6 +900,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formEditRecipe.reset()
 
         jQuery('#loadingSpinner').show()
+        jQuery('#loadingSpinnerRecipe').show()
 
         jQuery('input[name="repeat_next_months"]').attr('checked', false)
         jQuery('input[name="repeat_next_months"]').attr('disabled', false)
