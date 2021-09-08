@@ -1,10 +1,16 @@
-<div class="modal fade" id="editRecipeModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editRecipeModal" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header border-bottom-0">
+            <div class="modal-header border-bottom-0" id="modalHeaderEditRecipe">
                 <h5 class="modal-title" id="exampleModalLabel">Editar receita</h5>
             </div>
             <div class="modal-body">
+                <div class="text-center" id="loadingSpinnerRecipe">
+                    <div class="spinner-border text-secondary my-5" style="width: 3rem; height: 3rem;" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
                 <form id="form-edit-recipe">
                     @csrf
 
@@ -35,7 +41,7 @@
                       </div>
                 </form>
             </div>
-            <div class="modal-footer border-top-0">
+            <div class="modal-footer border-top-0" id="modalFooterEditRecipe">
                 <button type="button" class="btn btn-secondary cancel-recipe" data-bs-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-primary update-recipe">Atualizar receita</button>
             </div>
