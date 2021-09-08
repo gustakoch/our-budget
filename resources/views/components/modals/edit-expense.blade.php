@@ -1,4 +1,4 @@
-<div class="modal fade" id="editExpenseModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editExpenseModal" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0" id="modalHeaderEditExpense">
@@ -63,6 +63,12 @@
                         <input class="form-check-input" type="checkbox" name="repeat_next_months_expense_edit" value="1" id="repeat_next_months_expense">
                         <label class="form-check-label form-check-label-expense" for="repeat_next_months_expense">
                             Repetir esta despesa nos próximos meses
+                        </label>
+                    </div>
+                    <div class="form-check my-3">
+                        <input class="form-check-input" type="checkbox" value="1" name="expense_paid" id="expense_paid">
+                        <label class="form-check-label" for="expense_paid">
+                            Marcar despesa como paga
                         </label>
                     </div>
                 </form>

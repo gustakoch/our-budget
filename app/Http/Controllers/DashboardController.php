@@ -89,6 +89,7 @@ class DashboardController extends Controller
             ->join('categories', 'expenses.category', 'categories.id')
             ->where('expenses.user_id', '=', session('user')['id'])
             ->select('expenses.*', 'categories.description as category_description')
+            ->orderBy(DB::raw('expenses.budgeted_amount - expenses.realized_amount = 0'), 'asc')
             ->orderBy('expenses.description', 'asc')
             ->get();
 

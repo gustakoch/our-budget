@@ -76,6 +76,127 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '.save-recipe-continue', function(e) {
+        e.preventDefault()
+
+        let description = jQuery('input[name="description"]').val()
+        let category = Number(jQuery('select[name="category"]').val())
+        let amount = jQuery('input[name="budgeted_amount"]').val()
+
+        if (!description || !category || !amount) {
+            Swal.fire({
+                title: 'Presta atenção aí',
+                text: "Os dados obrigatórios devem ser preenchidos!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tá, entendi'
+            })
+            return false
+        }
+
+        if (amount == '0') {
+            Swal.fire({
+                title: 'Oops',
+                text: "O valor informado deve ser maior do que zero!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tentar novamente'
+            })
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'recipes/store',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-new-recipe').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.reponseText)
+            },
+            success: function(response) {
+                if (response.ok) {
+                    jQuery('#addRecipeModal').modal('hide')
+
+                    sessionStorage.setItem('reloadingRecipe', 'true');
+                    document.location.reload();
+                }
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.save-expense-continue', function(e) {
+        e.preventDefault()
+
+        let description = jQuery('input[name="description_expense"]').val()
+        let category = Number(jQuery('select[name="category_expense"]').val())
+        let amount = jQuery('input[name="budgeted_amount_expense"]').val()
+
+        if (!description || !category || !amount) {
+            Swal.fire({
+                title: 'Presta atenção aí',
+                text: "Os dados obrigatórios devem ser preenchidos!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tá, entendi'
+            })
+            return false
+        }
+
+        if (amount == '0') {
+            Swal.fire({
+                title: 'Oops',
+                text: "O valor informado deve ser maior do que zero!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tentar novamente'
+            })
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'expenses/store',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-new-expense').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.reponseText)
+            },
+            success: function(response) {
+                if (response.ok) {
+                    jQuery('#addExpenseModal').modal('hide')
+
+                    sessionStorage.setItem('reloadingExpense', 'true');
+                    document.location.reload();
+                }
+            }
+        })
+    })
+
+    window.onload = function() {
+        let reloadingRecipe = sessionStorage.getItem('reloadingRecipe');
+        let reloadingExpense = sessionStorage.getItem('reloadingExpense');
+
+        if (reloadingRecipe) {
+            sessionStorage.removeItem('reloading');
+            return jQuery('#addRecipeModal').modal('show')
+        }
+
+        if (reloadingExpense) {
+            sessionStorage.removeItem('reloading');
+            return jQuery('#addExpenseModal').modal('show')
+        }
+
+        sessionStorage.removeItem('realizedAmount')
+    }
+
     jQuery(document).on('click', '.save-category', function(e) {
         e.preventDefault()
 
@@ -224,6 +345,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     jQuery('#addExpenseModal').modal('hide')
                     location.reload()
+
+                    sessionStorage.removeItem('reloadingExpense')
                 }
             }
         })
@@ -397,10 +520,20 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                jQuery('#modalHeaderEditRecipe').hide()
+                jQuery('#modalFooterEditRecipe').hide()
+                jQuery('#form-edit-recipe').hide()
+            },
             error: function(xhr, status, error) {
                 console.log(xhr.reponseText)
             },
             success: function(response) {
+                jQuery('#modalHeaderEditRecipe').show()
+                jQuery('#modalFooterEditRecipe').show()
+                jQuery('#form-edit-recipe').show()
+                jQuery('#loadingSpinnerRecipe').hide()
+
                 jQuery('input[name="description_edit"]').val(response.description)
                 jQuery('input[name="id_recipe"]').val(response.id)
                 jQuery('input[name="category_active"]').val(response.category_active)
@@ -618,6 +751,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     jQuery('input[name="repeat_next_months_expense_edit"]').attr('checked', false)
                     jQuery('.form-check-label-expense').text('Esta despesa é exclusiva do mês atual')
+                }
+
+                if (response.budgeted_amount == response.realized_amount) {
+                    jQuery('input[name="expense_paid"]').parent().hide()
+                } else {
+                    jQuery('input[name="expense_paid"]').parent().show()
                 }
             }
         })
@@ -902,21 +1041,44 @@ document.addEventListener('DOMContentLoaded', function() {
         formEditRecipe.reset()
 
         jQuery('#loadingSpinner').show()
+        jQuery('#loadingSpinner').show()
 
         jQuery('input[name="repeat_next_months"]').attr('checked', false)
         jQuery('input[name="repeat_next_months"]').attr('disabled', false)
+
+        sessionStorage.removeItem('reloadingRecipe')
     })
 
     jQuery(document).on('click', '.cancel-expense', function(e) {
         e.preventDefault()
 
         formNewExpense.reset()
+        formNewRecipe.reset()
 
         jQuery('#loadingSpinner').show()
+        jQuery('#loadingSpinnerRecipe').show()
 
         jQuery('input[name="budgeted_amount_expense"]').attr('placeholder', '*Valor orçado (R$)')
-
+        jQuery('input[name="expense_paid"]').prop('checked', false)
         jQuery('input[name="repeat_next_months_expense"]').attr('checked', false)
         jQuery('input[name="repeat_next_months_expense"]').attr('disabled', false)
+
+        sessionStorage.removeItem('realizedAmount')
+        sessionStorage.removeItem('reloadingExpense')
+    })
+
+    jQuery(document).on('change', '#expense_paid', function(e) {
+        let budgetedAmount = jQuery('input[name="budgeted_amount_expense_edit"]').val()
+        let realizedAmount = jQuery('input[name="realized_amount_expense_edit"]').val()
+
+        if (!sessionStorage.getItem('realizedAmount')) {
+            sessionStorage.setItem('realizedAmount', realizedAmount)
+        }
+
+        if (jQuery(this).is(':checked')) {
+            jQuery('input[name="realized_amount_expense_edit"]').val(budgetedAmount)
+        } else {
+            jQuery('input[name="realized_amount_expense_edit"]').val(sessionStorage.getItem('realizedAmount'))
+        }
     })
 })

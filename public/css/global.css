@@ -98,3 +98,7 @@ small.erro {
     border: 1px solid red;
     cursor: not-allowed;
 }
+
+.font-bold-500 {
+    font-weight: 500 !important;
+}

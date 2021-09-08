@@ -193,7 +193,12 @@
                                     <tbody id="tbody-expenses-type-0">
                                         @foreach ($expenses0 as $expense)
                                             @if ($expense->period == 0)
-                                                <tr class="align-middle {{ $expense->cancelled == 1 ? 'cancelled' : '' }}">
+                                                <tr
+                                                    class="
+                                                        align-middle
+                                                        {{ $expense->cancelled == 1 ? 'cancelled' : '' }}
+                                                        {{ $expense->budgeted_amount - $expense->realized_amount <= 0 ? 'text-success font-bold-500' : '' }}"
+                                                >
                                                     <td>{{ $expense->description }}</td>
                                                     <td>{{ $expense->category_description }}</td>
                                                     <td>
@@ -209,7 +214,7 @@
                                                     <td>
                                                         @if ($expense->cancelled == 1)
                                                             <span class="cancelled">Cancelado</span>
-                                                        @elseif ($expense->budgeted_amount - $expense->realized_amount <= 0)
+                                                        @elseif ($expense->budgeted_amount - $expense->realized_amount == 0)
                                                             <span class="text-success">Concluído</span>
                                                         @else
                                                             <span class="text-warning">Em aberto</span>
@@ -320,7 +325,12 @@
                                     <tbody id="tbody-expenses-type-1">
                                         @foreach ($expenses1 as $expense)
                                             @if ($expense->period == 1)
-                                                <tr class="align-middle {{ $expense->cancelled == 1 ? 'cancelled' : '' }}">
+                                                <tr
+                                                    class="
+                                                        align-middle
+                                                        {{ $expense->cancelled == 1 ? 'cancelled' : '' }}
+                                                        {{ $expense->budgeted_amount - $expense->realized_amount <= 0 ? 'text-success font-bold-500' : '' }}"
+                                                >
                                                     <td>{{ $expense->description }}</td>
                                                     <td>{{ $expense->category_description }}</td>
                                                     <td>
@@ -446,7 +456,12 @@
                                     <tbody id="tbody-expenses-type-2">
                                         @foreach ($expenses2 as $expense)
                                             @if ($expense->period == 2)
-                                                <tr class="align-middle {{ $expense->cancelled == 1 ? 'cancelled' : '' }}">
+                                                <tr
+                                                    class="
+                                                        align-middle
+                                                        {{ $expense->cancelled == 1 ? 'cancelled' : '' }}
+                                                        {{ $expense->budgeted_amount - $expense->realized_amount <= 0 ? 'text-success font-bold-500' : '' }}"
+                                                >
                                                     <td>{{ $expense->description }}</td>
                                                     <td>{{ $expense->category_description }}</td>
                                                     <td>

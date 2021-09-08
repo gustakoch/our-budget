@@ -1,4 +1,4 @@
-<div class="modal fade" id="addRecipeModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addRecipeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
@@ -44,7 +44,16 @@
             </div>
             <div class="modal-footer border-top-0">
                 <button type="button" class="btn btn-secondary cancel-recipe" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary save-recipe">Salvar receita</button>
+                <button type="button" class="btn btn-primary save-recipe-continue">
+                    Salvar e continuar
+                </button>
+                <button type="button" class="btn btn-primary save-recipe">
+                    Salvar e fechar
+                </button>
+                {{-- <button class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button> --}}
             </div>
         </div>
     </div>
