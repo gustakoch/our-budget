@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\CreditCardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RecipesController;
 use App\Http\Controllers\ExpensesController;
@@ -27,6 +28,12 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/categories/update', [CategorieController::class, 'update']);
     Route::get('/categories/destroy/{id}', [CategorieController::class, 'destroy']);
 
+    Route::get('/cards', [CreditCardController::class, 'index'])->name('cards.index');
+    Route::post('/cards/store', [CreditCardController::class, 'store']);
+    Route::get('/cards/{id}', [CreditCardController::class, 'show']);
+    Route::post('/cards/update', [CreditCardController::class, 'update']);
+    Route::get('/cards/destroy/{id}', [CreditCardController::class, 'destroy']);
+
     Route::get('/recipes', [RecipesController::class, 'index']);
     Route::get('/recipes/{id}', [RecipesController::class, 'show']);
     Route::post('/recipes/store', [RecipesController::class, 'store']);
@@ -42,4 +49,5 @@ Route::middleware(['is.authenticated'])->group(function() {
 
     Route::post('/expenses/cancel/one', [ExpensesController::class, 'cancelOneInstallment']);
     Route::post('/expenses/cancel/all', [ExpensesController::class, 'cancelAllInstallments']);
+
 });

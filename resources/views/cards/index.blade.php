@@ -4,16 +4,16 @@
 @section('content')
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
-    <h3 class="mb-3">Categorias</h3>
-    <span>Cadastro de categorias de receitas e despesas</span>
+    <h3 class="mb-3">Cartões de crédito</h3>
+    <span>Cadastro de cartões de crédito</span>
 </nav>
 
 <button
     class="btn btn-success mb-4"
     data-bs-toggle="modal"
-    data-bs-target="#addCategoryModal"
+    data-bs-target="#addCardModal"
 >
-    Nova categoria
+    Novo cartão
 </button>
 
 <table id="table-categories" class="table" style="vertical-align: middle">
@@ -21,18 +21,18 @@
         <tr>
             <th>#</th>
             <th>Descrição</th>
-            <th>Tipo</th>
-            <th>Data de criação</th>
+            <th>Número</th>
+            <th>Bandeira</th>
             <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($categories as $category)
+        @foreach ($cards as $card)
             <tr>
-                <td>{{ $category->id }}</td>
-                <td>{{ $category->description }}</td>
-                <td>{{ $category->type }}</td>
-                <td>{{ $category->created_at }}</td>
+                <td>{{ $card->id }}</td>
+                <td>{{ $card->description }}</td>
+                <td>{{ $card->number ? substr_replace($card->number, '****-****-****-', 0, 15) : '--' }}</td>
+                <td>{{ $card->card_flag_name ?? '--' }}</td>
                 <td>
                     <div class="input-group">
                         <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center btn-options" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -40,15 +40,15 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li><a
-                                    class="dropdown-item d-flex align-items-center edit-category"
-                                    id="{{ $category->id }}"
+                                    class="dropdown-item d-flex align-items-center edit-card"
+                                    id="{{ $card->id }}"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#editCategoryModal"
+                                    data-bs-target="#editCardModal"
                                 >
                                     <img class="me-2" src="{{ asset('/images/icons/edit-icon.png') }}" alt="Editar">
                                 Editar
                             </a></li>
-                            <li><a class="dropdown-item d-flex align-items-center delete-category" id="{{ $category->id }}">
+                            <li><a class="dropdown-item d-flex align-items-center delete-card" id="{{ $card->id }}">
                                 <img class="me-2" src="{{ asset('/images/icons/del-icon.png') }}" alt="Remover">
                                 Excluir
                             </a></li>
@@ -60,7 +60,7 @@
     </tbody>
 </table>
 
-@component('categories.modal.add')@endcomponent
-@component('categories.modal.edit')@endcomponent
+@component('cards.modal.add', ['flags' => $flags])@endcomponent
+@component('cards.modal.edit', ['flags' => $flags])@endcomponent
 
 @endsection

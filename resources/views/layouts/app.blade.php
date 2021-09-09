@@ -37,6 +37,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.0/datatables.min.js"></script>
 
     <script src="{{ asset('js/scripts.js') }}?v=<?= filemtime('js/scripts.js'); ?>"></script>
+    <script src="{{ asset('js/jquery.mask.js') }}?v=<?= filemtime('js/jquery.mask.js'); ?>"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#sidebarCollapse').on('click', function () {

@@ -25,6 +25,9 @@
                 <li>
                     <a href="{{ route('categories.index') }}">Categorias</a>
                 </li>
+                <li>
+                    <a href="{{ route('cards.index') }}">Cartões de crédito</a>
+                </li>
             </ul>
 
             <li>

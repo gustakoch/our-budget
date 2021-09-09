@@ -235,6 +235,43 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '.save-card', function(e) {
+        e.preventDefault()
+
+        let description = jQuery('input[name="card_description"]').val()
+
+        if (!description) {
+            Swal.fire({
+                title: 'O negócio é o seguinte...',
+                text: "Você deve ao menos informar a descrição do novo cartão, blza?",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tá, entendi'
+            })
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'cards/store',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-new-card').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.reponseText)
+            },
+            success: function(response) {
+                if (response.ok) {
+                    jQuery('#addCardModal').modal('hide')
+                    location.reload()
+                }
+            }
+        })
+    })
+
     jQuery(document).on('click', '#first-access', function(e) {
         e.preventDefault()
 
@@ -441,6 +478,43 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '.update-card', function(e) {
+        e.preventDefault()
+
+        let description = jQuery('input[name="card_description_edit"]').val()
+
+        if (!description) {
+            Swal.fire({
+                title: 'O negócio é o seguinte...',
+                text: "Você deve informar ao menos a descrição do cartão, blza?",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Continuar atualização'
+            })
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'cards/update',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-edit-card').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText)
+            },
+            success: function(response) {
+                if (response.ok) {
+                    jQuery('#editCardModal').modal('hide')
+                    location.reload()
+                }
+            }
+        })
+    })
+
     jQuery(document).on('click', '.update-expense', function(e) {
         e.preventDefault()
 
@@ -586,6 +660,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 jQuery('input[name="description_category_edit"]').val(response.description)
                 Number(jQuery('select[name="belongs_to_edit"]').val(response.belongs_to))
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.edit-card', function(e) {
+        e.preventDefault()
+
+        let id = $(this).attr('id')
+
+        jQuery.ajax({
+            url: `cards/${id}`,
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.reponseText)
+            },
+            success: function(response) {
+                console.log(response)
+
+                jQuery('input[name="id_card"]').val(response.id)
+
+                jQuery('input[name="card_description_edit"]').val(response.description)
+                jQuery('input[name="card_number_edit"]').val(response.number)
+                Number(jQuery('select[name="card_flag_edit"]').val(response.flag))
             }
         })
     })
@@ -922,6 +1024,49 @@ document.addEventListener('DOMContentLoaded', function() {
                             Swal.fire({
                                 title: 'Removido',
                                 text: "Sua categoria foi removida com sucesso",
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.delete-card', function() {
+        let id = jQuery(this).attr('id')
+
+        Swal.fire({
+            title: 'Deseja realmente excluir?',
+            text: "Esta ação não poderá ser desfeita!",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, pode excluir'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: `cards/destroy/${id}`,
+                    type: 'get',
+                    dataType: 'json',
+                    timeout: 20000,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('error', error)
+                    },
+                    success: function(response) {
+                        if (response.ok) {
+                            location.reload()
+
+                            Swal.fire({
+                                title: 'Removido',
+                                text: "Este cartão foi removido com sucesso",
                                 icon: 'success',
                                 confirmButtonColor: '#3085d6',
                                 confirmButtonText: 'Continuar'
