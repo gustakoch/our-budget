@@ -38,6 +38,7 @@ class CreditCardModel extends Model
                 , cf.description card_flag_name
                 , ca.flag
                 , ca.number
+                , ca.description
             FROM credit_cards ca
             LEFT JOIN card_flags cf
             ON (cf.id = ca.flag)
