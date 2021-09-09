@@ -21,16 +21,18 @@
                         />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="card_number_edit">Número</label>
+                        <label class="form-label">Número</label>
                         <input
-                            class="form-control mb-3"
+                            class="form-control mb-3 border-red"
                             type="text"
                             id="card_number_edit"
-                            name="card_number_edit"
                             placeholder="Informe o número"
+                            name="card_number_edit"
                             autocomplete="off"
                             data-mask="0000-0000-0000-0000"
+                            disabled
                         />
+                        <small id="msg-no-card-number" class="text-danger" style="display: block; margin-top: -0.5rem !important;">Não é possível alterar o número! Caso esta seja a sua vontade, por favor, cadastre um novo cartão.</small>
                     </div>
                     <div class="mb-3">
                         <label for="card_flag_edit" class="form-label">Bandeira</label>

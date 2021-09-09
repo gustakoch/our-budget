@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Configuration;
+use App\Models\CreditCardModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
@@ -10,10 +11,12 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
     private $user;
+    private $creditCardModel;
 
-    public function __construct(User $user)
+    public function __construct(User $user, CreditCardModel $creditCardModel)
     {
         $this->user = $user;
+        $this->creditCardModel = $creditCardModel;
     }
 
     public function index()
@@ -138,6 +141,8 @@ class DashboardController extends Controller
             }
         }
 
+        $cards = $this->creditCardModel->getCardsWithFlags();
+
         return view('dashboard', [
             'month' => $month,
             'months' => $months,
@@ -159,7 +164,8 @@ class DashboardController extends Controller
             'budgeted_amount_expenses2' => $amountExpensesPeriod2,
             'realized_amount_expenses2' => $realizedExpensesPeriod2,
             'pending_amount_expenses2' => $pendingExpensesPeriod2,
-            'type_expenses' => isset($typeExpenses->gradle_format) ? $typeExpenses->gradle_format : '30'
+            'type_expenses' => isset($typeExpenses->gradle_format) ? $typeExpenses->gradle_format : '30',
+            'cards' => $cards
         ]);
     }
 

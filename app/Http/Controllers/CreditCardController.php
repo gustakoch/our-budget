@@ -47,6 +47,13 @@ class CreditCardController extends Controller
     {
         $card = $this->creditCardModel->getCardsWithFlagsById($id);
 
+        if (!$card->number) {
+            $card->number = 'Nenhum número informado';
+            $card->no_number = true;
+        } else {
+            $card->number = substr_replace($card->number, '****-****-****-', 0, 15);
+        }
+
         return response()->json($card);
     }
 
@@ -56,8 +63,7 @@ class CreditCardController extends Controller
 
         CreditCardModel::where('id', $data['id_card'])
             ->update([
-                'description' => $data['card_description_edit'],
-                'number' => $data['card_number_edit'],
+                'description' => mb_convert_case($data['card_description_edit'], MB_CASE_TITLE, "UTF-8"),
                 'flag' => $data['card_flag_edit']
             ]);
 

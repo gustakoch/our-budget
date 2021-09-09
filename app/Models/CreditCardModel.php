@@ -23,8 +23,9 @@ class CreditCardModel extends Model
             LEFT JOIN card_flags cf
             ON (cf.id = ca.flag)
             WHERE ca.active = 1
+            AND ca.user_id = ?
             ORDER BY ca.description;
-        ');
+        ', [session('user')['id']]);
 
         return $cards;
     }
@@ -33,13 +34,16 @@ class CreditCardModel extends Model
     {
         $cards = DB::selectOne('
             SELECT
-                ca.*
+                ca.id
                 , cf.description card_flag_name
+                , ca.flag
+                , ca.number
             FROM credit_cards ca
             LEFT JOIN card_flags cf
             ON (cf.id = ca.flag)
-            WHERE ca.id = ?;
-        ', [$id]);
+            WHERE ca.id = ?
+            AND ca.user_id = ?;
+        ', [$id, session('user')['id']]);
 
         return $cards;
     }

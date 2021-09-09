@@ -562,7 +562,8 @@
 
 @include('components.modals.add-expense', [
     'expenseCategories' => $activeExpenseCategories,
-    'type_expenses' => $type_expenses
+    'type_expenses' => $type_expenses,
+    'cards' => $cards
 ])
 @include('components.modals.edit-expense', [
     'expenseCategories' => $allExpenseCategories,

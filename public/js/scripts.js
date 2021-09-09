@@ -688,6 +688,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('input[name="card_description_edit"]').val(response.description)
                 jQuery('input[name="card_number_edit"]').val(response.number)
                 Number(jQuery('select[name="card_flag_edit"]').val(response.flag))
+
+                if (response.no_number) {
+                    jQuery('#msg-no-card-number').hide()
+                } else {
+                    jQuery('#msg-no-card-number').show()
+                }
             }
         })
     })
@@ -1222,6 +1228,20 @@ document.addEventListener('DOMContentLoaded', function() {
             jQuery('input[name="realized_amount_expense_edit"]').val(budgetedAmount)
         } else {
             jQuery('input[name="realized_amount_expense_edit"]').val(sessionStorage.getItem('realizedAmount'))
+        }
+    })
+
+    jQuery(document).on('change', '#was_with_credit_card', function(e) {
+        if (jQuery(this).is(':checked')) {
+            jQuery('#expense_card_selection').show()
+            jQuery('#expense_card_selection').children().eq(1).attr('disabled', false)
+
+            let cardValue = jQuery('select[name="credit_card"]').val()
+            console.log(cardValue)
+
+        } else {
+            jQuery('#expense_card_selection').hide()
+            jQuery('#expense_card_selection').children().eq(1).attr('disabled', true)
         }
     })
 })

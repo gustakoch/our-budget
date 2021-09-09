@@ -102,3 +102,7 @@ small.erro {
 .font-bold-500 {
     font-weight: 500 !important;
 }
+
+#expense_card_selection {
+    display: none;
+}

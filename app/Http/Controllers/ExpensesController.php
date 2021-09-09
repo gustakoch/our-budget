@@ -40,6 +40,8 @@ class ExpensesController extends Controller
     {
         $data = request()->all();
 
+        dd($data);
+
         session_start();
         $month = $_SESSION['month'];
         $year = $_SESSION['year'];
