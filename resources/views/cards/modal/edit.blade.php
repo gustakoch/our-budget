@@ -50,8 +50,6 @@
                         </select>
                     </div>
                 </form>
-
-                <small>(* Dados obrigatórios)</small>
             </div>
             <div class="modal-footer border-top-0" id="modalFooterEditCard">
                 <button type="button" class="btn btn-secondary cancel-card" data-bs-dismiss="modal">Fechar</button>
