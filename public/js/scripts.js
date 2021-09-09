@@ -677,11 +677,19 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                jQuery('#modalHeaderEditCard').hide()
+                jQuery('#modalFooterEditCard').hide()
+                jQuery('#form-edit-card').hide()
+            },
             error: function(xhr, status, error) {
                 console.log(xhr.reponseText)
             },
             success: function(response) {
-                console.log(response)
+                jQuery('#modalHeaderEditCard').show()
+                jQuery('#modalFooterEditCard').show()
+                jQuery('#form-edit-card').show()
+                jQuery('#loadingSpinnerCard').hide()
 
                 jQuery('input[name="id_card"]').val(response.id)
 
@@ -1196,6 +1204,10 @@ document.addEventListener('DOMContentLoaded', function() {
         jQuery('input[name="repeat_next_months"]').attr('disabled', false)
 
         sessionStorage.removeItem('reloadingRecipe')
+    })
+
+    jQuery(document).on('click', '.cancel-card', function(e) {
+        jQuery('#loadingSpinnerCard').show()
     })
 
     jQuery(document).on('click', '.cancel-expense', function(e) {

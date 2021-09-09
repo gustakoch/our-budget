@@ -1,10 +1,16 @@
-<div class="modal fade" id="editCardModal" data-bs-keyboard="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editCardModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header border-bottom-0">
+            <div class="modal-header border-bottom-0" id="modalHeaderEditCard">
                 <h5 class="modal-title" id="exampleModalLabel">Editando cartão</h5>
             </div>
             <div class="modal-body">
+                <div class="text-center" id="loadingSpinnerCard">
+                    <div class="spinner-border text-secondary my-5" style="width: 3rem; height: 3rem;" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
                 <form id="form-edit-card">
                     @csrf
 
@@ -47,8 +53,8 @@
 
                 <small>(* Dados obrigatórios)</small>
             </div>
-            <div class="modal-footer border-top-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <div class="modal-footer border-top-0" id="modalFooterEditCard">
+                <button type="button" class="btn btn-secondary cancel-card" data-bs-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-primary update-card">Atualizar cartão</button>
             </div>
         </div>
