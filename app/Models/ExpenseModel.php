@@ -29,19 +29,23 @@ class ExpenseModel extends Model
         return $accumulatedTotals;
     }
 
-    public function getExpensesByMonthAndPeriod($month, $period) {
+    public function getExpensesByCreditCard($creditCard, $month) {
         $expenses = DB::select('
-                SELECT
-                    e.*
-                    , c.description category_description
-                FROM expenses e
-                    , categories c
-                WHERE e.category = c.id
-                AND e.user_id = 1
-                AND e.period = ?
-                AND e.month = ?
-                order by e.description
-        ', [$period, $month]);
+            SELECT
+                e.*
+                , c.description category_description
+                , cc.description credit_card_description
+                , cc.invoice_day
+            FROM expenses e
+                , categories c
+                , credit_cards cc
+            WHERE e.category = c.id
+            AND cc.id = e.credit_card
+            AND e.user_id = ?
+            AND credit_card = ?
+            AND e.month = ?
+            ORDER BY e.budgeted_amount - e.realized_amount = 0 asc
+        ', [session('user')['id'], $creditCard, $month]);
 
         return $expenses;
     }

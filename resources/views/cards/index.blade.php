@@ -23,6 +23,7 @@
             <th>Descrição</th>
             <th>Número</th>
             <th>Bandeira</th>
+            <th>Vencimento da fatura</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -33,6 +34,7 @@
                 <td>{{ $card->description }}</td>
                 <td>{{ $card->number ? substr_replace($card->number, '****-****-****-', 0, 15) : '--' }}</td>
                 <td>{{ $card->card_flag_name ?? '--' }}</td>
+                <td>Sempre dia {{ $card->invoice_day }}</td>
                 <td>
                     <div class="input-group">
                         <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center btn-options" type="button" data-bs-toggle="dropdown" aria-expanded="false">

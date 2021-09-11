@@ -61,21 +61,21 @@
                             Repetir esta despesa nos próximos meses
                         </label>
                     </div>
-                    {{-- <div class="form-check my-3">
-                        <input class="form-check-input" type="checkbox" id="was_with_credit_card">
+                    <div class="form-check my-3">
+                        <input class="form-check-input was_with_credit_card" type="checkbox" id="was_with_credit_card">
                         <label class="form-check-label" for="was_with_credit_card">
-                            É, isso eu fiz no cartão de crédito ;(
+                            Despesa do cartão de crédito
                         </label>
                     </div>
                     <div class="mb-3" id="expense_card_selection">
-                        <label class="form-label" for="credit_card">Diz aí, qual cartão foi?</label>
+                        <label class="form-label" for="credit_card">Diz aí, qual cartão foi?*</label>
                         <select class="form-select mb-3" name="credit_card" id="credit_card" disabled>
                             <option selected value="0">Selecione o cartão</option>
                             @foreach ($cards as $card)
                                 <option value="{{ $card->id }}">{{ $card->description }}</option>
                             @endforeach
                         </select>
-                    </div> --}}
+                    </div>
                 </form>
 
                 <small>(* Dados obrigatórios)</small>

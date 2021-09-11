@@ -29,12 +29,21 @@ class CreditCardController extends Controller
     public function store()
     {
         $data = request()->all();
+        $cardStored = CreditCardModel::where('number', $data['card_number'])->first();
+
+        if ($cardStored) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Cartão já registrado! Por favor, informe outro'
+            ]);
+        }
 
         CreditCardModel::create([
             'description' => mb_convert_case($data['card_description'], MB_CASE_TITLE, "UTF-8"),
             'number' => $data['card_number'],
             'flag' => $data['card_flag'],
-            'user_id' => session('user')['id']
+            'user_id' => session('user')['id'],
+            'invoice_day' => $data['invoice_day']
         ]);
 
         return response()->json([
@@ -64,7 +73,8 @@ class CreditCardController extends Controller
         CreditCardModel::where('id', $data['id_card'])
             ->update([
                 'description' => mb_convert_case($data['card_description_edit'], MB_CASE_TITLE, "UTF-8"),
-                'flag' => $data['card_flag_edit']
+                'flag' => $data['card_flag_edit'],
+                'invoice_day' => $data['invoice_day']
             ]);
 
         return response()->json([

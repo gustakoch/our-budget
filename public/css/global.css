@@ -103,6 +103,22 @@ small.erro {
     font-weight: 500 !important;
 }
 
-#expense_card_selection {
+#expense_card_selection, #expense_card_selection_edit {
     display: none;
+}
+
+.button-credit-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.25rem;
+}
+
+.button-credit-card::after {
+    background: none !important;
+    height: 0 !important;
+}
+
+.accordion + .accordion {
+    margin-top: 0.5rem !important;
 }

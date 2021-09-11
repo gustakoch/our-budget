@@ -239,11 +239,23 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault()
 
         let description = jQuery('input[name="card_description"]').val()
+        let invoiceDay = jQuery('input[name="invoice_day"]').val()
 
-        if (!description) {
+        if (!description || !invoiceDay) {
             Swal.fire({
-                title: 'O negócio é o seguinte...',
-                text: "Você deve ao menos informar a descrição do novo cartão, blza?",
+                title: 'Presta atenção aí',
+                text: "Por favor, informe a descrição e o dia de vencimento da fatura!",
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Tá, entendi'
+            })
+            return false
+        }
+
+        if (invoiceDay <= 0 || invoiceDay > 31) {
+            Swal.fire({
+                title: 'Olha só...',
+                text: "Você precisa informar algum valor entre 1 e 31, blza?",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Tá, entendi'
@@ -267,6 +279,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     jQuery('#addCardModal').modal('hide')
                     location.reload()
+                } else {
+                    Swal.fire({
+                        title: 'Oops...',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Tá, entendi'
+                    })
+                    return false
                 }
             }
         })
@@ -364,6 +385,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 confirmButtonText: 'Tentar novamente'
             })
             return false
+        }
+
+        let isWithCreditCard = jQuery('#was_with_credit_card').is(':checked')
+
+        if (isWithCreditCard) {
+            let creditCard = Number(jQuery('select[name="credit_card"]').val())
+
+            if (!creditCard) {
+                Swal.fire({
+                    title: 'Cartão de crédito',
+                    text: "Por favor, selecione o cartão de crédito para vincular na despesa!",
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Tá, entendi'
+                })
+                return false
+            }
         }
 
         jQuery.ajax({
@@ -482,11 +520,12 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault()
 
         let description = jQuery('input[name="card_description_edit"]').val()
+        let invoiceDay = jQuery('input[name="invoice_day"]').val()
 
-        if (!description) {
+        if (!description || !invoiceDay) {
             Swal.fire({
-                title: 'O negócio é o seguinte...',
-                text: "Você deve informar ao menos a descrição do cartão, blza?",
+                title: 'Presta atenção aí',
+                text: "Por favor, informe a descrição e o dia de vencimento da fatura!",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Continuar atualização'
@@ -695,6 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 jQuery('input[name="card_description_edit"]').val(response.description)
                 jQuery('input[name="card_number_edit"]').val(response.number)
+                jQuery('input[name="invoice_day"]').val(response.invoice_day)
                 Number(jQuery('select[name="card_flag_edit"]').val(response.flag))
 
                 if (response.no_number) {
@@ -823,6 +863,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(xhr.reponseText)
             },
             success: function(response) {
+                console.log(response)
+
                 jQuery('#modalHeaderEditExpense').show()
                 jQuery('#modalFooterEditExpense').show()
                 jQuery('#form-edit-expense').show()
@@ -857,20 +899,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('input[name="budgeted_amount_expense_edit"]').val(response.budgeted_amount)
                 jQuery('input[name="realized_amount_expense_edit"]').val(response.realized_amount)
 
-                Number(jQuery('input[name="repeat_next_months_expense_edit"]').val(response.repeat_next_months))
-                jQuery('input[name="repeat_next_months_expense_edit"]').attr('disabled', true)
-                if (response.repeat_next_months_expense_edit == 1) {
-                    jQuery('input[name="repeat_next_months_expense_edit"]').attr('checked', true)
-                    jQuery('.form-check-label-expense').text('Esta despesa é repetida nos meses seguintes')
-                } else {
-                    jQuery('input[name="repeat_next_months_expense_edit"]').attr('checked', false)
-                    jQuery('.form-check-label-expense').text('Esta despesa é exclusiva do mês atual')
-                }
-
                 if (response.budgeted_amount == response.realized_amount) {
                     jQuery('input[name="expense_paid"]').parent().hide()
                 } else {
                     jQuery('input[name="expense_paid"]').parent().show()
+                }
+
+                if (response.credit_card) {
+                    jQuery('#was_with_credit_card_edit').prop('checked', true)
+                    jQuery('#expense_card_selection_edit').css('display', 'block')
+                    jQuery('select[name="credit_card_edit"]').attr('disabled', false)
+                    jQuery('select[name="credit_card_edit"]').val(response.credit_card)
+                } else {
+                    jQuery('#was_with_credit_card_edit').prop('checked', false)
+                    jQuery('#expense_card_selection_edit').css('display', 'none')
+                    jQuery('select[name="credit_card_edit"]').attr('disabled', true)
+                    jQuery('select[name="credit_card_edit"]').val(0)
                 }
             }
         })
@@ -1224,6 +1268,8 @@ document.addEventListener('DOMContentLoaded', function() {
         jQuery('input[name="repeat_next_months_expense"]').attr('checked', false)
         jQuery('input[name="repeat_next_months_expense"]').attr('disabled', false)
 
+        jQuery('#expense_card_selection').hide()
+
         sessionStorage.removeItem('realizedAmount')
         sessionStorage.removeItem('reloadingExpense')
     })
@@ -1243,17 +1289,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
-    jQuery(document).on('change', '#was_with_credit_card', function(e) {
+    jQuery(document).on('change', '.was_with_credit_card', function(e) {
         if (jQuery(this).is(':checked')) {
             jQuery('#expense_card_selection').show()
             jQuery('#expense_card_selection').children().eq(1).attr('disabled', false)
-
-            let cardValue = jQuery('select[name="credit_card"]').val()
-            console.log(cardValue)
-
         } else {
             jQuery('#expense_card_selection').hide()
             jQuery('#expense_card_selection').children().eq(1).attr('disabled', true)
+            jQuery('select[name="credit_card"]').val(0)
+        }
+    })
+
+    jQuery(document).on('change', '.was_with_credit_card_edit', function(e) {
+        if (jQuery(this).is(':checked')) {
+            jQuery('#expense_card_selection_edit').show()
+            jQuery('#expense_card_selection_edit').children().eq(1).attr('disabled', false)
+        } else {
+            jQuery('#expense_card_selection_edit').hide()
+            jQuery('#expense_card_selection_edit').children().eq(1).attr('disabled', true)
+            jQuery('select[name="credit_card_edit"]').val(0)
         }
     })
 })

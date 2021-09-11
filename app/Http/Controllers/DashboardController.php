@@ -4,19 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Configuration;
 use App\Models\CreditCardModel;
+use App\Models\ExpenseModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class DashboardController extends Controller
 {
     private $user;
     private $creditCardModel;
+    private $expenseModel;
 
-    public function __construct(User $user, CreditCardModel $creditCardModel)
+    public function __construct(
+        User $user,
+        CreditCardModel $creditCardModel,
+        ExpenseModel $expenseModel
+        )
     {
         $this->user = $user;
         $this->creditCardModel = $creditCardModel;
+        $this->expenseModel = $expenseModel;
     }
 
     public function index()
@@ -91,6 +99,7 @@ class DashboardController extends Controller
         $userExpenses = DB::table('expenses')
             ->join('categories', 'expenses.category', 'categories.id')
             ->where('expenses.user_id', '=', session('user')['id'])
+            ->where('expenses.credit_card', '=', null)
             ->select('expenses.*', 'categories.description as category_description')
             ->orderBy(DB::raw('expenses.budgeted_amount - expenses.realized_amount = 0'), 'asc')
             ->orderBy('expenses.description', 'asc')
@@ -142,6 +151,42 @@ class DashboardController extends Controller
         }
 
         $cards = $this->creditCardModel->getCardsWithFlags();
+        $allCreditCardExpenses = [];
+
+        foreach ($cards as $card) {
+            $cardExpenses = $this->expenseModel->getExpensesByCreditCard($card->id, $month);
+
+            if (!$cardExpenses) {
+                continue;
+            }
+
+            $expenseObject = new stdClass();
+            $expenseObject->credit_card = $cardExpenses[0]->credit_card;
+            $expenseObject->credit_card_description = $cardExpenses[0]->credit_card_description;
+            $expenseObject->invoice_day =
+                str_pad($cardExpenses[0]->invoice_day, 2, "0", STR_PAD_LEFT)
+                . '/'
+                . str_pad($cardExpenses[0]->month, 2, "0", STR_PAD_LEFT)
+                . '/'
+                . $cardExpenses[0]->year;
+            $expenseObject->total_budgeted_amount = 0;
+            $expenseObject->total_realized_amount = 0;
+            $expenseObject->total_pending_amount = 0;
+
+            foreach ($cardExpenses as $cardExpense) {
+                $expenseObject->periods[] = $cardExpense->period;
+
+                if ($cardExpense->cancelled == 0) {
+                    $expenseObject->total_budgeted_amount += $cardExpense->budgeted_amount;
+                    $expenseObject->total_realized_amount += $cardExpense->realized_amount;
+                    $expenseObject->total_pending_amount = ($expenseObject->total_budgeted_amount - $expenseObject->total_realized_amount);
+                }
+            }
+
+            $expenseObject->expenses = $cardExpenses;
+
+            $allCreditCardExpenses[] = $expenseObject;
+        }
 
         return view('dashboard', [
             'month' => $month,
@@ -165,7 +210,8 @@ class DashboardController extends Controller
             'realized_amount_expenses2' => $realizedExpensesPeriod2,
             'pending_amount_expenses2' => $pendingExpensesPeriod2,
             'type_expenses' => isset($typeExpenses->gradle_format) ? $typeExpenses->gradle_format : '30',
-            'cards' => $cards
+            'cards' => $cards,
+            'creditCardExpenses' => $allCreditCardExpenses
         ]);
     }
 

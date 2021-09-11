@@ -43,11 +43,22 @@
                     <div class="mb-3">
                         <label for="card_flag_edit" class="form-label">Bandeira</label>
                         <select class="form-select mb-3" name="card_flag_edit" id="card_flag_edit">
-                            <option value="0">Selecione a bandeira</option>
                             @foreach ($flags as $flag)
                                 <option value="{{ $flag->id }}">{{ $flag->description }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="invoice_day">Dia vencimento da fatura*</label>
+                        <input
+                            class="form-control mb-3"
+                            type="number"
+                            id="invoice_day"
+                            name="invoice_day"
+                            placeholder="Informe o dia"
+                            autocomplete="off"
+                            data-mask="00"
+                        />
                     </div>
                 </form>
             </div>

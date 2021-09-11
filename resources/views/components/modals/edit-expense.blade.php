@@ -60,10 +60,19 @@
                         </div>
                     </div>
                     <div class="form-check my-3">
-                        <input class="form-check-input" type="checkbox" name="repeat_next_months_expense_edit" value="1" id="repeat_next_months_expense">
-                        <label class="form-check-label form-check-label-expense" for="repeat_next_months_expense">
-                            Repetir esta despesa nos próximos meses
+                        <input class="form-check-input was_with_credit_card_edit" type="checkbox" id="was_with_credit_card_edit">
+                        <label class="form-check-label" for="was_with_credit_card_edit">
+                            Despesa do cartão de crédito
                         </label>
+                    </div>
+                    <div class="mb-3" id="expense_card_selection_edit">
+                        <label class="form-label" for="credit_card_edit">Diz aí, qual cartão foi?*</label>
+                        <select class="form-select mb-3" name="credit_card_edit" id="credit_card_edit" disabled>
+                            <option value="0">Selecione o cartão</option>
+                            @foreach ($cards as $card)
+                                <option value="{{ $card->id }}">{{ $card->description }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-check my-3">
                         <input class="form-check-input" type="checkbox" value="1" name="expense_paid" id="expense_paid">

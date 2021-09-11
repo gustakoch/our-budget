@@ -19,28 +19,9 @@ class ExpensesController extends Controller
         $this->categoryModel = $categoryModel;
     }
 
-    public function index()
-    {
-        session_start();
-        $month = (int) $_SESSION['month'];
-        $period = (int) request()->query('period');
-
-        $expenses = $this->expenseModel->getExpensesByMonthAndPeriod($month, $period);
-        $accumulatedTotals = $this->expenseModel->getAccumulatedTotals($month, $period);
-
-        return response()->json([
-            'expenses' => $expenses,
-            'accumulated_totals' => $accumulatedTotals,
-            'period' => $period,
-            'month' => $month
-        ]);
-    }
-
     public function store()
     {
         $data = request()->all();
-
-        dd($data);
 
         session_start();
         $month = $_SESSION['month'];
@@ -48,6 +29,7 @@ class ExpensesController extends Controller
 
         $repeatNextMonths = isset($data['repeat_next_months_expense']) ? 1 : 0;
         $period = isset($data['period_expense']) ? $data['period_expense'] : 0;
+        $data['credit_card'] = isset($data['credit_card']) ? $data['credit_card'] : null;
 
         if ($repeatNextMonths == '1') {
             for ($i = $month; $i <= 12; $i++) {
@@ -59,7 +41,8 @@ class ExpensesController extends Controller
                     'repeat_next_months' => $repeatNextMonths,
                     'month' => $i,
                     'year' => $year,
-                    'user_id' => session('user')['id']
+                    'user_id' => session('user')['id'],
+                    'credit_card' => $data['credit_card']
                 ]);
             }
         } else {
@@ -78,7 +61,8 @@ class ExpensesController extends Controller
                         'installment' => $i,
                         'month' => $month++,
                         'year' => $year,
-                        'user_id' => session('user')['id']
+                        'user_id' => session('user')['id'],
+                        'credit_card' => $data['credit_card']
                     ]);
 
                     ExpenseInstallmentsModel::create([
@@ -102,7 +86,8 @@ class ExpensesController extends Controller
                 'repeat_next_months' => $repeatNextMonths,
                 'month' => $month,
                 'year' => $year,
-                'user_id' => session('user')['id']
+                'user_id' => session('user')['id'],
+                'credit_card' => $data['credit_card']
             ]);
         }
 
@@ -191,6 +176,7 @@ class ExpensesController extends Controller
     public function update()
     {
         $data = request()->all();
+        $data['credit_card_edit'] = isset($data['credit_card_edit']) ? $data['credit_card_edit'] : null;
 
         if ($data['category_active'] == 1) {
             ExpenseModel::where('id', $data['id_expense'])
@@ -199,7 +185,8 @@ class ExpensesController extends Controller
                     'category' => $data['category_expense_edit'],
                     'period' => $data['period_expense_edit'],
                     'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                    'realized_amount' => $data['realized_amount_expense_edit']
+                    'realized_amount' => $data['realized_amount_expense_edit'],
+                    'credit_card' => $data['credit_card_edit']
                 ]);
         } else {
             ExpenseModel::where('id', $data['id_expense'])
@@ -207,7 +194,8 @@ class ExpensesController extends Controller
                     'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
                     'period' => $data['period_expense_edit'],
                     'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                    'realized_amount' => $data['realized_amount_expense_edit']
+                    'realized_amount' => $data['realized_amount_expense_edit'],
+                    'credit_card' => $data['credit_card_edit']
                 ]);
         }
 

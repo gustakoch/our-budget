@@ -40,6 +40,18 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="invoice_day">Dia vencimento da fatura*</label>
+                        <input
+                            class="form-control mb-3"
+                            type="number"
+                            id="invoice_day"
+                            name="invoice_day"
+                            placeholder="Informe o dia"
+                            autocomplete="off"
+                            data-mask="00"
+                        />
+                    </div>
                 </form>
 
                 <small>(* Dados obrigatórios)</small>
