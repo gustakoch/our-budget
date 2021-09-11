@@ -68,10 +68,14 @@
                     <div class="mb-3" id="expense_card_selection_edit">
                         <label class="form-label" for="credit_card_edit">Diz aí, qual cartão foi?*</label>
                         <select class="form-select mb-3" name="credit_card_edit" id="credit_card_edit" disabled>
-                            <option value="0">Selecione o cartão</option>
-                            @foreach ($cards as $card)
-                                <option value="{{ $card->id }}">{{ $card->description }}</option>
-                            @endforeach
+                            @if (count($cards))
+                                <option selected value="0">Selecione um cartão de crédito</option>
+                                @foreach ($cards as $card)
+                                    <option value="{{ $card->id }}">{{ $card->description }}</option>
+                                @endforeach
+                            @else
+                                <option value="0">Não há cartões cadastrados</option>
+                            @endif
                         </select>
                     </div>
                     <div class="form-check my-3">

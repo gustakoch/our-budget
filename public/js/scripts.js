@@ -561,6 +561,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let period = Number(jQuery('select[name="period_expense_edit"]').val())
         let budgetedAmount = Number(jQuery('input[name="budgeted_amount_expense_edit"]').val())
         let realizedAmount = Number(jQuery('input[name="realized_amount_expense_edit"]').val())
+        let creditCard = Number(jQuery('select[name="credit_card_edit"]').val())
+        let isWithCreditCard = jQuery('#was_with_credit_card_edit').is(':checked')
 
         if (!description || !budgetedAmount) {
             Swal.fire({
@@ -593,6 +595,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 confirmButtonText: 'Tentar novamente'
             })
             return false
+        }
+
+        if (isWithCreditCard) {
+            if (!creditCard) {
+                Swal.fire({
+                    title: 'Cartão de crédito',
+                    text: "Por favor, selecione o cartão de crédito para vincular na despesa",
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Tentar novamente'
+                })
+                return false
+            }
         }
 
         jQuery.ajax({
