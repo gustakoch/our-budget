@@ -188,6 +188,9 @@ class DashboardController extends Controller
             $allCreditCardExpenses[] = $expenseObject;
         }
 
+        // echo "<pre>";
+        // print_r($allCreditCardExpenses); exit;
+
         return view('dashboard', [
             'month' => $month,
             'months' => $months,
