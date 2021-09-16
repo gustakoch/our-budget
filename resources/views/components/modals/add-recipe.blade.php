@@ -35,7 +35,7 @@
                     <div class="form-check my-3">
                         <input class="form-check-input" type="checkbox" name="repeat_next_months" value="1" id="loopingCheckboxAdd">
                         <label class="form-check-label" for="loopingCheckboxAdd">
-                            Repetir esta receita nos próximos meses
+                            Repetir esta receita até o final do ano
                         </label>
                     </div>
                 </form>

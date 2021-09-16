@@ -33,12 +33,6 @@
                         <label for="budgeted_amount_edit" class="form-label">Valor</label>
                         <input class="form-control" type="number" name="budgeted_amount_edit" id="budgeted_amount_edit" placeholder="Valor orçado (R$)" />
                     </div>
-                    <div class="form-check mt-3">
-                        <input class="form-check-input" type="checkbox" name="repeat_next_months" value="1" id="loopingCheckboxEdit">
-                        <label class="form-check-label label-checkbox-repeat" for="loopingCheckboxEdit">
-                            Repetir esta receita nos próximos meses
-                        </label>
-                      </div>
                 </form>
             </div>
             <div class="modal-footer border-top-0" id="modalFooterEditRecipe">

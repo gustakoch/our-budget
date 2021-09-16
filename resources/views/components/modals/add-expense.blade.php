@@ -58,7 +58,7 @@
                     <div class="form-check my-3">
                         <input class="form-check-input" type="checkbox" name="repeat_next_months_expense" value="1" id="repeat_next_months_expense">
                         <label class="form-check-label" for="repeat_next_months_expense">
-                            Repetir esta despesa nos próximos meses
+                            Repetir esta despesa até final do ano
                         </label>
                     </div>
                     <div class="form-check my-3">
