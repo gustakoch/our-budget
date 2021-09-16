@@ -29,7 +29,7 @@ class ExpenseModel extends Model
         return $accumulatedTotals;
     }
 
-    public function getExpensesByCreditCard($creditCard, $month) {
+    public function getExpensesByCreditCardMonthYear($creditCard, $month, $year) {
         $expenses = DB::select('
             SELECT
                 e.*
@@ -44,8 +44,9 @@ class ExpenseModel extends Model
             AND e.user_id = ?
             AND credit_card = ?
             AND e.month = ?
+            AND e.year = ?
             ORDER BY e.budgeted_amount - e.realized_amount = 0 asc
-        ', [session('user')['id'], $creditCard, $month]);
+        ', [session('user')['id'], $creditCard, $month, $year]);
 
         return $expenses;
     }
@@ -64,7 +65,8 @@ class ExpenseModel extends Model
                 ExpenseModel::where('id', $item->expense)
                     ->update([
                         'cancelled' => 1,
-                        'reason_cancelled' => $reasonCancelled
+                        'reason_cancelled' => $reasonCancelled,
+                        'realized_amount' => 0
                     ]);
                 $totalCancelled++;
             }
@@ -74,5 +76,20 @@ class ExpenseModel extends Model
             'ok' => true,
             'msg' => "$totalCancelled parcelas canceladas com sucesso"
         ];
+    }
+
+    public function getExpensesForPay($invoice, $month, $year)
+    {
+        $expenses = DB::select("
+            SELECT *
+            FROM expenses
+            WHERE invoice = ?
+            AND user_id = ?
+            AND month = ?
+            AND year = ?
+            AND cancelled = 0
+        ", [$invoice, session('user')['id'], $month, $year]);
+
+        return $expenses;
     }
 }

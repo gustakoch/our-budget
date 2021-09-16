@@ -109,14 +109,29 @@ small.erro {
 
 .button-credit-card {
     display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.25rem;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .button-credit-card::after {
     background: none !important;
     height: 0 !important;
+}
+
+.accordion-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center;
+    background-color: #dac2c2 !important
+}
+
+.pay-button {
+    margin-right: 1rem;
+    width: auto;
 }
 
 .accordion + .accordion {

@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RecipesController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InvoicesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -46,8 +47,10 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/expenses/update', [ExpensesController::class, 'update']);
     Route::get('/expenses/destroy/{id}', [ExpensesController::class, 'destroy']);
     Route::post('/expenses/revert/{id}', [ExpensesController::class, 'revert']);
+    Route::post('/expenses/verify/payment', [ExpensesController::class, 'verifyMetodPayment']);
 
     Route::post('/expenses/cancel/one', [ExpensesController::class, 'cancelOneInstallment']);
     Route::post('/expenses/cancel/all', [ExpensesController::class, 'cancelAllInstallments']);
 
+    Route::post('/invoices/pay', [InvoicesController::class, 'pay']);
 });

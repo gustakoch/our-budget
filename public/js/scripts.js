@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const formExpenseCancellation = document.querySelector('#form-expense-cancellation')
     const formExpenseCancellations = document.querySelector('#form-expense-cancellation-all')
 
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
     function getAppUrl() {
         let appUrl
 
@@ -27,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     jQuery(document).on('click', '.save-recipe', function(e) {
+        sessionStorage.removeItem('reloadingRecipe');
         e.preventDefault()
 
         let description = jQuery('input[name="description"]').val()
@@ -46,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (amount == '0') {
             Swal.fire({
-                title: 'Oops',
+                title: 'Oops...',
                 text: "O valor informado deve ser maior do que zero!",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
@@ -70,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             success: function(response) {
                 if (response.ok) {
                     jQuery('#addRecipeModal').modal('hide')
+
                     location.reload()
                 }
             }
@@ -86,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!description || !category || !amount) {
             Swal.fire({
                 title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem ser preenchidos!",
+                text: "Os dados obrigatórios devem ser preenchidos.",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Tá, entendi'
@@ -96,8 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (amount == '0') {
             Swal.fire({
-                title: 'Oops',
-                text: "O valor informado deve ser maior do que zero!",
+                title: 'Oops...',
+                text: "O valor informado deve ser maior do que zero.",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Tentar novamente'
@@ -138,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!description || !category || !amount) {
             Swal.fire({
                 title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem ser preenchidos!",
+                text: "Os dados obrigatórios devem ser preenchidos.",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Tá, entendi'
@@ -148,13 +155,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (amount == '0') {
             Swal.fire({
-                title: 'Oops',
-                text: "O valor informado deve ser maior do que zero!",
+                title: 'Oops...',
+                text: "O valor informado deve ser maior do que zero.",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Tentar novamente'
             })
             return false
+        }
+
+        let isWithCreditCard = jQuery('#was_with_credit_card').is(':checked')
+
+        if (isWithCreditCard) {
+            let creditCard = Number(jQuery('select[name="credit_card"]').val())
+
+            if (!creditCard) {
+                Swal.fire({
+                    title: 'Cartão de crédito',
+                    text: "Por favor, selecione o cartão de crédito para vincular na despesa.",
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Tá, entendi'
+                })
+                return false
+            }
         }
 
         jQuery.ajax({
@@ -244,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!description || !invoiceDay) {
             Swal.fire({
                 title: 'Presta atenção aí',
-                text: "Por favor, informe a descrição e o dia de vencimento da fatura!",
+                text: "Por favor, precisamos de uma descrição e do dia do vencimento da fatura.",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Tá, entendi'
@@ -395,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!creditCard) {
                 Swal.fire({
                     title: 'Cartão de crédito',
-                    text: "Por favor, selecione o cartão de crédito para vincular na despesa!",
+                    text: "Por favor, selecione o cartão de crédito para vincular na despesa.",
                     icon: 'error',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Tá, entendi'
@@ -525,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!description || !invoiceDay) {
             Swal.fire({
                 title: 'Presta atenção aí',
-                text: "Por favor, informe a descrição e o dia de vencimento da fatura!",
+                text: "Por favor, precisamos de uma descrição e do dia do vencimento da fatura.",
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Continuar atualização'
@@ -601,7 +625,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!creditCard) {
                 Swal.fire({
                     title: 'Cartão de crédito',
-                    text: "Por favor, selecione o cartão de crédito para vincular na despesa",
+                    text: "Por favor, selecione o cartão de crédito para vincular na despesa.",
                     icon: 'error',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Tentar novamente'
@@ -611,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         jQuery.ajax({
-            url: 'expenses/update',
+            url: 'expenses/verify/payment',
             type: 'post',
             dataType: 'json',
             timeout: 20000,
@@ -623,11 +647,87 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(xhr.responseText)
             },
             success: function(response) {
-                jQuery('#loadingSpinner').show()
-
                 if (response.ok) {
-                    jQuery('#editExpenseModal').modal('hide')
-                    location.reload()
+                    jQuery.ajax({
+                        url: 'expenses/update',
+                        type: 'post',
+                        dataType: 'json',
+                        timeout: 20000,
+                        data: jQuery('#form-edit-expense').serialize(),
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr.responseText)
+                        },
+                        success: function(response) {
+                            if (response.ok) {
+                                jQuery('#loadingSpinner').show()
+                                jQuery('#editExpenseModal').modal('hide')
+                                location.reload()
+                            } else {
+                                Swal.fire({
+                                    title: 'Cartão de crédito',
+                                    text: response.message,
+                                    icon: 'error',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Tá, entendi'
+                                })
+                            }
+                        }
+                    })
+                } else {
+                    let textMessage
+
+                    if (response.invoice) {
+                        textMessage = 'Atenção! TODAS as parcelas desta despesa serão removidas da fatura do cartão.'
+                    } else {
+                        textMessage = 'Atenção! TODAS as parcelas desta despesa serão adicionadas na fatura do cartão.'
+                    }
+
+                    Swal.fire({
+                        title: 'Despesa com parcelamento, continuar?',
+                        text: textMessage,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sim, pode continuar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            jQuery.ajax({
+                                url: 'expenses/update',
+                                type: 'post',
+                                dataType: 'json',
+                                timeout: 20000,
+                                data: jQuery('#form-edit-expense').serialize(),
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                                },
+                                error: function(xhr, status, error) {
+                                    console.log(xhr.responseText)
+                                },
+                                success: function(response) {
+                                    if (response.ok) {
+                                        jQuery('#loadingSpinner').show()
+                                        jQuery('#editExpenseModal').modal('hide')
+                                        location.reload()
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Cartão de crédito',
+                                            text: response.message,
+                                            icon: 'error',
+                                            confirmButtonColor: '#3085d6',
+                                            confirmButtonText: 'Tá, entendi'
+                                        })
+
+                                        return
+                                    }
+                                }
+                            })
+                        }
+                    })
                 }
             }
         })
@@ -1065,6 +1165,51 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '.pay-invoice', function() {
+        let invoiceId = jQuery(this).attr('data-js-invoice-id')
+        let cardName = jQuery(this).attr('data-js-card-name')
+
+        Swal.fire({
+            title: 'Pagamento da fatura',
+            text: `TODAS as despesas cadastradas no cartão de crédito ${cardName} serão pagas, deseja prosseguir?`,
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, pode pagar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: 'invoices/pay',
+                    type: 'post',
+                    dataType: 'json',
+                    data: { invoiceId },
+                    timeout: 20000,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('error', error)
+                    },
+                    success: function(response) {
+                        if (response.ok) {
+                            location.reload()
+
+                            Swal.fire({
+                                title: 'Fatura paga',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Continuar'
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    })
+
     jQuery(document).on('click', '.delete-category', function() {
         let id = jQuery(this).attr('id')
 
@@ -1156,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         Swal.fire({
             title: 'Deseja realmente reverter este cancelamento?',
-            text: "Esta ação irá reverter o cancelamento anteriormente realizado.",
+            text: "Esta ação irá reverter o cancelamento desta despesa/parcela.",
             icon: 'info',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',

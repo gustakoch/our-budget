@@ -29,13 +29,16 @@ class CreditCardController extends Controller
     public function store()
     {
         $data = request()->all();
-        $cardStored = CreditCardModel::where('number', $data['card_number'])->first();
 
-        if ($cardStored) {
-            return response()->json([
-                'ok' => false,
-                'message' => 'Cartão já registrado! Por favor, informe outro'
-            ]);
+        if ($data['card_number']) {
+            $cardStored = CreditCardModel::where('number', $data['card_number'])->first();
+
+            if ($cardStored) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Cartão já registrado! Por favor, informe outro.'
+                ]);
+            }
         }
 
         CreditCardModel::create([

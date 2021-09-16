@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Configuration;
+use App\Models\CreditCardInvoiceModel;
 use App\Models\CreditCardModel;
 use App\Models\ExpenseModel;
 use App\Models\User;
@@ -15,16 +16,19 @@ class DashboardController extends Controller
     private $user;
     private $creditCardModel;
     private $expenseModel;
+    private $creditCardInvoiceModel;
 
     public function __construct(
         User $user,
         CreditCardModel $creditCardModel,
-        ExpenseModel $expenseModel
+        ExpenseModel $expenseModel,
+        CreditCardInvoiceModel $creditCardInvoiceModel
         )
     {
         $this->user = $user;
         $this->creditCardModel = $creditCardModel;
         $this->expenseModel = $expenseModel;
+        $this->creditCardInvoiceModel = $creditCardInvoiceModel;
     }
 
     public function index()
@@ -154,10 +158,27 @@ class DashboardController extends Controller
         $allCreditCardExpenses = [];
 
         foreach ($cards as $card) {
-            $cardExpenses = $this->expenseModel->getExpensesByCreditCard($card->id, $month);
+            $cardExpenses = $this->expenseModel->getExpensesByCreditCardMonthYear(
+                $card->id,
+                $_SESSION['month'],
+                $_SESSION['year']
+            );
 
             if (!$cardExpenses) {
                 continue;
+            }
+
+            $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear(
+                $card->id,
+                $_SESSION['month'],
+                $_SESSION['year']
+            );
+
+            if (!$invoice) {
+                $invoice = new stdClass();
+                $invoice->id = null;
+                $invoice->payment = null;
+                $invoice->pay_day = null;
             }
 
             $expenseObject = new stdClass();
@@ -169,6 +190,9 @@ class DashboardController extends Controller
                 . str_pad($cardExpenses[0]->month, 2, "0", STR_PAD_LEFT)
                 . '/'
                 . $cardExpenses[0]->year;
+            $expenseObject->invoice_id = $invoice->id;
+            $expenseObject->invoice_payment = $invoice->payment;
+            $expenseObject->pay_day = $invoice->pay_day;
             $expenseObject->total_budgeted_amount = 0;
             $expenseObject->total_realized_amount = 0;
             $expenseObject->total_pending_amount = 0;
