@@ -10,4 +10,8 @@ class Utils {
 
         return mb_strtoupper($firstChar, $encoding) . $then;
     }
+
+    public static function randomColor($start = 0x000000, $end = 0xFFFFFF) {
+        return sprintf('#%06x', mt_rand($start, $end));
+    }
 }

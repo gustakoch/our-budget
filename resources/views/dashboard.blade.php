@@ -23,36 +23,7 @@
     </div>
 </nav>
 
-<section id="resume" class="mt-5">
-    <div class="container-custom">
-        <div class="section-title d-flex align-items-end pb-2">
-            <img class="me-2" src="{{ asset('/images/icons/resume-icon.png') }}" alt="Ícone de resumo">
-            <h5 class="text-weight">Visão geral do mês</h5>
-        </div>
-        <div class="accordion accordion-flush border shadow-sm mt-2" id="accordionResume">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="flush-headingOne">
-                    <button
-                        class="accordion-button collapsed shadow-none"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapse-resume"
-                        aria-expanded="false"
-                        aria-controls="collapse-resume"
-                        style="background-color: #e4dd83 !important"
-                    >
-                        <strong>Resumo</strong>
-                    </button>
-                </h2>
-                <div id="collapse-resume" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionResume">
-                    <div class="accordion-body">
-                        <h6>Em breve, novidades por aqui, aguarde...</h6>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+@include('components.resume', [$resumeData['totals']])
 
 <section id="recipes" class="mt-5">
     <div class="container-custom">

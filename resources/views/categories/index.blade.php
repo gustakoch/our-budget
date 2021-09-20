@@ -22,6 +22,7 @@
             <th>#</th>
             <th>Descrição</th>
             <th>Tipo</th>
+            <th>Cor definida</th>
             <th>Data de criação</th>
             <th>Ações</th>
         </tr>
@@ -32,6 +33,14 @@
                 <td>{{ $category->id }}</td>
                 <td>{{ $category->description }}</td>
                 <td>{{ $category->type }}</td>
+                <td
+                    style="
+                        background-color: {{ $category->color ? $category->color : 'transparent' }};
+                        color: {{ $category->color_brightness >= 128 || $category->color_brightness == 0 ? '#333' : '#fff' }};
+                        text-align: center;"
+                >
+                    {{ $category->color ? $category->color : 'Sem cor definida' }}
+                </td>
                 <td>{{ $category->created_at }}</td>
                 <td>
                     <div class="input-group">

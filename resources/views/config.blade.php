@@ -8,7 +8,9 @@
 </nav>
 
 
-<div class="card">
+Em breve, novidades por aqui...
+
+{{-- <div class="card">
     <div class="card-body">
         <form id="form-first-access" method="POST">
             @csrf
@@ -66,6 +68,6 @@
             </div>
         </form>
     </div>
-</div>
+</div> --}}
 
 @endsection

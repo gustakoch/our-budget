@@ -92,4 +92,44 @@ class ExpenseModel extends Model
 
         return $expenses;
     }
+
+    public function expensesTotalSum($month, $year)
+    {
+        $expensesSum = DB::selectOne('
+            SELECT SUM(budgeted_amount) expenses_sum
+            FROM expenses
+            WHERE user_id = ?
+            AND cancelled = 0
+            AND month = ?
+            AND year = ?
+        ', [session('user')['id'], $month, $year]);
+
+        return $expensesSum->expenses_sum;
+    }
+
+    public function totalAmountExpensesByCategories($month, $year)
+    {
+        $totalGeneral = $this->expensesTotalSum($_SESSION['month'], $_SESSION['year']);
+        $expenses = DB::select('
+            SELECT
+                c.description category
+                , sum(e.budgeted_amount) total
+                , c.color
+            FROM expenses e
+                , categories c
+            WHERE e.category = c.id
+            AND user_id = ?
+            AND cancelled = 0
+            AND "month" = ?
+            AND "year" = ?
+            GROUP BY c.description, c.color
+            ORDER BY total DESC
+        ', [session('user')['id'], $month, $year]);
+
+        foreach ($expenses as $expense) {
+            $expense->percentage = number_format((($expense->total / $totalGeneral) * 100), 2);
+        }
+
+        return $expenses;
+    }
 }

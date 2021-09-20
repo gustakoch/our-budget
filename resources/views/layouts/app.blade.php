@@ -9,8 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.0/datatables.min.css"/>
 
-    <link rel="stylesheet" href="{{ asset('css/global.css') }}?v=<?= filemtime('css/global.css'); ?>">
     <link rel="stylesheet" href="{{ asset('css/template.css') }}?v=<?= filemtime('css/template.css'); ?>">
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}?v=<?= filemtime('css/global.css'); ?>">
     <link rel="stylesheet" href="{{ asset('css/fab.css') }}?v=<?= filemtime('css/fab.css'); ?>">
     <title>@yield('title') | Our Budget</title>
 </head>
@@ -38,6 +38,9 @@
 
     <script src="{{ asset('js/scripts.js') }}?v=<?= filemtime('js/scripts.js'); ?>"></script>
     <script src="{{ asset('js/jquery.mask.js') }}?v=<?= filemtime('js/jquery.mask.js'); ?>"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/chart-config.js') }}?v=<?= filemtime('js/chart-config.js'); ?>"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             $('#sidebarCollapse').on('click', function () {

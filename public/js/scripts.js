@@ -226,8 +226,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let description = jQuery('input[name="description_category"]').val()
         let belongsTo = Number(jQuery('select[name="belongs_to"]').val())
+        let color = jQuery('input[name="color"]').val()
 
-        if (!description || !belongsTo) {
+        if (!description || !belongsTo || !color) {
             Swal.fire({
                 title: 'Presta atenção aí',
                 text: "Os dados obrigatórios devem ser preenchidos!",
@@ -813,6 +814,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('input[name="id_category"]').val(response.id)
 
                 jQuery('input[name="description_category_edit"]').val(response.description)
+                jQuery('input[name="color"]').val(response.color)
                 Number(jQuery('select[name="belongs_to_edit"]').val(response.belongs_to))
             }
         })

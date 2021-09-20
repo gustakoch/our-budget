@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\CreditCardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RecipesController;
@@ -53,4 +54,6 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/expenses/cancel/all', [ExpensesController::class, 'cancelAllInstallments']);
 
     Route::post('/invoices/pay', [InvoicesController::class, 'pay']);
+
+    Route::get('/charts/index', [ChartController::class, 'index']);
 });

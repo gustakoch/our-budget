@@ -6,6 +6,7 @@ use App\Models\Configuration;
 use App\Models\CreditCardInvoiceModel;
 use App\Models\CreditCardModel;
 use App\Models\ExpenseModel;
+use App\Models\RecipeModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
@@ -15,18 +16,21 @@ class DashboardController extends Controller
 {
     private $user;
     private $creditCardModel;
+    private $recipeModel;
     private $expenseModel;
     private $creditCardInvoiceModel;
 
     public function __construct(
         User $user,
         CreditCardModel $creditCardModel,
+        RecipeModel $recipeModel,
         ExpenseModel $expenseModel,
         CreditCardInvoiceModel $creditCardInvoiceModel
         )
     {
         $this->user = $user;
         $this->creditCardModel = $creditCardModel;
+        $this->recipeModel = $recipeModel;
         $this->expenseModel = $expenseModel;
         $this->creditCardInvoiceModel = $creditCardInvoiceModel;
     }
@@ -80,10 +84,10 @@ class DashboardController extends Controller
             ->get();
 
         $userRecipes = DB::table('recipes')
-                    ->join('categories', 'recipes.category', 'categories.id')
-                    ->where('recipes.user_id', '=', session('user')['id'])
-                    ->select('recipes.*', 'categories.description as category_description')
-                    ->get();
+            ->join('categories', 'recipes.category', 'categories.id')
+            ->where('recipes.user_id', '=', session('user')['id'])
+            ->select('recipes.*', 'categories.description as category_description')
+            ->get();
 
         $currentRecipes = [];
         $amount = 0;
@@ -212,8 +216,13 @@ class DashboardController extends Controller
             $allCreditCardExpenses[] = $expenseObject;
         }
 
-        // echo "<pre>";
-        // print_r($allCreditCardExpenses); exit;
+        // Data for the resume section...
+        $resumeTotal = [];
+        $resumeTotal['recipes'] = $this->recipeModel->recipesTotalSum($_SESSION['month'], $_SESSION['year']);
+        $resumeTotal['expenses'] = $this->expenseModel->expensesTotalSum($_SESSION['month'], $_SESSION['year']);
+        $resumeTotal['diff'] = floatval($resumeTotal['recipes']) - floatval($resumeTotal['expenses']);
+
+        $expensesByCategories = $this->expenseModel->totalAmountExpensesByCategories($_SESSION['month'], $_SESSION['year']);
 
         return view('dashboard', [
             'month' => $month,
@@ -238,7 +247,11 @@ class DashboardController extends Controller
             'pending_amount_expenses2' => $pendingExpensesPeriod2,
             'type_expenses' => isset($typeExpenses->gradle_format) ? $typeExpenses->gradle_format : '30',
             'cards' => $cards,
-            'creditCardExpenses' => $allCreditCardExpenses
+            'creditCardExpenses' => $allCreditCardExpenses,
+            'resumeData' => [
+                'totals' => $resumeTotal,
+                'expensesCategories' => $expensesByCategories
+            ]
         ]);
     }
 

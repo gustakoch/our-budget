@@ -24,12 +24,26 @@ class CategoryModel extends Model
                     WHEN belongs_to = 1 THEN 'Receita'
                     WHEN belongs_to = 2 THEN 'Despesa'
                 END AS type
+                , color
             FROM categories
             WHERE active = 1
             ORDER BY id
         ");
 
+        foreach ($categories as $category) {
+            $category->color_brightness = $this->getColorBrightness($category->color);
+        }
+
         return $categories;
+    }
+
+    private function getColorBrightness($color)
+    {
+        $red = hexdec(substr($color, 1, 2));
+        $green = hexdec(substr($color, 3, 2));
+        $blue = hexdec(substr($color, 5, 2));
+
+        return (($red * 299) + ($green * 587) + ($blue * 114)) / 1000;
     }
 
     public function isCategoryActive($idCategory)

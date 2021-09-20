@@ -30,7 +30,8 @@ class CategorieController extends Controller
 
         CategoryModel::create([
             'description' => $data['description_category'],
-            'belongs_to' => $data['belongs_to']
+            'belongs_to' => $data['belongs_to'],
+            'color' => $data['color']
         ]);
 
         return response()->json([
@@ -53,7 +54,8 @@ class CategorieController extends Controller
         CategoryModel::where('id', $data['id_category'])
             ->update([
                 'description' => $data['description_category_edit'],
-                'belongs_to' => $data['belongs_to_edit']
+                'belongs_to' => $data['belongs_to_edit'],
+                'color' => $data['color']
             ]);
 
         return response()->json([
