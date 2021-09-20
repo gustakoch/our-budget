@@ -107,6 +107,15 @@ class ExpenseModel extends Model
         return $expensesSum->expenses_sum;
     }
 
+    private function getColorBrightness($color)
+    {
+        $red = hexdec(substr($color, 1, 2));
+        $green = hexdec(substr($color, 3, 2));
+        $blue = hexdec(substr($color, 5, 2));
+
+        return (($red * 299) + ($green * 587) + ($blue * 114)) / 1000;
+    }
+
     public function totalAmountExpensesByCategories($month, $year)
     {
         $totalGeneral = $this->expensesTotalSum($_SESSION['month'], $_SESSION['year']);
@@ -128,6 +137,7 @@ class ExpenseModel extends Model
 
         foreach ($expenses as $expense) {
             $expense->percentage = number_format((($expense->total / $totalGeneral) * 100), 2);
+            $expense->color_brightness = $this->getColorBrightness($expense->color);
         }
 
         return $expenses;

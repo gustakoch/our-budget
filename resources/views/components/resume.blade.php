@@ -40,25 +40,33 @@
                         </div>
                         <div class="expenses-going-to">
                             <h5>Para onde meus gastos estão indo?</h5>
-                            <div class="table-graph d-flex">
-                                <table class="table-resume">
-                                    @foreach ($resumeData['expensesCategories'] as $expenseCategory)
-                                        <tr class="table-tr">
-                                            <td class="info-category-name">{{ $expenseCategory->category }}</td>
-                                            <td
-                                                class="info-percentage"
-                                                style="background-color: {{ $expenseCategory->color }} !important;"
-                                            >
-                                                {{ number_format($expenseCategory->percentage, 2, ',', '.') }}%
-                                            </td>
-                                            <td class="info-value">R$ {{ number_format($expenseCategory->total, 2, ',', '.') }}</td>
-                                        </tr>
-                                    @endforeach
-                                </table>
-                                <div class="graph">
-                                    <canvas id="myChart"></canvas>
+                            @if (count($resumeData['expensesCategories']) > 0)
+                                <div class="table-graph d-flex">
+                                    <table class="table-resume">
+                                        @foreach ($resumeData['expensesCategories'] as $expenseCategory)
+                                            <tr class="table-tr">
+                                                <td class="info-category-name">{{ $expenseCategory->category }}</td>
+                                                <td
+                                                    class="info-percentage"
+                                                    style="
+                                                        background-color: {{ $expenseCategory->color }} !important;
+                                                        color: {{ $expenseCategory->color_brightness >= 128 || $expenseCategory->color_brightness == 0 ? '#333' : '#fff' }}"
+                                                >
+                                                    {{ number_format($expenseCategory->percentage, 2, ',', '.') }}%
+                                                </td>
+                                                <td class="info-value">R$ {{ number_format($expenseCategory->total, 2, ',', '.') }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                    <div class="graph">
+                                        <canvas id="myChart"></canvas>
+                                    </div>
                                 </div>
-                            </div>
+                            @else
+                                <div class="no-expenses-yet">
+                                    Para um melhor acompanhamento dos seus gastos, primeiramente cadastre uma despesa.
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

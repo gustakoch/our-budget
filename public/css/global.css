@@ -244,3 +244,10 @@ small.erro {
     text-align: center;
     padding: 0 0.5rem;
 }
+
+.no-expenses-yet {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

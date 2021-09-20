@@ -27,7 +27,7 @@ jQuery(document).ready(function() {
             })
 
             const data = {
-                labels: categories,
+                // labels: categories,
                 datasets: [{
                     label: 'Where is my money going?',
                     backgroundColor: colors,
