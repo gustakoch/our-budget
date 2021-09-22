@@ -521,6 +521,8 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '.update-card', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let description = jQuery('input[name="card_description_edit"]').val()
         let invoiceDay = jQuery('input[name="invoice_day"]').val()
 
