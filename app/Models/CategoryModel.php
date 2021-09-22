@@ -27,7 +27,7 @@ class CategoryModel extends Model
                 , color
             FROM categories
             WHERE active = 1
-            ORDER BY id
+            ORDER BY belongs_to, description
         ");
 
         foreach ($categories as $category) {

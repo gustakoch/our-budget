@@ -8,16 +8,16 @@ use Illuminate\Support\Facades\DB;
 
 class CategorieController extends Controller
 {
-    private $category;
+    private $categoryModel;
 
-    public function __construct(CategoryModel $category)
+    public function __construct(CategoryModel $categoryModel)
     {
-        $this->category = $category;
+        $this->categoryModel = $categoryModel;
     }
 
     public function index()
     {
-        $categories = $this->category->getAll();
+        $categories = $this->categoryModel->getAll();
 
         return view('categories.index', [
             'categories' => $categories
