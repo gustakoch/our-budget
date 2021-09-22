@@ -378,6 +378,8 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '.save-expense', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let description = jQuery('input[name="description_expense"]').val()
         let category = Number(jQuery('select[name="category_expense"]').val())
         let amount = jQuery('input[name="budgeted_amount_expense"]').val()
