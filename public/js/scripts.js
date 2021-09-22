@@ -11,6 +11,23 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
 
+    window.onload = function() {
+        let reloadingRecipe = sessionStorage.getItem('reloadingRecipe');
+        let reloadingExpense = sessionStorage.getItem('reloadingExpense');
+
+        if (reloadingRecipe) {
+            sessionStorage.removeItem('reloading');
+            return jQuery('#addRecipeModal').modal('show')
+        }
+
+        if (reloadingExpense) {
+            sessionStorage.removeItem('reloading');
+            return jQuery('#addExpenseModal').modal('show')
+        }
+
+        sessionStorage.removeItem('realizedAmount')
+    }
+
     function getAppUrl() {
         let appUrl
 
@@ -31,33 +48,46 @@ document.addEventListener('DOMContentLoaded', function() {
         return appUrl
     }
 
+    function amountParseFloat(amount) {
+        return parseFloat(amount).toLocaleString('pt-br', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2
+        })
+    }
+
+    function showLoadingOnButton(button, newText) {
+        jQuery(button).html(`
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            ${newText}
+        `)
+        jQuery(button).attr('disabled', true)
+    }
+
+    function stopLoadingOnButton(button, newText) {
+        jQuery(button).html(newText)
+        jQuery(button).attr('disabled', false)
+    }
+
+    function swalNotification(title, text, icon, confirmButtonText) {
+        return Swal.fire({title, text, icon, confirmButtonColor: '#3085d6', confirmButtonText})
+    }
+
     jQuery(document).on('click', '.save-recipe', function(e) {
         sessionStorage.removeItem('reloadingRecipe');
         e.preventDefault()
+
+        let button = jQuery(this)
 
         let description = jQuery('input[name="description"]').val()
         let category = Number(jQuery('select[name="category"]').val())
         let amount = jQuery('input[name="budgeted_amount"]').val()
 
         if (!description || !category || !amount) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem ser preenchidos!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem ser preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
         if (amount == '0') {
-            Swal.fire({
-                title: 'Oops...',
-                text: "O valor informado deve ser maior do que zero!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tentar novamente'
-            })
+            swalNotification('Oops...', 'O valor informado deve ser maior do que zero.', 'error', 'Tentar novamente')
             return false
         }
 
@@ -70,10 +100,16 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Salvar e fechar')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Salvar e fechar')
+
                 if (response.ok) {
                     jQuery('#addRecipeModal').modal('hide')
 
@@ -86,29 +122,19 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '.save-recipe-continue', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let description = jQuery('input[name="description"]').val()
         let category = Number(jQuery('select[name="category"]').val())
         let amount = jQuery('input[name="budgeted_amount"]').val()
 
         if (!description || !category || !amount) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem ser preenchidos.",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem ser preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
         if (amount == '0') {
-            Swal.fire({
-                title: 'Oops...',
-                text: "O valor informado deve ser maior do que zero.",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tentar novamente'
-            })
+            swalNotification('Oops...', 'O valor informado deve ser maior do que zero.', 'error', 'Tentar novamente')
             return false
         }
 
@@ -121,15 +147,20 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Salvar e continuar')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Salvar e continuar')
+
                 if (response.ok) {
                     jQuery('#addRecipeModal').modal('hide')
 
-                    sessionStorage.setItem('reloadingRecipe', 'true');
-                    document.location.reload();
+                    location.reload()
                 }
             }
         })
@@ -138,29 +169,19 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '.save-expense-continue', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let description = jQuery('input[name="description_expense"]').val()
         let category = Number(jQuery('select[name="category_expense"]').val())
         let amount = jQuery('input[name="budgeted_amount_expense"]').val()
 
         if (!description || !category || !amount) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem ser preenchidos.",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem ser preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
         if (amount == '0') {
-            Swal.fire({
-                title: 'Oops...',
-                text: "O valor informado deve ser maior do que zero.",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tentar novamente'
-            })
+            swalNotification('Oops...', 'O valor informado deve ser maior do que zero.', 'error', 'Tentar novamente')
             return false
         }
 
@@ -170,13 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let creditCard = Number(jQuery('select[name="credit_card"]').val())
 
             if (!creditCard) {
-                Swal.fire({
-                    title: 'Cartão de crédito',
-                    text: "Por favor, selecione o cartão de crédito para vincular na despesa.",
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Tá, entendi'
-                })
+                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular na despesa.', 'error', 'Tá, entendi')
                 return false
             }
         }
@@ -190,10 +205,16 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Salvar e continuar')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Salvar e continuar')
+
                 if (response.ok) {
                     jQuery('#addExpenseModal').modal('hide')
 
@@ -204,38 +225,17 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    window.onload = function() {
-        let reloadingRecipe = sessionStorage.getItem('reloadingRecipe');
-        let reloadingExpense = sessionStorage.getItem('reloadingExpense');
-
-        if (reloadingRecipe) {
-            sessionStorage.removeItem('reloading');
-            return jQuery('#addRecipeModal').modal('show')
-        }
-
-        if (reloadingExpense) {
-            sessionStorage.removeItem('reloading');
-            return jQuery('#addExpenseModal').modal('show')
-        }
-
-        sessionStorage.removeItem('realizedAmount')
-    }
-
     jQuery(document).on('click', '.save-category', function(e) {
         e.preventDefault()
+
+        let button = jQuery(this)
 
         let description = jQuery('input[name="description_category"]').val()
         let belongsTo = Number(jQuery('select[name="belongs_to"]').val())
         let color = jQuery('input[name="color"]').val()
 
         if (!description || !belongsTo || !color) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem ser preenchidos!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem ser preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
@@ -248,10 +248,16 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Salvar e fechar')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Salvar e fechar')
+
                 if (response.ok) {
                     jQuery('#addCategoryModal').modal('hide')
                     location.reload()
@@ -263,28 +269,18 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '.save-card', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let description = jQuery('input[name="card_description"]').val()
         let invoiceDay = jQuery('input[name="invoice_day"]').val()
 
         if (!description || !invoiceDay) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Por favor, precisamos de uma descrição e do dia do vencimento da fatura.",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'Por favor, precisamos de uma descrição e o dia do vencimento da fatura.', 'error', 'Tá, entendi')
             return false
         }
 
         if (invoiceDay <= 0 || invoiceDay > 31) {
-            Swal.fire({
-                title: 'Olha só...',
-                text: "Você precisa informar algum valor entre 1 e 31, blza?",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Olha só...', 'Você precisa informar algum valor entre 1 e 31, blza?', 'error', 'Tá, entendi')
             return false
         }
 
@@ -297,21 +293,21 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Salvar cartão')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Salvar cartão')
+
                 if (response.ok) {
                     jQuery('#addCardModal').modal('hide')
                     location.reload()
                 } else {
-                    Swal.fire({
-                        title: 'Oops...',
-                        text: response.message,
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Tá, entendi'
-                    })
+                    swalNotification('Oops...', response.message, 'error', 'Tá, entendi')
                     return false
                 }
             }
@@ -321,6 +317,8 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '#first-access', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let name = jQuery('input[name="name"]').val()
         let email = jQuery('input[name="email"]').val()
         let password = jQuery('input[name="password"]').val()
@@ -328,24 +326,12 @@ document.addEventListener('DOMContentLoaded', function() {
         let gradle_format = jQuery('input[name="gradle_format"]').is(':checked')
 
         if (!name || !email || !password || !password_confirmation || !gradle_format) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem ser preenchidos!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'Por favor, precisamos de uma descrição e o dia do vencimento da fatura.', 'error', 'Tá, entendi')
             return false
         }
 
         if (password != password_confirmation) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "As novas senhas não conferem! Por favor, verifique os dados e tente novamente",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'As novas senhas não conferem! Por favor, verifique os dados e tente novamente.', 'error', 'Tá, entendi')
             return false
         }
 
@@ -358,10 +344,16 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Confirmar dados')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Confirmar dados')
+
                 let appUrl = getAppUrl()
 
                 window.location.href = `${appUrl}/dashboard`
@@ -391,24 +383,12 @@ document.addEventListener('DOMContentLoaded', function() {
         let amount = jQuery('input[name="budgeted_amount_expense"]').val()
 
         if (!description || !category || !amount) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem ser preenchidos!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem ser preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
         if (amount == '0') {
-            Swal.fire({
-                title: 'Oops',
-                text: "O valor informado deve ser maior do que zero!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tentar novamente'
-            })
+            swalNotification('Oops...', 'O valor informado deve ser maior do que zero.', 'error', 'Tentar novamente')
             return false
         }
 
@@ -418,13 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let creditCard = Number(jQuery('select[name="credit_card"]').val())
 
             if (!creditCard) {
-                Swal.fire({
-                    title: 'Cartão de crédito',
-                    text: "Por favor, selecione o cartão de crédito para vincular na despesa.",
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Tá, entendi'
-                })
+                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular a despesa.', 'error', 'Tá, entendi')
                 return false
             }
         }
@@ -438,10 +412,16 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Salvar e fechar')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Salvar e fechar')
+
                 if (response.ok) {
                     jQuery('#addExpenseModal').modal('hide')
                     location.reload()
@@ -455,28 +435,18 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '.update-recipe', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let description = jQuery('input[name="description_edit"]').val()
         let amount = jQuery('input[name="budgeted_amount_edit"]').val()
 
         if (!description || !amount) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem estar preenchidos!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Continuar atualização'
-            })
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
         if (amount == '0' || amount == 0) {
-            Swal.fire({
-                title: 'Oops',
-                text: "O valor informado deve ser maior do que zero!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tentar novamente'
-            })
+            swalNotification('Oops...', 'O valor orçado deve ser maior do que zero.', 'error', 'Tentar novamente')
             return false
         }
 
@@ -489,10 +459,16 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.responseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Atualizar receita')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Atualizar receita')
+
                 if (response.ok) {
                     jQuery('#editRecipeModal').modal('hide')
                     location.reload()
@@ -504,17 +480,13 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '.update-category', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let description = jQuery('input[name="description_category_edit"]').val()
         let belongsTo = Number(jQuery('select[name="belongs_to_edit"]').val())
 
         if (!description || !belongsTo) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem estar preenchidos!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Continuar atualização'
-            })
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
@@ -527,10 +499,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.responseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Atualizar categoria')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Atualizar categoria')
                 jQuery('#loadingSpinner').show()
 
                 if (response.ok) {
@@ -548,13 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let invoiceDay = jQuery('input[name="invoice_day"]').val()
 
         if (!description || !invoiceDay) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Por favor, precisamos de uma descrição e do dia do vencimento da fatura.",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Continuar atualização'
-            })
+            swalNotification('Presta atenção aí', 'Por favor, precisamos de uma descrição e o dia do vencimento da fatura.', 'error', 'Tá, entendi')
             return false
         }
 
@@ -567,10 +538,16 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.responseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Atualizar cartão')
             },
             success: function(response) {
+                stopLoadingOnButton(button, 'Atualizar cartão')
+
                 if (response.ok) {
                     jQuery('#editCardModal').modal('hide')
                     location.reload()
@@ -582,6 +559,8 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '.update-expense', function(e) {
         e.preventDefault()
 
+        let button = jQuery(this)
+
         let description = jQuery('input[name="description_expense_edit"]').val()
         let period = Number(jQuery('select[name="period_expense_edit"]').val())
         let budgetedAmount = Number(jQuery('input[name="budgeted_amount_expense_edit"]').val())
@@ -590,47 +569,23 @@ document.addEventListener('DOMContentLoaded', function() {
         let isWithCreditCard = jQuery('#was_with_credit_card_edit').is(':checked')
 
         if (!description || !budgetedAmount) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "Os dados obrigatórios devem estar preenchidos!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Continuar atualização'
-            })
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
         if (budgetedAmount == '0' || budgetedAmount == 0) {
-            Swal.fire({
-                title: 'Oops...',
-                text: "Por favor, informe um valor maior do que zero!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tentar novamente'
-            })
+            swalNotification('Oops...', 'Por favor, informe um valor maior do que zero.', 'error', 'Tá, entendi')
             return false
         }
 
         if (realizedAmount > budgetedAmount) {
-            Swal.fire({
-                title: 'Oops...',
-                text: "Operação não permitida! O valor realizado não deve ser maior do que o orçado.",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tentar novamente'
-            })
+            swalNotification('Oops...', 'Operação proibida! O valor realizado não deve ser maior do que o orçado.', 'error', 'Tá, entendi')
             return false
         }
 
         if (isWithCreditCard) {
             if (!creditCard) {
-                Swal.fire({
-                    title: 'Cartão de crédito',
-                    text: "Por favor, selecione o cartão de crédito para vincular na despesa.",
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Tentar novamente'
-                })
+                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular na despesa.', 'error', 'Tá, entendi')
                 return false
             }
         }
@@ -645,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
             error: function(xhr, status, error) {
-                console.log(xhr.responseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
                 if (response.ok) {
@@ -658,22 +613,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                         },
+                        beforeSend: function() {
+                            showLoadingOnButton(button, 'Carregando...')
+                        },
                         error: function(xhr, status, error) {
-                            console.log(xhr.responseText)
+                            swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                            stopLoadingOnButton(button, 'Atualizar despesa')
                         },
                         success: function(response) {
+                            stopLoadingOnButton(button, 'Atualizar despesa')
+
                             if (response.ok) {
                                 jQuery('#loadingSpinner').show()
                                 jQuery('#editExpenseModal').modal('hide')
                                 location.reload()
                             } else {
-                                Swal.fire({
-                                    title: 'Cartão de crédito',
-                                    text: response.message,
-                                    icon: 'error',
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Tá, entendi'
-                                })
+                                swalNotification('Cartão de crédito', response.message, 'error', 'Tá, entendi')
                             }
                         }
                     })
@@ -706,24 +661,23 @@ document.addEventListener('DOMContentLoaded', function() {
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                                 },
+                                beforeSend: function() {
+                                    showLoadingOnButton(button, 'Carregando...')
+                                },
                                 error: function(xhr, status, error) {
-                                    console.log(xhr.responseText)
+                                    swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                                    stopLoadingOnButton(button, 'Atualizar despesa')
                                 },
                                 success: function(response) {
+                                    stopLoadingOnButton(button, 'Atualizar despesa')
+
                                     if (response.ok) {
                                         jQuery('#loadingSpinner').show()
                                         jQuery('#editExpenseModal').modal('hide')
                                         location.reload()
                                     } else {
-                                        Swal.fire({
-                                            title: 'Cartão de crédito',
-                                            text: response.message,
-                                            icon: 'error',
-                                            confirmButtonColor: '#3085d6',
-                                            confirmButtonText: 'Tá, entendi'
-                                        })
-
-                                        return
+                                        swalNotification('Cartão de crédito', response.message, 'error', 'Tá, entendi')
+                                        return false
                                     }
                                 }
                             })
@@ -753,7 +707,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('#form-edit-recipe').hide()
             },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
                 jQuery('#modalHeaderEditRecipe').show()
@@ -808,7 +762,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
                 jQuery('input[name="id_category"]').val(response.id)
@@ -839,7 +793,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('#form-edit-card').hide()
             },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
                 jQuery('#modalHeaderEditCard').show()
@@ -880,7 +834,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('#loadingSpinnerInfo').show()
             },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
                 jQuery('input[name="id_expense"]').val(response.id)
@@ -905,7 +859,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('#loadingSpinnerInfo').show()
             },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
                 jQuery('input[name="id_expense"]').val(response.id)
@@ -930,7 +884,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('#loadingSpinnerInfo').show()
             },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
                 console.log(response)
@@ -977,7 +931,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('#form-edit-expense').hide()
             },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
                 console.log(response)
@@ -1041,15 +995,10 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault()
 
         let reasonCancelled = jQuery('textarea[name="reason_cancelled"]').val()
+        let button = jQuery(this)
 
         if (!reasonCancelled) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "É necessário informar o motivo do cancelamento!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'É necessário informar o motivo do cancelamento.', 'error', 'Tá, entendi')
             return false
         }
 
@@ -1062,10 +1011,17 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                jQuery('#loadingSpinnerInfo').show()
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                showLoadingOnButton(button, 'Cancelar parcela')
             },
             success: function(response) {
+                showLoadingOnButton(button, 'Cancelar parcela')
+
                 if (response.ok) {
                     jQuery('input[name="id_expense"]').val('')
 
@@ -1081,15 +1037,10 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault()
 
         let reasonCancelled = jQuery('textarea[name="reason_cancelled_all"]').val()
+        let button = jQuery(this)
 
         if (!reasonCancelled) {
-            Swal.fire({
-                title: 'Presta atenção aí',
-                text: "É necessário informar o motivo do cancelamento!",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Tá, entendi'
-            })
+            swalNotification('Presta atenção aí', 'É necessário informar o motivo do cancelamento.', 'error', 'Tá, entendi')
             return false
         }
 
@@ -1102,23 +1053,24 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
+            beforeSend: function() {
+                jQuery('#loadingSpinnerInfo').show()
+                showLoadingOnButton(button, 'Carregando...')
+            },
             error: function(xhr, status, error) {
-                console.log(xhr.reponseText)
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                showLoadingOnButton(button, 'Cancelar parcelas')
             },
             success: function(response) {
+                showLoadingOnButton(button, 'Cancelar parcelas')
+
                 if (response.ok) {
                     formExpenseCancellation.reset()
                     jQuery('input[name="id_expense"]').val('')
                     jQuery('#allReasonCancellation').modal('hide')
                     location.reload()
                 } else {
-                    Swal.fire({
-                        title: 'Oops...',
-                        text: response.message,
-                        icon: 'warning',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Tá bom, fechar'
-                    })
+                    swalNotification('Houve um erro', response.message, 'error', 'Tá, entendi')
                 }
             }
         })
@@ -1129,7 +1081,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         Swal.fire({
             title: 'Deseja realmente excluir?',
-            text: "Esta ação não poderá ser desfeita!",
+            text: "Esta ação não poderá ser desfeita",
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
@@ -1147,19 +1099,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
                     error: function(xhr, status, error) {
-                        console.log('error', error)
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
                     success: function(response) {
                         if (response.ok) {
                             location.reload()
-
-                            Swal.fire({
-                                title: 'Removido',
-                                text: "Sua receita foi removida com sucesso",
-                                icon: 'success',
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'Continuar'
-                            })
+                            swalNotification('Removido', 'Sua receita foi removida com sucesso.', 'success','Continuar')
                         }
                     }
                 })
@@ -1192,19 +1137,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
                     error: function(xhr, status, error) {
-                        console.log('error', error)
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
                     success: function(response) {
                         if (response.ok) {
                             location.reload()
-
-                            Swal.fire({
-                                title: 'Fatura paga',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'Continuar'
-                            })
+                            swalNotification('Fatura paga', response.message, 'success', 'Continuar')
                         }
                     }
                 })
@@ -1217,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         Swal.fire({
             title: 'Deseja realmente excluir?',
-            text: "Esta ação não poderá ser desfeita!",
+            text: "Esta ação não poderá ser desfeita",
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
@@ -1235,19 +1173,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
                     error: function(xhr, status, error) {
-                        console.log('error', error)
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
                     success: function(response) {
                         if (response.ok) {
                             location.reload()
-
-                            Swal.fire({
-                                title: 'Removido',
-                                text: "Sua categoria foi removida com sucesso",
-                                icon: 'success',
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'Continuar'
-                            })
+                            swalNotification('Removido', 'Categoria foi removida com sucesso', 'success', 'Continuar')
                         }
                     }
                 })
@@ -1260,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         Swal.fire({
             title: 'Deseja realmente excluir?',
-            text: "Esta ação não poderá ser desfeita!",
+            text: "Esta ação não poderá ser desfeita",
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
@@ -1278,19 +1209,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
                     error: function(xhr, status, error) {
-                        console.log('error', error)
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
                     success: function(response) {
                         if (response.ok) {
                             location.reload()
-
-                            Swal.fire({
-                                title: 'Removido',
-                                text: "Este cartão foi removido com sucesso",
-                                icon: 'success',
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'Continuar'
-                            })
+                            swalNotification('Removido', 'Cartão foi removido com sucesso', 'success', 'Continuar')
                         }
                     }
                 })
@@ -1303,7 +1227,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         Swal.fire({
             title: 'Deseja realmente reverter este cancelamento?',
-            text: "Esta ação irá reverter o cancelamento desta despesa/parcela.",
+            text: "Esta ação irá reverter o cancelamento desta despesa/parcela",
             icon: 'info',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
@@ -1321,19 +1245,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
                     error: function(xhr, status, error) {
-                        console.log('error', error)
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
                     success: function(response) {
                         if (response.ok) {
                             location.reload()
-
-                            Swal.fire({
-                                title: 'Revertido',
-                                text: "Sua parcela foi revertida com sucesso",
-                                icon: 'success',
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'Continuar'
-                            })
+                            swalNotification('Revertido', 'Parcela foi revertida com sucesso', 'success', 'Continuar')
                         }
                     }
                 })
@@ -1364,18 +1281,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
                     error: function(xhr, status, error) {
-                        console.log(status, error)
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
                     success: function(response) {
                         if (response.ok) {
-                            Swal.fire({
-                                title: 'Removido',
-                                text: "Sua despesa foi removida com sucesso",
-                                icon: 'success',
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'Continuar'
-                            })
-
+                            swalNotification('Removido', 'Despesa foi removida com sucesso', 'success', 'Continuar')
                             location.reload()
                         }
                     }
@@ -1390,12 +1300,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         window.location.href = `${appUrl}/dashboard?month=${month}`
     })
-
-    function amountParseFloat(amount) {
-        return parseFloat(amount).toLocaleString('pt-br', {
-            minimumFractionDigits: 2, maximumFractionDigits: 2
-        })
-    }
 
     jQuery(document).on('click', '.cancel-recipe', function(e) {
         e.preventDefault()

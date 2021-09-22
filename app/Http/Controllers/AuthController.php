@@ -9,10 +9,7 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $data = $request->validate([
-            'email' => ['required', 'max:100', 'string'],
-            'password' => ['required']
-        ]);
+        $data = $request->all();
 
         $user = User::where('email', $data['email'])->first();
 
@@ -24,8 +21,20 @@ class AuthController extends Controller
         $hashUserPassword = $user->password;
 
         if (!password_verify($data['password'], $hashUserPassword)) {
-            return redirect()->route('home')
-                ->with('erro', 'Usuário e/ou senha não conferem');
+            return response()->json([
+                'ok' => false,
+                'message' => 'Usuário e/ou senha inválidos! Verifique os dados informados e tente novamente.'
+            ]);
+        }
+
+        if (isset($data['remember'])) {
+            $expira = time() + (60 * 60 * 24 * 30); // 30 days
+
+            setcookie('password', $data['password'], $expira);
+            setcookie('email', $data['email'], $expira);
+        } else {
+            setcookie('password', '', time() -1);
+            setcookie('email', '', time() -1);
         }
 
         $request->session()->put('user', [
@@ -37,10 +46,16 @@ class AuthController extends Controller
         ]);
 
         if ($user->first_access == 1) {
-            return redirect()->route('initial');
+            return response()->json([
+                'ok' => true,
+                'dashboard' => false
+            ]);
         }
 
-        return redirect()->route('dashboard');
+        return response()->json([
+            'ok' => true,
+            'dashboard' => true
+        ]);
     }
 
     public function logout()

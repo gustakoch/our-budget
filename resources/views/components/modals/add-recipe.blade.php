@@ -50,10 +50,6 @@
                 <button type="button" class="btn btn-primary save-recipe">
                     Salvar e fechar
                 </button>
-                {{-- <button class="btn btn-primary" type="button" disabled>
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Loading...
-                </button> --}}
             </div>
         </div>
     </div>
