@@ -768,7 +768,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('input[name="id_category"]').val(response.id)
 
                 jQuery('input[name="description_category_edit"]').val(response.description)
-                jQuery('input[name="color"]').val(response.color)
+
+                if (response.belongs_to == '1') {
+                    jQuery('input[name="color"]').parent()[1].remove()
+                } else {
+                    jQuery('input[name="color"]').val(response.color)
+                }
+
                 Number(jQuery('select[name="belongs_to_edit"]').val(response.belongs_to))
             }
         })

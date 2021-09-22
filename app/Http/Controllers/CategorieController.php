@@ -50,6 +50,7 @@ class CategorieController extends Controller
     public function update()
     {
         $data = request()->all();
+        $data['color'] = isset($data['color']) ? $data['color'] : null;
 
         CategoryModel::where('id', $data['id_category'])
             ->update([

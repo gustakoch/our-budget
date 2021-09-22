@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label" for="color">Cor*</label><small> (A cor selecionada será apresentada no gráfico.)</small>
+                        <label class="form-label" id="label-color" for="color">Cor*</label><small> (A cor selecionada será apresentada no gráfico.)</small>
                         <input
                             class="form-control mb-3 w-25"
                             type="color"
