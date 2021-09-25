@@ -1304,11 +1304,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery('#referenceMonth').change(function(e) {
-        let month = $(this).val()
+    jQuery(document).on('change', 'input[name="month"], input[name="year"]', function(e) {
+        let month = jQuery('input[name="month"]:checked').val()
+        let year = jQuery('input[name="year"]:checked').val()
         let appUrl = getAppUrl();
 
-        window.location.href = `${appUrl}/dashboard?month=${month}`
+        window.location.href = `${appUrl}/dashboard?month=${month}&year=${year}`
     })
 
     jQuery(document).on('click', '.cancel-recipe', function(e) {

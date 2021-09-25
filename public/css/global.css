@@ -32,6 +32,13 @@ button.accordion-button {
     margin-bottom: 1rem;
 }
 
+.logout-li {
+    position: absolute;
+    bottom: 1rem;
+    display: block;
+    width: 100%;
+}
+
 #referenceYear {
     width: 100px !important;
 }
@@ -227,7 +234,7 @@ small.erro {
 .table-graph {
     height: 100%;
     width: 100%;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
 }
 
@@ -250,4 +257,47 @@ small.erro {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.years strong, .months strong {
+    text-transform: uppercase;
+    color: #b6b6b6;
+    display: block;
+}
+
+.months strong {
+    margin-top: 1rem;
+}
+
+.months-years-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.months-years-row  input[name="year"] + label, input[name="month"] + label {
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    border-radius: 2px;
+    cursor: pointer;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.months-years-row input[name="year"]:checked + label, input[name="month"]:checked + label {
+    background-color: #4b5da7 !important;
+    border: 1px solid #4b5da7;
+    color: #fff;
+}
+
+input[name="year"], input[name="month"] {
+    display: none;
+}
+
+.modal-loading-text {
+    display: block;
+    text-align: center;
+    font-size: 2rem;
+    color: #999;
+    margin-top: 1rem;
 }

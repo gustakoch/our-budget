@@ -5,23 +5,29 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
     <h3 class="mb-3">Dashboard</h3>
-    <div class="d-flex align-items-center w-100">
-        <strong class="me-2">Mês de referência: </strong>
-        <select class="form-select w-25" name="month" id="referenceMonth">
-            @foreach ($months as $i => $monthItem)
-                <option
-                    value="{{ $i +1 }}"
-                    @if ($i +1 == $month) selected @endif
-                    >
-                    {{ $monthItem }}
-                </option>
-            @endforeach
-        </select>
-        <select class="form-select" name="year" id="referenceYear" disabled>
-            <option value="2021">2021</option>
-        </select>
-    </div>
+    <span>"Uma plano não é nada, mas o planejamento é tudo." <small>(Dwight D. Eisenhower)</small></span>
 </nav>
+
+<div class="filters">
+    <div class="years">
+        <strong>Ano</strong>
+        <div class="months-years-row">
+            @foreach ($years as $yearItem)
+                <input type="radio" name="year" id="year-{{ $yearItem->year }}" value="{{ $yearItem->year }}" {{ $yearItem->year == $year ? 'checked' : '' }}>
+                <label for="year-{{ $yearItem->year }}">{{ $yearItem->year }}</label>
+            @endforeach
+        </div>
+    </div>
+    <div class="months">
+        <strong>Meses</strong>
+        <div class="months-years-row">
+            @foreach ($months as $i => $monthOfYear)
+                <input type="radio" name="month" id="month-{{ $i +1 }}" value="{{ $i +1 }}" {{ $i + 1 == $month ? 'checked' : '' }}>
+                <label for="month-{{ $i +1 }}">{{ $monthOfYear }}</label>
+            @endforeach
+        </div>
+    </div>
+</div>
 
 @include('components.resume', [$resumeData['totals']])
 

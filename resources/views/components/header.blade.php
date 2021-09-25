@@ -45,7 +45,13 @@
             </li>
         </li>
         <hr />
-        <li>
+        @if (isset($_SESSION['monthName']) && isset($_SESSION['year']))
+            <li style="padding: 10px; font-size: 1rem;">
+                Perído selecionado: <br />
+                <span style="font-size: 0.95rem;"> >> {{ $_SESSION['monthName'] ?? '' }} de {{ $_SESSION['year'] ?? '' }}</span>
+            </li>
+        @endif
+        <li class="logout-li">
             <a href="{{ route('logout') }}">
                 <i class="fas fa-sign-out-alt"></i>
                 Sair

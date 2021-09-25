@@ -142,4 +142,15 @@ class ExpenseModel extends Model
 
         return $expenses;
     }
+
+    public function getExpensesYears()
+    {
+        $years = DB::select('
+            SELECT distinct year
+            FROM expenses
+            WHERE user_id = ?
+        ', [session('user')['id']]);
+
+        return $years;
+    }
 }

@@ -45,24 +45,37 @@ class DashboardController extends Controller
         $currentMonth = intval($date->format('m'));
         $currentYear = intval($date->format('Y'));
         $queryMonth = 0;
+        $queryYear = 0;
 
         $queryString = $_SERVER['QUERY_STRING'];
-        $queryValues = explode('=', $queryString);
+        $queryItems = explode('&', $queryString);
 
-        if ($queryValues[0] == 'month') {
-            $queryMonth = $queryValues[1];
+        if (isset($queryItems[0]) && isset($queryItems[1])) {
+            $monthValues = explode('=', $queryItems[0]);
+            $yearValues = explode('=', $queryItems[1]);
+        }
+
+        if (isset($monthValues[0]) && $monthValues[0] == 'month') {
+            $queryMonth = $monthValues[1];
+        }
+        if (isset($yearValues[0]) && $yearValues[0] == 'year') {
+            $queryYear = $yearValues[1];
         }
 
         $month = $queryMonth ? $queryMonth : $currentMonth;
-
-        session_start();
-        $_SESSION['month'] = $month;
-        $_SESSION['year'] = $currentYear;
+        $year = $queryYear ? $queryYear : $currentYear;
 
         $months = [
             'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
             'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
         ];
+
+        session_start();
+        $_SESSION['month'] = $month;
+        $_SESSION['monthName'] = $months[$month -1];
+        $_SESSION['year'] = $year;
+
+        $years = $this->expenseModel->getExpensesYears();
 
         $activeRecipeCategories = DB::table('categories')
             ->where('belongs_to', 1)
@@ -226,7 +239,9 @@ class DashboardController extends Controller
 
         return view('dashboard', [
             'month' => $month,
+            'year' => $year,
             'months' => $months,
+            'years' => $years,
             'activeRecipeCategories' => $activeRecipeCategories,
             'activeExpenseCategories' => $activeExpenseCategories,
             'allRecipeCategories' => $allRecipeCategories,
