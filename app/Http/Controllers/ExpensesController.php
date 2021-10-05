@@ -49,12 +49,14 @@ class ExpensesController extends Controller
         if ($data['credit_card']) {
             if ($installmentsExpense > 1) {
                 $uniqid = uniqid();
-                $installmentCounter = 1;
 
-                for ($i = $this->month; $i < ($this->month + $installmentsExpense); $i++) {
-                    $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear(
-                        $data['credit_card'], $i, $this->year
-                    );
+                for ($i = 1; $i <= $installmentsExpense; $i++) {
+                    if ($this->month == 13) {
+                        $this->month = 1;
+                        $this->year++;
+                    }
+
+                    $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear($data['credit_card'], $i, $this->year);
 
                     if ($invoice) {
                         CreditCardInvoiceModel::where('id', $invoice->id)
@@ -69,9 +71,9 @@ class ExpensesController extends Controller
                             'category' => (int) $data['category_expense'],
                             'budgeted_amount' => $data['budgeted_amount_expense'],
                             'period' => $period,
-                            'installments' => $data['installments_expense'],
-                            'installment' => $installmentCounter,
-                            'month' => $i,
+                            'installments' => $installmentsExpense,
+                            'installment' => $i,
+                            'month' => $this->month,
                             'year' => $this->year,
                             'user_id' => session('user')['id'],
                             'credit_card' => $data['credit_card'],
@@ -83,7 +85,7 @@ class ExpensesController extends Controller
                             'hash_installment' => $uniqid
                         ]);
 
-                        $installmentCounter++;
+                        $this->month++;
                     } else {
                         $invoice = CreditCardInvoiceModel::create([
                             'credit_card' => $data['credit_card'],
@@ -98,8 +100,8 @@ class ExpensesController extends Controller
                             'budgeted_amount' => $data['budgeted_amount_expense'],
                             'period' => $period,
                             'installments' => $data['installments_expense'],
-                            'installment' => $installmentCounter,
-                            'month' => $i,
+                            'installment' => $i,
+                            'month' => $this->month,
                             'year' => $this->year,
                             'user_id' => session('user')['id'],
                             'credit_card' => $data['credit_card'],
@@ -111,13 +113,11 @@ class ExpensesController extends Controller
                             'hash_installment' => $uniqid
                         ]);
 
-                        $installmentCounter++;
+                        $this->month++;
                     }
                 }
             } else {
-                $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear(
-                    $data['credit_card'], $this->month, $this->year
-                );
+                $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear($data['credit_card'], $this->month, $this->year);
 
                 if ($invoice) {
                     CreditCardInvoiceModel::where('id', $invoice->id)
@@ -188,6 +188,11 @@ class ExpensesController extends Controller
                 $uniqid = uniqid();
 
                 for ($i = 1; $i <= $installmentsExpense; $i++) {
+                    if ($this->month == 13) {
+                        $this->month = 1;
+                        $this->year++;
+                    }
+
                     $expense = ExpenseModel::create([
                         'description' => mb_convert_case($data['description_expense'], MB_CASE_TITLE, "UTF-8"),
                         'category' => (int) $data['category_expense'],

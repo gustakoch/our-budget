@@ -17,11 +17,11 @@
                     <input type="hidden" name="id_expense">
                     <input type="hidden" name="category_active">
                     <div class="mb-3">
-                        <label for="description_expense" class="form-label">Descrição da despesa</label>
+                        <label for="description_expense" class="form-label">Descrição da despesa*</label>
                         <input class="form-control mb-3" type="text" name="description_expense_edit" id="description_expense" placeholder="Informe a descrição" />
                     </div>
                     <div class="b-3">
-                        <label class="form-label" for="category_expense">Categoria</label>
+                        <label class="form-label" for="category_expense">Categoria*</label>
                         <select class="form-select mb-3" name="category_expense_edit" id="category_expense">
                             @foreach ($allExpenseCategories as $category)
                                 <option value="{{ $category->id }}">{{ $category->description }}</option>
@@ -31,7 +31,7 @@
                     </div>
                     @if ($type_expenses == '15/30')
                         <div class="mb-3">
-                            <label class="form-label" for="period_expense">Período de vencimento</label>
+                            <label class="form-label" for="period_expense">Período de vencimento*</label>
                             <select class="form-select mb-3" name="period_expense_edit" id="period_expense">
                                 <option value="1">Precisa pagar até o dia 15</option>
                                 <option value="2">Pode pagar até o fim do mês</option>
@@ -40,18 +40,18 @@
                     @else
                         <input type="hidden" name="period_expense_edit" id="period_expense_edit" />
                     @endif
-                    <div class="mb-3 col-4">
-                        <label for="installments_expense" class="form-label">Parcela <small>(Não pode ser alterado)</small></label>
+                    <div class="mb-3 col-3">
+                        <label for="installments_expense" class="form-label">Parcela*</label>
                         <select class="form-select mb-3" name="installments_expense_edit" id="installments_expense">
                             <option value="1">1</option>
                             @for ($i = 2; $i <= 12; $i++)
                                 <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
-                        </select>
+                    </select>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="budgeted_amount_expense" class="form-label">Valor orçado <small>(em R$)</small></label>
+                            <label for="budgeted_amount_expense" class="form-label">Valor orçado* <small>(em R$)</small></label>
                             <input class="form-control" type="number" name="budgeted_amount_expense_edit" id="budgeted_amount_expense" placeholder="Informe o valor" />
                         </div>
                         <div class="col-md-6">
@@ -84,6 +84,8 @@
                             Marcar despesa como paga
                         </label>
                     </div>
+
+                    <small>(* Dados obrigatórios)</small>
                 </form>
             </div>
             <div class="modal-footer border-top-0" id="modalFooterEditExpense">

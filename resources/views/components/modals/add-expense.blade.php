@@ -42,11 +42,7 @@
                         <label for="installments_expense" class="form-label">Parcelas</label>
                         <select class="form-select mb-3" name="installments_expense" id="installments_expense">
                             <option selected value="1">Parcela única</option>
-                            @php
-                                $currentMonth = (int) $_SESSION['month'];
-                                $showMonths = (12 - $currentMonth) + 1;
-                            @endphp
-                            @for ($i = 2; $i <= $showMonths; $i++)
+                            @for ($i = 2; $i <= $installments; $i++)
                                 <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
                         </select>

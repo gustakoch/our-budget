@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppConfigModel;
 use App\Models\Configuration;
 use App\Models\CreditCardInvoiceModel;
 use App\Models\CreditCardModel;
@@ -19,20 +20,22 @@ class DashboardController extends Controller
     private $recipeModel;
     private $expenseModel;
     private $creditCardInvoiceModel;
+    private $appConfigModel;
 
     public function __construct(
         User $user,
         CreditCardModel $creditCardModel,
         RecipeModel $recipeModel,
         ExpenseModel $expenseModel,
-        CreditCardInvoiceModel $creditCardInvoiceModel
-        )
-    {
+        CreditCardInvoiceModel $creditCardInvoiceModel,
+        AppConfigModel $appConfigModel
+    ) {
         $this->user = $user;
         $this->creditCardModel = $creditCardModel;
         $this->recipeModel = $recipeModel;
         $this->expenseModel = $expenseModel;
         $this->creditCardInvoiceModel = $creditCardInvoiceModel;
+        $this->appConfigModel = $appConfigModel;
     }
 
     public function index()
@@ -76,6 +79,10 @@ class DashboardController extends Controller
         $_SESSION['year'] = $year;
 
         $years = $this->expenseModel->getExpensesYears();
+        if (!$years) {
+            $years[] = new stdClass();
+            $years[0]->year = $currentYear;
+        }
 
         $activeRecipeCategories = DB::table('categories')
             ->where('belongs_to', 1)
@@ -121,6 +128,7 @@ class DashboardController extends Controller
             ->join('categories', 'expenses.category', 'categories.id')
             ->where('expenses.user_id', '=', session('user')['id'])
             ->where('expenses.credit_card', '=', null)
+            ->where('expenses.year', '=', $year)
             ->select('expenses.*', 'categories.description as category_description')
             ->orderBy(DB::raw('expenses.budgeted_amount - expenses.realized_amount = 0'), 'asc')
             ->orderBy('expenses.description', 'asc')
@@ -236,6 +244,7 @@ class DashboardController extends Controller
         $resumeTotal['diff'] = floatval($resumeTotal['recipes']) - floatval($resumeTotal['expenses']);
 
         $expensesByCategories = $this->expenseModel->totalAmountExpensesByCategories($_SESSION['month'], $_SESSION['year']);
+        $configNumberOfInstallments = $this->appConfigModel->getNumberOfInstallments();
 
         return view('dashboard', [
             'month' => $month,
@@ -266,6 +275,9 @@ class DashboardController extends Controller
             'resumeData' => [
                 'totals' => $resumeTotal,
                 'expensesCategories' => $expensesByCategories
+            ],
+            'config' => [
+                'installments' => $configNumberOfInstallments
             ]
         ]);
     }

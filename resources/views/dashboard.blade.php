@@ -435,11 +435,13 @@
 @include('components.modals.add-expense', [
     'expenseCategories' => $activeExpenseCategories,
     'type_expenses' => $type_expenses,
-    'cards' => $cards
+    'cards' => $cards,
+    'installments' => $config['installments']
 ])
 @include('components.modals.edit-expense', [
     'expenseCategories' => $allExpenseCategories,
-    'type_expenses' => $type_expenses
+    'type_expenses' => $type_expenses,
+    'installments' => $config['installments']
 ])
 
 @include('components.modals.reason-cancellation')

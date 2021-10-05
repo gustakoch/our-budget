@@ -976,6 +976,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 Number(jQuery('select[name="installments_expense_edit"]').val(response.installment))
                 jQuery('select[name="installments_expense_edit"]').attr('disabled', true)
+                jQuery('select[name="installments_expense_edit"]').css('cursor', 'not-allowed')
 
                 jQuery('input[name="budgeted_amount_expense_edit"]').val(response.budgeted_amount)
                 jQuery('input[name="realized_amount_expense_edit"]').val(response.realized_amount)
