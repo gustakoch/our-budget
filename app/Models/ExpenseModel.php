@@ -149,6 +149,7 @@ class ExpenseModel extends Model
             SELECT distinct year
             FROM expenses
             WHERE user_id = ?
+            ORDER by year
         ', [session('user')['id']]);
 
         return $years;
