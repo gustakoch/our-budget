@@ -90,7 +90,7 @@ class ExpensesController extends Controller
                         $invoice = CreditCardInvoiceModel::create([
                             'credit_card' => $data['credit_card'],
                             'user_id' => session('user')['id'],
-                            'month' => $i,
+                            'month' => $this->month,
                             'year' => $this->year
                         ]);
 
