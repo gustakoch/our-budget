@@ -301,3 +301,7 @@ input[name="year"], input[name="month"] {
     color: #999;
     margin-top: 1rem;
 }
+
+.inactive {
+    display: none !important;
+}

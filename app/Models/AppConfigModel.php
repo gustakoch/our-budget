@@ -13,6 +13,14 @@ class AppConfigModel extends Model
     protected $primaryKey = "id";
     protected $guarded = [];
 
+    public function getAllConfigs()
+    {
+        $configs = DB::select("SELECT *
+        FROM app_configs");
+
+        return $configs;
+    }
+
     public function getNumberOfInstallments()
     {
         $config = DB::selectOne("SELECT

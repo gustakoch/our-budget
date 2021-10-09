@@ -288,7 +288,11 @@ class DashboardController extends Controller
             return redirect()->route('initial');
         }
 
-        return view('config');
+        $configs = $this->appConfigModel->getAllConfigs();
+
+        return view('config', [
+            'configs' => $configs,
+        ]);
     }
 
     public function firstAccess()

@@ -773,9 +773,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 jQuery('input[name="description_category_edit"]').val(response.description)
 
+                let colorDiv = jQuery('input[name="color"]').parents()[0]
                 if (response.belongs_to == '1') {
-                    jQuery('input[name="color"]').parent()[1].remove()
+                    jQuery('input[name="color"]').attr('disabled', true)
+                    colorDiv.style.display = 'none'
                 } else {
+                    colorDiv.style.display = 'block'
                     jQuery('input[name="color"]').val(response.color)
                 }
 
@@ -1028,10 +1031,10 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             error: function(xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
-                showLoadingOnButton(button, 'Cancelar parcela')
+                stopLoadingOnButton(button, 'Cancelar parcela')
             },
             success: function(response) {
-                showLoadingOnButton(button, 'Cancelar parcela')
+                stopLoadingOnButton(button, 'Cancelar parcela')
 
                 if (response.ok) {
                     jQuery('input[name="id_expense"]').val('')
@@ -1070,10 +1073,10 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             error: function(xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
-                showLoadingOnButton(button, 'Cancelar parcelas')
+                stopLoadingOnButton(button, 'Cancelar parcelas')
             },
             success: function(response) {
-                showLoadingOnButton(button, 'Cancelar parcelas')
+                stopLoadingOnButton(button, 'Cancelar parcelas')
 
                 if (response.ok) {
                     formExpenseCancellation.reset()
@@ -1082,6 +1085,64 @@ document.addEventListener('DOMContentLoaded', function() {
                     location.reload()
                 } else {
                     swalNotification('Houve um erro', response.message, 'error', 'Tá, entendi')
+                }
+            }
+        })
+    })
+
+    jQuery(document).on('click', '#save-my-data', function(e) {
+        e.preventDefault()
+
+        let name = jQuery('input[name="name"]').val()
+        let email = jQuery('input[name="email"]').val()
+        let password = jQuery('input[name="password"]').val()
+        let passwordConfirm = jQuery('input[name="password_confirmation"]').val()
+
+        let button = jQuery(this)
+
+        if (!name || !email) {
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        if (password != passwordConfirm) {
+            swalNotification('Alteração de senha', 'Por favor, verifique se as senhas foram informadas corretamente.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'config/store',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-config-my-data').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function() {
+                jQuery('#loadingSpinnerInfo').show()
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function(xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Atualizar configuração')
+            },
+            success: function(response) {
+                stopLoadingOnButton(button, 'Atualizar configuração')
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Configuração',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Continuar',
+                        allowOutsideClick: false
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            location.reload()
+                        }
+                    })
                 }
             }
         })
