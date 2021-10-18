@@ -566,11 +566,26 @@ document.addEventListener('DOMContentLoaded', function() {
         let button = jQuery(this)
 
         let description = jQuery('input[name="description_expense_edit"]').val()
-        let period = Number(jQuery('select[name="period_expense_edit"]').val())
+        let period = Number(jQuery('input[name="period_expense_edit"]').val())
         let budgetedAmount = Number(jQuery('input[name="budgeted_amount_expense_edit"]').val())
-        let realizedAmount = Number(jQuery('input[name="realized_amount_expense_edit"]').val())
+        let realizedAmount = jQuery('input[name="realized_amount_expense_edit"]').val()
         let creditCard = Number(jQuery('select[name="credit_card_edit"]').val())
         let isWithCreditCard = jQuery('#was_with_credit_card_edit').is(':checked')
+        let idExpense = jQuery('input[name="id_expense"]').val()
+        let categoryActive = jQuery('input[name="category_active"]').val()
+        let categoryExpense = jQuery('select[name="category_expense_edit"]').val()
+
+        if (realizedAmount.indexOf('=') == -1) {
+            realizedAmount = realizedAmount.replaceAll(',', '.')
+        } else if (realizedAmount.indexOf('=') == 0) {
+            realizedAmount = realizedAmount.replaceAll(',', '.')
+
+            let expression = new String(realizedAmount.substring(1))
+            realizedAmount = eval(expression.toString())
+        } else {
+            swalNotification('Oops...', 'Operação proibida! Verifique os valores informados e tente novamente.', 'error', 'Tá, entendi')
+            return false
+        }
 
         if (!description || !budgetedAmount) {
             swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
@@ -599,7 +614,14 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'post',
             dataType: 'json',
             timeout: 20000,
-            data: jQuery('#form-edit-expense').serialize(),
+            data: {
+                description_expense_edit: description,
+                budgeted_amount_expense_edit: budgetedAmount,
+                realized_amount_expense_edit: realizedAmount,
+                credit_card_edit: creditCard,
+                period_expense_edit: period,
+                id_expense: idExpense
+            },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
@@ -613,7 +635,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: 'post',
                         dataType: 'json',
                         timeout: 20000,
-                        data: jQuery('#form-edit-expense').serialize(),
+                        data: {
+                            description_expense_edit: description,
+                            budgeted_amount_expense_edit: budgetedAmount,
+                            realized_amount_expense_edit: realizedAmount,
+                            credit_card_edit: creditCard,
+                            period_expense_edit: period,
+                            id_expense: idExpense,
+                            category_active: categoryActive,
+                            category_expense_edit: categoryExpense
+                        },
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                         },
@@ -982,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('select[name="installments_expense_edit"]').css('cursor', 'not-allowed')
 
                 jQuery('input[name="budgeted_amount_expense_edit"]').val(response.budgeted_amount)
-                jQuery('input[name="realized_amount_expense_edit"]').val(response.realized_amount)
+                jQuery('input[name="realized_amount_expense_edit"]').val(response.realized_amount.replace('.', ','))
 
                 if (response.budgeted_amount == response.realized_amount) {
                     jQuery('input[name="expense_paid"]').parent().hide()

@@ -56,7 +56,8 @@
                         </div>
                         <div class="col-md-6">
                             <label for="realized_amount_expense_edit" class="form-label">Valor realizado <small>(em R$)</small></label>
-                            <input class="form-control" type="number" name="realized_amount_expense_edit" id="realized_amount_expense_edit" placeholder="Informe o valor" />
+                            <input class="form-control" type="text" name="realized_amount_expense_edit" id="realized_amount_expense_edit" placeholder="Informe o valor" />
+                            <small style="display: block; margin-top: 0.5rem;">(Utilize o "=" para somar valores. Ex: =75+18+24,5)</small>
                         </div>
                     </div>
                     <div class="form-check my-3">

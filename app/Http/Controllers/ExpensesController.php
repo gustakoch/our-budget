@@ -320,7 +320,10 @@ class ExpensesController extends Controller
     public function update()
     {
         $data = request()->all();
-        $data['credit_card_edit'] = isset($data['credit_card_edit']) ? $data['credit_card_edit'] : null;
+
+        if ($data['credit_card_edit'] == '0') {
+            $data['credit_card_edit'] = null;
+        }
 
         $invoice = new stdClass();
         $invoice->id = null;
@@ -450,7 +453,10 @@ class ExpensesController extends Controller
     public function verifyMetodPayment()
     {
         $data = request()->all();
-        $data['credit_card_edit'] = isset($data['credit_card_edit']) ? $data['credit_card_edit'] : '';
+
+        if ($data['credit_card_edit'] == '0') {
+            $data['credit_card_edit'] = '';
+        }
 
         $expense = ExpenseModel::find($data['id_expense']);
 
