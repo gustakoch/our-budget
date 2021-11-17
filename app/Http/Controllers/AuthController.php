@@ -14,8 +14,10 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!$user) {
-            return redirect()->route('home')
-            ->with('erro', 'Usuário e/ou senha não conferem');
+            return response()->json([
+                'ok' => false,
+                'message' => 'Usuário e/ou senha inválidos! Verifique os dados informados e tente novamente.'
+            ]);
         }
 
         $hashUserPassword = $user->password;
@@ -24,6 +26,13 @@ class AuthController extends Controller
             return response()->json([
                 'ok' => false,
                 'message' => 'Usuário e/ou senha inválidos! Verifique os dados informados e tente novamente.'
+            ]);
+        }
+
+        if ($user->active == '0') {
+            return response()->json([
+                'ok' => false,
+                'message' => 'O usuário informado não possui acesso ao sistema.'
             ]);
         }
 

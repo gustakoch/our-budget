@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const formEditExpense = document.querySelector('#form-edit-expense')
     const formExpenseCancellation = document.querySelector('#form-expense-cancellation')
     const formExpenseCancellations = document.querySelector('#form-expense-cancellation-all')
+    const formNewUser = document.querySelector('#form-new-user')
+    const formEditUser = document.querySelector('#form-edit-user')
 
     let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -322,15 +324,14 @@ document.addEventListener('DOMContentLoaded', function() {
         let name = jQuery('input[name="name"]').val()
         let email = jQuery('input[name="email"]').val()
         let password = jQuery('input[name="password"]').val()
-        let password_confirmation = jQuery('input[name="password_confirmation"]').val()
-        let gradle_format = jQuery('input[name="gradle_format"]').is(':checked')
+        let passwordConfirmation = jQuery('input[name="password_confirmation"]').val()
 
-        if (!name || !email || !password || !password_confirmation || !gradle_format) {
-            swalNotification('Presta atenção aí', 'Por favor, precisamos de uma descrição e o dia do vencimento da fatura.', 'error', 'Tá, entendi')
+        if (!name || !email || !password || !passwordConfirmation) {
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem ser preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
-        if (password != password_confirmation) {
+        if (password != passwordConfirmation) {
             swalNotification('Presta atenção aí', 'As novas senhas não conferem! Por favor, verifique os dados e tente novamente.', 'error', 'Tá, entendi')
             return false
         }
@@ -349,10 +350,10 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             error: function(xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
-                stopLoadingOnButton(button, 'Confirmar dados')
+                stopLoadingOnButton(button, 'Salvar dados')
             },
             success: function(response) {
-                stopLoadingOnButton(button, 'Confirmar dados')
+                stopLoadingOnButton(button, 'Salvar dados')
 
                 let appUrl = getAppUrl()
 
@@ -1424,6 +1425,13 @@ document.addEventListener('DOMContentLoaded', function() {
         jQuery('#loadingSpinnerCard').show()
     })
 
+    jQuery(document).on('click', '.cancel-user', function(e) {
+        jQuery('#loadingSpinnerUser').show()
+
+        formNewUser.reset()
+        formEditUser.reset()
+    })
+
     jQuery(document).on('click', '.cancel-expense', function(e) {
         e.preventDefault()
 
@@ -1479,5 +1487,169 @@ document.addEventListener('DOMContentLoaded', function() {
             jQuery('#expense_card_selection_edit').children().eq(1).attr('disabled', true)
             jQuery('select[name="credit_card_edit"]').val(0)
         }
+    })
+
+    jQuery(document).on('click', '.eye-icon-password', function(e) {
+        let type = jQuery(this).siblings()[0].type
+
+        if (type == 'password') {
+            jQuery(this).siblings()[0].type = 'text'
+            jQuery(this).html('<i class="fas fa-eye"></i>')
+        } else {
+            jQuery(this).siblings()[0].type = 'password'
+            jQuery(this).html('<i class="fas fa-eye-slash"></i>')
+        }
+    })
+
+    jQuery(document).on('click', '.copy-to-clipboard', function(e) {
+        let copyButtonTooltip = jQuery(this).parent()[0]
+        let inputPassword = jQuery('input[name="password_user"]')[0]
+        navigator.clipboard.writeText(inputPassword.value)
+
+        let tooltip = new bootstrap.Tooltip(copyButtonTooltip)
+
+        tooltip.show()
+
+        setTimeout(function(e) {
+            tooltip.hide()
+        }, 1000)
+    })
+
+    jQuery(document).on('click', '.generate-new-password', function(e) {
+        jQuery.ajax({
+            url: 'users/password/generate',
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function(xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+            },
+            success: function(response) {
+                if (response.ok) {
+                    jQuery('input[name="password_user"]').val(response.password)
+                    jQuery('input[name="password"]').val(response.password)
+                }
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.save-user', function(e) {
+        let name = jQuery('input[name="name_user"]').val()
+        let email = jQuery('input[name="email_user"]').val()
+        let password = jQuery('input[name="password_user"]').val()
+
+        let button = jQuery(this)
+
+        if (!name || !email || !password) {
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'users/store',
+            type: 'post',
+            dataType: 'json',
+            data: jQuery('#form-new-user').serialize(),
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function(xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Salvar usuário')
+            },
+            success: function(response) {
+                stopLoadingOnButton(button, 'Salvar usuário')
+
+                swalNotification('Usuário criado', response.message, 'success', 'Fechar')
+                location.reload()
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.edit-user', function(e) {
+        let id = jQuery(this).attr('id')
+
+        jQuery.ajax({
+            url: `users/${id}`,
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function() {
+                jQuery('#modalHeaderEditUser').hide()
+                jQuery('#modalFooterEditUser').hide()
+                jQuery('#form-edit-user').hide()
+            },
+            error: function(xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+            },
+            success: function(response) {
+                jQuery('#modalHeaderEditUser').show()
+                jQuery('#modalFooterEditUser').show()
+                jQuery('#form-edit-user').show()
+                jQuery('#loadingSpinnerUser').hide()
+
+                if (response.ok) {
+                    jQuery('input[name="id_user"]').val(response.user.id)
+                    jQuery('input[name="name"]').val(response.user.name)
+                    jQuery('input[name="email"]').val(response.user.email)
+                    jQuery('input[name="email"]').val(response.user.email)
+                    jQuery('select[name="role"]').val(response.user.role)
+                    jQuery('select[name="first_access"]').val(response.user.first_access)
+                    jQuery('select[name="active"]').val(response.user.active)
+                } else {
+                    location.reload()
+                }
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.update-user', function(e) {
+        let name = jQuery('input[name="name"]').val()
+        let email = jQuery('input[name="email"]').val()
+
+        let button = jQuery(this)
+
+        if (!name || !email) {
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'users/update',
+            type: 'post',
+            dataType: 'json',
+            data: jQuery('#form-edit-user').serialize(),
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function(xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Atualizar usuário')
+            },
+            success: function(response) {
+                if (response.ok) {
+                    swalNotification('Atualizado', response.message, 'success', 'Fechar')
+                    stopLoadingOnButton(button, 'Atualizar usuário')
+                    location.reload()
+                } else {
+                    stopLoadingOnButton(button, 'Atualizar usuário')
+                    swalNotification('Houve um erro', 'Erro interno ao atualizar usuário.', 'error', 'Tentar novamente')
+                }
+            }
+        })
     })
 })

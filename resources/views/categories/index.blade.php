@@ -16,7 +16,7 @@
     Nova categoria
 </button>
 
-<table id="table-categories" class="table" style="vertical-align: middle">
+<table id="dataTable" class="table" style="vertical-align: middle">
     <thead>
         <tr>
             <th>#</th>

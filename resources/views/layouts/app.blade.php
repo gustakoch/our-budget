@@ -44,12 +44,12 @@
     <script src="{{ asset('js/chart-config.js') }}?v=<?= filemtime('js/chart-config.js'); ?>"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
+        jQuery(document).ready(function () {
+            jQuery('#sidebarCollapse').on('click', function () {
+                jQuery('#sidebar').toggleClass('active');
             });
 
-            $('#table-categories').DataTable({
+            jQuery('#dataTable').DataTable({
                 "language": {
                     "lengthMenu": "Exibindo _MENU_ dados por página",
                     "zeroRecords": "Nenhum registro encontrado",

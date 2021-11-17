@@ -305,3 +305,25 @@ input[name="year"], input[name="month"] {
 .inactive {
     display: none !important;
 }
+
+.text-gray {
+    color: #ddd;
+}
+
+.input-password-eye-sign {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-password-eye-sign button {
+    position: absolute;
+    right: 0.25rem;
+    top: 0.5rem;
+
+    cursor: pointer;
+    border: none;
+    background: transparent;
+}

@@ -15,31 +15,36 @@
                     <i class="fas fa-tachometer-alt"></i>
                     Dashboard
                 </a>
-            @endif
 
-            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                <i class="fas fa-plus"></i>
-                Cadastros
-            </a>
-            <ul class="collapse list-unstyled" id="pageSubmenu">
-                <li>
-                    <a href="{{ route('categories.index') }}">Categorias</a>
-                </li>
-                <li>
-                    <a href="{{ route('cards.index') }}">Cartões de crédito</a>
-                </li>
-            </ul>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-plus"></i>
+                    Cadastros
+                </a>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                    <li>
+                        <a href="{{ route('categories.index') }}">Categorias</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('cards.index') }}">Cartões de crédito</a>
+                    </li>
+                    @if (session('user')['role'] == '1' || session('user')['role'] == '2')
+                    <li>
+                        <a href="{{ route('users.index') }}">Usuários</a>
+                    </li>
+                    @endif
+                </ul>
+            @endif
 
             <li>
                 @if (session('user')['firstAccess'] != 1)
                     <a href="{{ route('config') }}">
-                        <i class="fas fa-cogs"></i>
+                    <i class="fas fa-cogs"></i>
                         Configurações
                     </a>
                 @else
                     <a href="{{ route('initial') }}">
                         <i class="fas fa-cogs"></i>
-                        Bem vindo
+                        Configurações iniciais
                     </a>
                 @endif
             </li>

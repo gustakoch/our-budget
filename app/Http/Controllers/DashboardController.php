@@ -119,11 +119,6 @@ class DashboardController extends Controller
             }
         }
 
-        $typeExpenses = DB::table('users')
-            ->where('id', session('user')['id'])
-            ->select('gradle_format')
-            ->first();
-
         $userExpenses = DB::table('expenses')
             ->join('categories', 'expenses.category', 'categories.id')
             ->where('expenses.user_id', '=', session('user')['id'])
@@ -305,7 +300,6 @@ class DashboardController extends Controller
                 'email' => $data['email'],
                 'password' => password_hash($data['password'], PASSWORD_DEFAULT),
                 'first_access' => 0,
-                'gradle_format' => $data['gradle_format']
             ]);
 
         $user = User::find(session('user')['id']);

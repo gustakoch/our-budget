@@ -5,7 +5,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
     <h3 class="mb-3">Dashboard</h3>
-    <span>"Uma plano não é nada, mas o planejamento é tudo." <small>(Dwight D. Eisenhower)</small></span>
+    <span>"Um plano não é nada, mas o planejamento é tudo." <small>(Dwight D. Eisenhower)</small></span>
 </nav>
 
 <div class="filters">

@@ -10,6 +10,7 @@ use App\Http\Controllers\RecipesController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoicesController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',                             [HomeController::class, 'index'])->name('home');
@@ -36,6 +37,12 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/cards/{id}',               [CreditCardController::class, 'show']);
     Route::post('/cards/update',            [CreditCardController::class, 'update']);
     Route::get('/cards/destroy/{id}',       [CreditCardController::class, 'destroy']);
+
+    Route::get('/users',                    [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/password/generate',  [UserController::class, 'passwordGenerate']);
+    Route::get('/users/{id}',               [UserController::class, 'show']);
+    Route::post('/users/store',             [UserController::class, 'store']);
+    Route::post('/users/update',             [UserController::class, 'update']);
 
     Route::get('/recipes',                  [RecipesController::class, 'index']);
     Route::get('/recipes/{id}',             [RecipesController::class, 'show']);

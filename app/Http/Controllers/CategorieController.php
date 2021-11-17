@@ -17,11 +17,13 @@ class CategorieController extends Controller
 
     public function index()
     {
+        if (session('user')['firstAccess'] == 1) {
+            return redirect('dashboard');
+        }
+
         $categories = $this->categoryModel->getAll();
 
-        return view('categories.index', [
-            'categories' => $categories
-        ]);
+        return view('categories.index', ['categories' => $categories]);
     }
 
     public function store()

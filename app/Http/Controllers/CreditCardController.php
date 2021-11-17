@@ -17,6 +17,10 @@ class CreditCardController extends Controller
 
     public function index()
     {
+        if (session('user')['firstAccess'] == 1) {
+            return redirect('dashboard');
+        }
+
         $cards = $this->creditCardModel->getCardsWithFlags();
         $flags = CardFlagModel::all();
 

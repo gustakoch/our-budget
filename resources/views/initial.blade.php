@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Configurações')
+@section('title', 'Configurações iniciais')
 
 @section('content')
 
@@ -15,28 +15,28 @@
             @csrf
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label for="name">Nome para exibição*</label>
+                        <label for="name">Como gostaria de ser chamado?*</label>
                         <input class="form-control" type="text" name="name" id="name" value="{{ session('user')['name'] }}" />
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label for="email">E-mail de cadastro*</label>
+                        <label for="email">Seu e-mail*</label>
                         <input class="form-control" type="email" name="email" id="email" value="{{ session('user')['email'] }}" />
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row mt-4">
+                <div class="col-md-3">
                     <div class="form-group mt-3">
                         <label for="password">Sua nova senha*</label>
                         <input class="form-control" type="password" name="password" id="password" />
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="form-group mt-3">
                         <label for="password_confirmation">Confirme a nova senha*</label>
                         <input class="form-control" type="password" name="password_confirmation" id="password_confirmation" />
@@ -44,30 +44,17 @@
                 </div>
             </div>
 
-            <div class="form-group mt-5">
-                <label>Grade de despesas*</label>
-                <div class="gradle-expenses">
-                    <div class="gradle-expenses-item">
-                        <input class="form-check-input" type="radio" name="gradle_format" id="gradle_format_15_30" value="15/30">
-                        <label class="form-check-label mb-3" for="gradle_format_15_30">Grade com divisão de 15/30 dias</label>
-                        <img src="{{ asset('/images/15-30dias.png') }}" alt="Grade com divisão de 15/30 dias">
-                    </div>
-                    <div class="gradle-expenses-item">
-                        <input class="form-check-input" type="radio" name="gradle_format" id="gradle_format_30" value="30">
-                        <label class="form-check-label mb-3" for="gradle_format_30">Grade de 30 dias</label>
-                        <img src="{{ asset('/images/30dias.png') }}" alt="Grade de 30 dias">
-                    </div>
-                </div>
+            <div class="row mt-5">
+                <small>(* Dados obrigatórios)</small>
             </div>
 
-            <div class="d-flex justify-content-end mt-5">
+            <div class="d-flex mt-3">
                 <button
                     type="button"
-                    class="btn"
-                    style="background-color: #7386D5; color: #fff"
+                    class="btn btn-primary"
                     id="first-access"
                 >
-                    Confirmar dados
+                    Salvar dados
                 </button>
             </div>
         </form>
