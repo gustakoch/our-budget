@@ -321,7 +321,7 @@ class ExpensesController extends Controller
     {
         $data = request()->all();
 
-        if ($data['credit_card_edit'] == '0') {
+        if (!isset($data['credit_card_edit']) || $data['credit_card_edit'] == '0') {
             $data['credit_card_edit'] = null;
         }
 
@@ -329,7 +329,7 @@ class ExpensesController extends Controller
         $invoice->id = null;
 
         // Credit card was informed...
-        if ($data['credit_card_edit']) {
+        if ($data['credit_card_edit'] != null) {
             $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear(
                 $data['credit_card_edit'],
                 $_SESSION['month'],
@@ -385,41 +385,7 @@ class ExpensesController extends Controller
             }
         }
 
-        $expense = ExpenseModel::find($data['id_expense']);
-
-        if ($expense->installments > 1) {
-            $expenseInstallment = ExpenseInstallmentsModel::where('expense', $data['id_expense'])
-                ->select('hash_installment')
-                ->first();
-            $expensesWithInstallments = ExpenseInstallmentsModel::where('hash_installment', $expenseInstallment['hash_installment'])
-                ->select('expense')
-                ->get();
-
-            foreach ($expensesWithInstallments as $expenseDetail) {
-                if ($data['category_active'] == 1) {
-                    ExpenseModel::where('id', $expenseDetail['expense'])
-                        ->update([
-                            'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
-                            'category' => $data['category_expense_edit'],
-                            'period' => $data['period_expense_edit'],
-                            'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                            'realized_amount' => $data['realized_amount_expense_edit'],
-                            'credit_card' => $data['credit_card_edit'],
-                            'invoice' => $invoice->id
-                        ]);
-                } else {
-                    ExpenseModel::where('id', $expenseDetail['expense'])
-                        ->update([
-                            'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
-                            'period' => $data['period_expense_edit'],
-                            'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                            'realized_amount' => $data['realized_amount_expense_edit'],
-                            'credit_card' => $data['credit_card_edit'],
-                            'invoice' => $invoice->id
-                        ]);
-                }
-            }
-        } else {
+        if ($data['payment_method_change'] == 'N') {
             if ($data['category_active'] == 1) {
                 ExpenseModel::where('id', $data['id_expense'])
                     ->update([
@@ -427,7 +393,7 @@ class ExpensesController extends Controller
                         'category' => $data['category_expense_edit'],
                         'period' => $data['period_expense_edit'],
                         'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                        'realized_amount' => $data['realized_amount_expense_edit'],
+                        'realized_amount' => floatval($data['realized_amount_expense_edit']),
                         'credit_card' => $data['credit_card_edit'],
                         'invoice' => $invoice->id
                     ]);
@@ -437,10 +403,74 @@ class ExpensesController extends Controller
                         'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
                         'period' => $data['period_expense_edit'],
                         'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                        'realized_amount' => $data['realized_amount_expense_edit'],
+                        'realized_amount' => floatval($data['realized_amount_expense_edit']),
                         'credit_card' => $data['credit_card_edit'],
                         'invoice' => $invoice->id
                     ]);
+            }
+
+            return response()->json([
+                'ok' => true,
+                'message' => 'Despesa atualizada com sucesso'
+            ]);
+        } else {
+            $expense = ExpenseModel::find($data['id_expense']);
+
+            if ($expense->installments > 1) {
+                $expenseInstallment = ExpenseInstallmentsModel::where('expense', $data['id_expense'])
+                    ->select('hash_installment')
+                    ->first();
+                $expensesWithInstallments = ExpenseInstallmentsModel::where('hash_installment', $expenseInstallment['hash_installment'])
+                    ->select('expense')
+                    ->get();
+
+                foreach ($expensesWithInstallments as $expenseDetail) {
+                    if ($data['category_active'] == 1) {
+                        ExpenseModel::where('id', $expenseDetail['expense'])
+                            ->update([
+                                'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
+                                'category' => $data['category_expense_edit'],
+                                'period' => $data['period_expense_edit'],
+                                'budgeted_amount' => $data['budgeted_amount_expense_edit'],
+                                'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                                'credit_card' => $data['credit_card_edit'],
+                                'invoice' => $invoice->id
+                            ]);
+                    } else {
+                        ExpenseModel::where('id', $expenseDetail['expense'])
+                            ->update([
+                                'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
+                                'period' => $data['period_expense_edit'],
+                                'budgeted_amount' => $data['budgeted_amount_expense_edit'],
+                                'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                                'credit_card' => $data['credit_card_edit'],
+                                'invoice' => $invoice->id
+                            ]);
+                    }
+                }
+            } else {
+                if ($data['category_active'] == 1) {
+                    ExpenseModel::where('id', $data['id_expense'])
+                        ->update([
+                            'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
+                            'category' => $data['category_expense_edit'],
+                            'period' => $data['period_expense_edit'],
+                            'budgeted_amount' => $data['budgeted_amount_expense_edit'],
+                            'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                            'credit_card' => $data['credit_card_edit'],
+                            'invoice' => $invoice->id
+                        ]);
+                } else {
+                    ExpenseModel::where('id', $data['id_expense'])
+                        ->update([
+                            'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
+                            'period' => $data['period_expense_edit'],
+                            'budgeted_amount' => $data['budgeted_amount_expense_edit'],
+                            'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                            'credit_card' => $data['credit_card_edit'],
+                            'invoice' => $invoice->id
+                        ]);
+                }
             }
         }
 

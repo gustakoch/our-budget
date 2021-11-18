@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
             realizedAmount = realizedAmount.replaceAll(',', '.')
 
             let expression = new String(realizedAmount.substring(1))
-            realizedAmount = eval(expression.toString())
+            realizedAmount = Number(eval(expression.toString()))
         } else {
             swalNotification('Oops...', 'Operação proibida! Verifique os valores informados e tente novamente.', 'error', 'Tá, entendi')
             return false
@@ -644,7 +644,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             period_expense_edit: period,
                             id_expense: idExpense,
                             category_active: categoryActive,
-                            category_expense_edit: categoryExpense
+                            category_expense_edit: categoryExpense,
+                            payment_method_change: 'N' // Payment method was not changed
                         },
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -662,6 +663,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (response.ok) {
                                 jQuery('#loadingSpinner').show()
                                 jQuery('#editExpenseModal').modal('hide')
+
                                 location.reload()
                             } else {
                                 swalNotification('Cartão de crédito', response.message, 'error', 'Tá, entendi')
@@ -693,7 +695,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                 type: 'post',
                                 dataType: 'json',
                                 timeout: 20000,
-                                data: jQuery('#form-edit-expense').serialize(),
+                                data: {
+                                    description_expense_edit: description,
+                                    budgeted_amount_expense_edit: budgetedAmount,
+                                    realized_amount_expense_edit: realizedAmount,
+                                    credit_card_edit: creditCard,
+                                    period_expense_edit: period,
+                                    id_expense: idExpense,
+                                    category_active: categoryActive,
+                                    category_expense_edit: categoryExpense,
+                                    payment_method_change: 'S' // Payment method was changed
+                                },
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                                 },
