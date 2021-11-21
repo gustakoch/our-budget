@@ -42,7 +42,7 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/users/password/generate',  [UserController::class, 'passwordGenerate']);
     Route::get('/users/{id}',               [UserController::class, 'show']);
     Route::post('/users/store',             [UserController::class, 'store']);
-    Route::post('/users/update',             [UserController::class, 'update']);
+    Route::post('/users/update',            [UserController::class, 'update']);
 
     Route::get('/recipes',                  [RecipesController::class, 'index']);
     Route::get('/recipes/{id}',             [RecipesController::class, 'show']);
@@ -52,13 +52,14 @@ Route::middleware(['is.authenticated'])->group(function() {
 
     Route::get('/expenses',                 [ExpensesController::class, 'index']);
     Route::get('/expenses/{id}',            [ExpensesController::class, 'show']);
+    Route::get('/expenses/destroy/{id}',    [ExpensesController::class, 'destroy']);
     Route::post('/expenses/store',          [ExpensesController::class, 'store']);
     Route::post('/expenses/update',         [ExpensesController::class, 'update']);
-    Route::get('/expenses/destroy/{id}',    [ExpensesController::class, 'destroy']);
     Route::post('/expenses/revert/{id}',    [ExpensesController::class, 'revert']);
     Route::post('/expenses/verify/payment', [ExpensesController::class, 'verifyMetodPayment']);
     Route::post('/expenses/cancel/one',     [ExpensesController::class, 'cancelOneInstallment']);
     Route::post('/expenses/cancel/all',     [ExpensesController::class, 'cancelAllInstallments']);
+    Route::post('/expenses/extend/{id}',    [ExpensesController::class, 'extendInstallments']);
 
     Route::post('/invoices/pay',            [InvoicesController::class, 'pay']);
 

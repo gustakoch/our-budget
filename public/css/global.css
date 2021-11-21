@@ -75,11 +75,6 @@ label {
     font-weight: 700;
 }
 
-.extend-installment {
-    filter: grayscale(100%);
-    cursor: not-allowed !important;
-}
-
 small.erro {
     text-align: center;
     color: red;

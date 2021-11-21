@@ -1664,4 +1664,41 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
     })
+
+    jQuery(document).on('click', '.extend-installment', function(e) {
+        let id = jQuery(this).attr('id')
+
+        Swal.fire({
+            title: 'Deseja realmente prorrogar?',
+            text: 'Esta ação irá adiar TODAS as parcelas não pagas desta despesa em 1 (um) mês.',
+            icon: 'info',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, prorrogar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: `expenses/extend/${id}`,
+                    type: 'post',
+                    dataType: 'json',
+                    timeout: 20000,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    error: function(xhr, status, error) {
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                    },
+                    success: function(response) {
+                        if (response.ok) {
+                            swalNotification('Prorrogado', 'As parcelas da despesa foram prorrogadas com sucesso.', 'success', 'Continuar')
+
+                            location.reload()
+                        }
+                    }
+                })
+            }
+        })
+    })
 })

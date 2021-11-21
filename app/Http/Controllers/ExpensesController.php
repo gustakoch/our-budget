@@ -7,12 +7,12 @@ use App\Models\CreditCardInvoiceModel;
 use App\Models\ExpenseInstallmentsModel;
 use App\Models\ExpenseModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class ExpensesController extends Controller
 {
     private $expenseModel;
+    private $expenseInstallmentModel;
     private $categoryModel;
     private $creditCardInvoiceModel;
     private $month;
@@ -20,13 +20,14 @@ class ExpensesController extends Controller
 
     public function __construct(
         ExpenseModel $expenseModel,
+        ExpenseInstallmentsModel $expenseInstallmentModel,
         CategoryModel $categoryModel,
         CreditCardInvoiceModel $creditCardInvoiceModel
-    )
-    {
+    ) {
         $this->expenseModel = $expenseModel;
         $this->categoryModel = $categoryModel;
         $this->creditCardInvoiceModel = $creditCardInvoiceModel;
+        $this->expenseInstallmentModel = $expenseInstallmentModel;
 
         session_start();
         $this->month = $_SESSION['month'];
@@ -503,6 +504,34 @@ class ExpensesController extends Controller
             'ok' => $ok,
             'message' => $msg,
             'invoice' => $expense->invoice
+        ]);
+    }
+
+    public function extendInstallments($id)
+    {
+        $expensesToExtend = $this->expenseInstallmentModel->getInstallmentsToExtend($id);
+
+        foreach ($expensesToExtend as $expense) {
+            $month = $expense->month;
+            $year = $expense->year;
+
+            if ($expense->month == 12) {
+                $month = 1;
+                ++$year;
+            } else {
+                ++$month;
+            }
+
+            ExpenseModel::where('id', $expense->expense)
+                ->update([
+                    'month' => $month,
+                    'year' => $year
+                ]);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'As despesas foram prorrogadas com sucesso.'
         ]);
     }
 }
