@@ -381,6 +381,10 @@
                                                                                             <img class="me-2" src="{{ asset('/images/icons/icon-cancel.png') }}">
                                                                                             Cancelar parcela atual e as próximas
                                                                                         </a></li>
+                                                                                        <li><a class="dropdown-item d-flex align-items-center delete-total-expense" id="{{ $expenseDetails->id }}">
+                                                                                            <img class="me-2" src="{{ asset('/images/icons/del-icon.png') }}" alt="Remover">
+                                                                                            Excluir parcelamento
+                                                                                        </a></li>
                                                                                         <li><a class="dropdown-item d-flex align-items-center extend-installment" id="{{ $expenseDetails->id }}">
                                                                                             <svg class="me-2" height="14" width="14" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="fill: green"><title/><g data-name="fast forward" id="fast_forward"><path d="M23,16a1,1,0,0,1-.37.78L13,24.6,6.63,29.78A1,1,0,0,1,6,30a.94.94,0,0,1-.43-.1A1,1,0,0,1,5,29V3a1,1,0,0,1,.57-.9,1,1,0,0,1,1.06.12L13,7.4l9.63,7.82A1,1,0,0,1,23,16Z"/><path d="M30,16a1,1,0,0,1-.35.76l-15,13A1,1,0,0,1,14,30a1.06,1.06,0,0,1-.42-.09A1,1,0,0,1,13,29V25.89l10.26-8.34a2,2,0,0,0,0-3.1L13,6.11V3a1,1,0,0,1,1.65-.76l15,13A1,1,0,0,1,30,16Z"/></g></svg>
                                                                                             Prorrogar

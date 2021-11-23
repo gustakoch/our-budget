@@ -32,4 +32,21 @@ class ExpenseInstallmentsModel extends Model
 
         return $expenses;
     }
+
+    public function installmentsToRemove($expenseId)
+    {
+        $expenses = DB::select("
+            SELECT
+                ei.expense
+            FROM expense_installments ei
+                , expenses e
+            WHERE e.id = ei.expense
+            AND hash_installment = (SELECT hash_installment
+                FROM expense_installments
+                WHERE expense = ?
+                GROUP BY hash_installment)
+        ", [$expenseId]);
+
+        return $expenses;
+    }
 }

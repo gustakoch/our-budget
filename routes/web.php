@@ -50,16 +50,17 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/recipes/update',          [RecipesController::class, 'update']);
     Route::get('/recipes/destroy/{id}',     [RecipesController::class, 'destroy'])->name('recipe.destroy');
 
-    Route::get('/expenses',                 [ExpensesController::class, 'index']);
-    Route::get('/expenses/{id}',            [ExpensesController::class, 'show']);
-    Route::get('/expenses/destroy/{id}',    [ExpensesController::class, 'destroy']);
-    Route::post('/expenses/store',          [ExpensesController::class, 'store']);
-    Route::post('/expenses/update',         [ExpensesController::class, 'update']);
-    Route::post('/expenses/revert/{id}',    [ExpensesController::class, 'revert']);
-    Route::post('/expenses/verify/payment', [ExpensesController::class, 'verifyMetodPayment']);
-    Route::post('/expenses/cancel/one',     [ExpensesController::class, 'cancelOneInstallment']);
-    Route::post('/expenses/cancel/all',     [ExpensesController::class, 'cancelAllInstallments']);
-    Route::post('/expenses/extend/{id}',    [ExpensesController::class, 'extendInstallments']);
+    Route::get('/expenses',                     [ExpensesController::class, 'index']);
+    Route::get('/expenses/{id}',                [ExpensesController::class, 'show']);
+    Route::get('/expenses/destroy/{id}',        [ExpensesController::class, 'destroy']);
+    Route::get('/expenses/destroy/all/{id}',    [ExpensesController::class, 'destroyAll']);
+    Route::post('/expenses/store',              [ExpensesController::class, 'store']);
+    Route::post('/expenses/update',             [ExpensesController::class, 'update']);
+    Route::post('/expenses/revert/{id}',        [ExpensesController::class, 'revert']);
+    Route::post('/expenses/verify/payment',     [ExpensesController::class, 'verifyMetodPayment']);
+    Route::post('/expenses/cancel/one',         [ExpensesController::class, 'cancelOneInstallment']);
+    Route::post('/expenses/cancel/all',         [ExpensesController::class, 'cancelAllInstallments']);
+    Route::post('/expenses/extend/{id}',        [ExpensesController::class, 'extendInstallments']);
 
     Route::post('/invoices/pay',            [InvoicesController::class, 'pay']);
 

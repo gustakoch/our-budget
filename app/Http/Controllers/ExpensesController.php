@@ -258,6 +258,21 @@ class ExpensesController extends Controller
         ]);
     }
 
+    public function destroyAll($id)
+    {
+        $installments = $this->expenseInstallmentModel->installmentsToRemove($id);
+
+        foreach ($installments as $installment) {
+            $expense = ExpenseModel::find($installment->expense);
+            $expense->delete();
+        }
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'O parcelamento foi excluído com sucesso.'
+        ]);
+    }
+
     public function revert($id)
     {
         $expense = ExpenseModel::find($id);

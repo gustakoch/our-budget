@@ -1410,6 +1410,43 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '.delete-total-expense', function() {
+        let id = jQuery(this).attr('id')
+
+        Swal.fire({
+            title: 'Excluir todo o parcelamento?',
+            text: 'Esta ação irá excluir TODAS as parcelas vinculadas à despesa selecionada.',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, excluir parcelamento'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: `expenses/destroy/all/${id}`,
+                    type: 'get',
+                    dataType: 'json',
+                    timeout: 20000,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    error: function(xhr, status, error) {
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                    },
+                    success: function(response) {
+                        if (response.ok) {
+                            swalNotification('Removidos', response.message, 'success', 'Continuar')
+
+                            location.reload()
+                        }
+                    }
+                })
+            }
+        })
+    })
+
     jQuery(document).on('change', 'input[name="month"], input[name="year"]', function(e) {
         let month = jQuery('input[name="month"]:checked').val()
         let year = jQuery('input[name="year"]:checked').val()
