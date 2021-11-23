@@ -57,7 +57,11 @@ class ExpensesController extends Controller
                         $this->year++;
                     }
 
-                    $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear($data['credit_card'], $i, $this->year);
+                    $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear(
+                        $data['credit_card'],
+                        $this->month,
+                        $this->year
+                    );
 
                     if ($invoice) {
                         CreditCardInvoiceModel::where('id', $invoice->id)
