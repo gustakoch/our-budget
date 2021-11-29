@@ -570,36 +570,32 @@ document.addEventListener('DOMContentLoaded', function() {
         let period = Number(jQuery('input[name="period_expense_edit"]').val())
         let budgetedAmount = Number(jQuery('input[name="budgeted_amount_expense_edit"]').val())
         let realizedAmount = jQuery('input[name="realized_amount_expense_edit"]').val()
+        let totalRealizedAmount = Number(jQuery('input[name="total_realized_amount"]').val())
         let creditCard = Number(jQuery('select[name="credit_card_edit"]').val())
         let isWithCreditCard = jQuery('#was_with_credit_card_edit').is(':checked')
         let idExpense = jQuery('input[name="id_expense"]').val()
         let categoryActive = jQuery('input[name="category_active"]').val()
         let categoryExpense = jQuery('select[name="category_expense_edit"]').val()
 
-        if (realizedAmount.indexOf('=') == -1) {
-            realizedAmount = realizedAmount.replaceAll(',', '.')
-        } else if (realizedAmount.indexOf('=') == 0) {
-            realizedAmount = realizedAmount.replaceAll(',', '.')
-
-            let expression = new String(realizedAmount.substring(1))
-            realizedAmount = Number(eval(expression.toString()))
-        } else {
-            swalNotification('Oops...', 'Operação proibida! Verifique os valores informados e tente novamente.', 'error', 'Tá, entendi')
-            return false
-        }
-
         if (!description || !budgetedAmount) {
             swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
             return false
         }
 
-        if (budgetedAmount == '0' || budgetedAmount == 0) {
-            swalNotification('Oops...', 'Por favor, informe um valor maior do que zero.', 'error', 'Tá, entendi')
+        if (budgetedAmount == 0 || realizedAmount === '0') {
+            swalNotification('Oops...', 'Por favor, informe valores superiores a zero.', 'error', 'Tá, entendi')
             return false
         }
 
+        realizedAmount = Number(realizedAmount)
+
         if (realizedAmount > budgetedAmount) {
-            swalNotification('Oops...', 'Operação proibida! O valor realizado não deve ser maior do que o orçado.', 'error', 'Tá, entendi')
+            swalNotification('Oops...', 'Operação proibida! Você não deve lançar um valor superior ao orçado.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        if ((totalRealizedAmount + realizedAmount) > budgetedAmount) {
+            swalNotification('Oops...', 'Operação proibida! O total de valores lançados é superior ao valor orçado.', 'error', 'Tá, entendi')
             return false
         }
 
@@ -991,8 +987,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function(response) {
-                console.log(response)
-
                 jQuery('#modalHeaderEditExpense').show()
                 jQuery('#modalFooterEditExpense').show()
                 jQuery('#form-edit-expense').show()
@@ -1026,7 +1020,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 jQuery('select[name="installments_expense_edit"]').css('cursor', 'not-allowed')
 
                 jQuery('input[name="budgeted_amount_expense_edit"]').val(response.budgeted_amount)
-                jQuery('input[name="realized_amount_expense_edit"]').val(response.realized_amount.replace('.', ','))
+                jQuery('input[name="total_realized_amount"]').val(response.realized_amount)
+
+                if (response.has_history >= 1) {
+                    jQuery('.history-btn').css('display', 'block')
+                }
 
                 if (response.budgeted_amount == response.realized_amount) {
                     jQuery('input[name="expense_paid"]').parent().hide()
@@ -1447,6 +1445,56 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    jQuery(document).on('click', '.history-btn', function(e) {
+        e.preventDefault()
+
+        let idExpense = jQuery('input[name="id_expense"]').val()
+        let button = jQuery(this)
+
+        jQuery.ajax({
+            url: `expenses/history/${idExpense}`,
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-config-my-data').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function() {
+                jQuery('#loadingSpinnerHistory').show()
+            },
+            error: function(xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                jQuery('#loadingSpinnerHistory').hide()
+            },
+            success: function(response) {
+                if (response.ok) {
+                    jQuery('#tbody-table-history').html('')
+                    jQuery('#loadingSpinnerHistory').hide()
+
+                    var rows = ''
+
+                    jQuery(response.data).each(function(i, item) {
+                        rows += `
+                            <tr>
+                            <td>R$ ${item.value}</td>
+                                <td>${item.date}</td>
+                            </tr>
+                        `
+                    })
+
+                    jQuery('.table-history').show()
+                    jQuery('#tbody-table-history').append(rows)
+                    jQuery('#total-history').text(
+                        `R$ ${response.totalHistory.toLocaleString('pt-br', {minimumFractionDigits: 2})}`
+                    )
+                } else {
+                    jQuery('#table-history').hide()
+                }
+            }
+        })
+    })
+
     jQuery(document).on('change', 'input[name="month"], input[name="year"]', function(e) {
         let month = jQuery('input[name="month"]:checked').val()
         let year = jQuery('input[name="year"]:checked').val()
@@ -1496,6 +1544,7 @@ document.addEventListener('DOMContentLoaded', function() {
         jQuery('input[name="repeat_next_months_expense"]').attr('disabled', false)
 
         jQuery('#expense_card_selection').hide()
+        jQuery('.history-btn').css('display', 'none')
 
         sessionStorage.removeItem('realizedAmount')
         sessionStorage.removeItem('reloadingExpense')

@@ -322,3 +322,24 @@ input[name="year"], input[name="month"] {
     border: none;
     background: transparent;
 }
+
+.history-btn {
+    border: none;
+    outline: none;
+    background: transparent;
+    margin: 0 0 5px 1rem;
+    color: #ffc107;
+
+    border-radius: 10px;
+    padding: 7px 12px;
+
+    transition: box-shadow 0.2s ease
+}
+
+.history-btn:hover {
+    box-shadow: 1px 2px 10px rgb(0 0 0 / 30%) !important;
+}
+
+.history-btn:active {
+    filter: brightness(0.9);
+}

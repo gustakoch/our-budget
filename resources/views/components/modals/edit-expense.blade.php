@@ -54,10 +54,32 @@
                             <label for="budgeted_amount_expense" class="form-label">Valor orçado* <small>(em R$)</small></label>
                             <input class="form-control" type="number" name="budgeted_amount_expense_edit" id="budgeted_amount_expense" placeholder="Informe o valor" />
                         </div>
-                        <div class="col-md-6">
-                            <label for="realized_amount_expense_edit" class="form-label">Valor realizado <small>(em R$)</small></label>
-                            <input class="form-control" type="text" name="realized_amount_expense_edit" id="realized_amount_expense_edit" placeholder="Informe o valor" />
-                            <small style="display: block; margin-top: 0.5rem;">(Utilize o "=" para somar valores. Ex: =75+18+24,5)</small>
+                        <div class="col-md-6" style="margin-top: -12px;">
+                            <div class="d-flex align-items-end">
+                                <label for="realized_amount_expense_edit" class="form-label">Lançar valor <small>(em R$)</small></label>
+                                <div style="height: 42px;">
+                                    <button
+                                        class="history-btn"
+                                        data-toggle="modal"
+                                        data-target="#modalHistoryExpenses"
+                                        title="Visualizar histórico de lançamentos"
+                                        style="display: none;"
+                                    >
+                                        <i class="fas fa-history fa-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <input
+                                class="form-control"
+                                type="number"
+                                name="realized_amount_expense_edit"
+                                id="realized_amount_expense_edit"
+                                placeholder="Informe um valor"
+                                autocomplete="off"
+                            />
+                            <input type="hidden" name="total_realized_amount" />
+                            <small style="display: block; margin-top: 0.5rem;">(Ex: 100 para somar, -100 para subtrair)</small>
                         </div>
                     </div>
                     <div class="form-check my-3">

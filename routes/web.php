@@ -61,6 +61,7 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/expenses/cancel/one',         [ExpensesController::class, 'cancelOneInstallment']);
     Route::post('/expenses/cancel/all',         [ExpensesController::class, 'cancelAllInstallments']);
     Route::post('/expenses/extend/{id}',        [ExpensesController::class, 'extendInstallments']);
+    Route::post('/expenses/history/{id}',       [ExpensesController::class, 'history']);
 
     Route::post('/invoices/pay',            [InvoicesController::class, 'pay']);
 

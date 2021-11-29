@@ -6,6 +6,7 @@ use App\Models\CategoryModel;
 use App\Models\CreditCardInvoiceModel;
 use App\Models\ExpenseInstallmentsModel;
 use App\Models\ExpenseModel;
+use App\Models\ExpensesHistoryEntriesModel;
 use Illuminate\Http\Request;
 use stdClass;
 
@@ -13,6 +14,7 @@ class ExpensesController extends Controller
 {
     private $expenseModel;
     private $expenseInstallmentModel;
+    private $expensesHistoryEntriesModel;
     private $categoryModel;
     private $creditCardInvoiceModel;
     private $month;
@@ -22,12 +24,14 @@ class ExpensesController extends Controller
         ExpenseModel $expenseModel,
         ExpenseInstallmentsModel $expenseInstallmentModel,
         CategoryModel $categoryModel,
-        CreditCardInvoiceModel $creditCardInvoiceModel
+        CreditCardInvoiceModel $creditCardInvoiceModel,
+        ExpensesHistoryEntriesModel $expensesHistoryEntriesModel
     ) {
         $this->expenseModel = $expenseModel;
         $this->categoryModel = $categoryModel;
         $this->creditCardInvoiceModel = $creditCardInvoiceModel;
         $this->expenseInstallmentModel = $expenseInstallmentModel;
+        $this->expensesHistoryEntriesModel = $expensesHistoryEntriesModel;
 
         session_start();
         $this->month = $_SESSION['month'];
@@ -333,6 +337,7 @@ class ExpensesController extends Controller
     {
         $expense = ExpenseModel::find($id);
         $expense['category_active'] = $this->categoryModel->isCategoryActive($expense['category']);
+        $expense['has_history'] = $this->expensesHistoryEntriesModel->verifyIsExpenseHasHistory($id);
 
         return response()->json($expense);
     }
@@ -405,6 +410,16 @@ class ExpensesController extends Controller
             }
         }
 
+        if ($data['realized_amount_expense_edit'] != '0') {
+            ExpensesHistoryEntriesModel::create([
+                'expense_id' => $data['id_expense'],
+                'value' => $data['realized_amount_expense_edit'],
+                'user_id' => session('user')['id']
+            ]);
+        }
+
+        $totalExpense = $this->expensesHistoryEntriesModel->getTotalExpenseSum($data['id_expense']);
+
         if ($data['payment_method_change'] == 'N') {
             if ($data['category_active'] == 1) {
                 ExpenseModel::where('id', $data['id_expense'])
@@ -413,7 +428,7 @@ class ExpensesController extends Controller
                         'category' => $data['category_expense_edit'],
                         'period' => $data['period_expense_edit'],
                         'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                        'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                        'realized_amount' => floatval($totalExpense),
                         'credit_card' => $data['credit_card_edit'],
                         'invoice' => $invoice->id
                     ]);
@@ -423,7 +438,7 @@ class ExpensesController extends Controller
                         'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
                         'period' => $data['period_expense_edit'],
                         'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                        'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                        'realized_amount' => floatval($totalExpense),
                         'credit_card' => $data['credit_card_edit'],
                         'invoice' => $invoice->id
                     ]);
@@ -452,7 +467,7 @@ class ExpensesController extends Controller
                                 'category' => $data['category_expense_edit'],
                                 'period' => $data['period_expense_edit'],
                                 'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                                'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                                'realized_amount' => floatval($totalExpense),
                                 'credit_card' => $data['credit_card_edit'],
                                 'invoice' => $invoice->id
                             ]);
@@ -462,7 +477,7 @@ class ExpensesController extends Controller
                                 'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
                                 'period' => $data['period_expense_edit'],
                                 'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                                'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                                'realized_amount' => floatval($totalExpense),
                                 'credit_card' => $data['credit_card_edit'],
                                 'invoice' => $invoice->id
                             ]);
@@ -476,7 +491,7 @@ class ExpensesController extends Controller
                             'category' => $data['category_expense_edit'],
                             'period' => $data['period_expense_edit'],
                             'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                            'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                            'realized_amount' => floatval($totalExpense),
                             'credit_card' => $data['credit_card_edit'],
                             'invoice' => $invoice->id
                         ]);
@@ -486,7 +501,7 @@ class ExpensesController extends Controller
                             'description' => mb_convert_case($data['description_expense_edit'], MB_CASE_TITLE, "UTF-8"),
                             'period' => $data['period_expense_edit'],
                             'budgeted_amount' => $data['budgeted_amount_expense_edit'],
-                            'realized_amount' => floatval($data['realized_amount_expense_edit']),
+                            'realized_amount' => floatval($totalExpense),
                             'credit_card' => $data['credit_card_edit'],
                             'invoice' => $invoice->id
                         ]);
@@ -551,6 +566,31 @@ class ExpensesController extends Controller
         return response()->json([
             'ok' => true,
             'message' => 'As despesas foram prorrogadas com sucesso.'
+        ]);
+    }
+
+    public function history($id)
+    {
+        $entries = $this->expensesHistoryEntriesModel->getAllEntriesByExpense($id);
+
+        if (is_null($entries)) {
+            return response()->json([
+                'ok' => true,
+                'data' => []
+            ]);
+        }
+
+        $totalHistoryAmount = 0;
+
+        foreach ($entries as $entry) {
+            $totalHistoryAmount += $entry->value;
+            $entry->value = str_replace('.', ',', $entry->value);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'data' => $entries,
+            'totalHistory' => $totalHistoryAmount
         ]);
     }
 }

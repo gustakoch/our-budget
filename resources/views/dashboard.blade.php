@@ -455,6 +455,7 @@
 @include('components.modals.reason-cancellation')
 @include('components.modals.reason-cancellation-all')
 @include('components.modals.info-expense')
+@include('components.modals.history-expenses')
 
 @component('components.fab')@endcomponent
 
