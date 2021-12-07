@@ -1787,4 +1787,127 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
     })
+
+    jQuery(document).on('click', '#search-expenses-by-categories', function(e) {
+        let button = jQuery(this)
+
+        jQuery.ajax({
+            url: 'search',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-search-expenses-by-categories').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function() {
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function(xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
+            },
+            success: function(response) {
+                stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
+
+                if (response.ok) {
+                    jQuery('#btn-accordion-search').click()
+
+                    let table = `
+                    <div class="accordion" id="accordionResults">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingResults">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResults" aria-expanded="true" aria-controls="collapseResults">
+                                <strong>Resultados da pesquisa</strong>
+                            </button>
+                            </h2>
+                            <div id="collapseResults" class="accordion-collapse collapse show" aria-labelledby="headingResults" data-bs-parent="#accordionResults">
+                                <div class="accordion-body">`
+
+                    jQuery(response.data).each((index, item) => {
+                        let hr = '<hr />'
+
+                        if (index == 0) {
+                            hr = ''
+                        }
+
+                        if (item.expenses.length == 0) {
+                            table += `
+                                ${hr}
+                                <div class="">
+                                    <h5>${item.category}</h5>
+                                </div>
+                                <span class="text gray-text-color">Não foram encontrados registros nesta categoria.</span>
+                            `
+                        } else {
+                            table += `
+                                <div class="">
+                                    <h5>${item.category}</h5>
+                                </div>
+                                <table id="table-reports" class="table bg-white table-hover" style="vertical-align: middle">
+                                    <thead class="table-secondary">
+                                        <tr>
+                                            <th>Descrição da despesa</th>
+                                            <th>Parcela(s)</th>
+                                            <th>Mês/Ano</th>
+                                            <th>Vlr. Orçado (R$)</th>
+                                            <th>Vlr. Realizado (R$)</th>
+                                            <th>Vlr. Pendente (R$)</th>
+                                            <th>Lançado por</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="gray-text-color">`
+
+                            let budgetedSum = 0
+                            let realizedSum = 0
+                            let pendingSum = 0
+                            jQuery(item.expenses).each((i, expense) => {
+                                budgetedSum += Number(expense.budgeted_amount)
+                                realizedSum += Number(expense.realized_amount)
+                                pendingSum += Number(expense.pending_amount)
+
+                                table += `
+                                    <tr>
+                                        <td>${expense.expense_name}</td>
+                                        <td>${expense.installment}</td>
+                                        <td>${expense.month_name}/${expense.year}</td>
+                                        <td>${amountParseFloat(expense.budgeted_amount)}</td>
+                                        <td>${amountParseFloat(expense.realized_amount)}</td>
+                                        <td>${amountParseFloat(expense.pending_amount)}</td>
+                                        <td>${expense.user_name}</td>
+                                    </tr>
+
+                                `
+                            })
+                            table += `
+                                <tr style="border: 1px solid #fff;">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><strong>${amountParseFloat(budgetedSum)}</strong></td>
+                                    <td><strong>${amountParseFloat(realizedSum)}</strong></td>
+                                    <td><strong>${amountParseFloat(pendingSum)}</strong></td>
+                                    <td></td>
+                                </tr>
+                            `
+
+                            table += `</tbody>
+                                </table>
+                            `
+                        }
+                    })
+
+                    table +=        `</div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+
+                    jQuery('#table-reports').html(table)
+                } else {
+                    swalNotification('Presta atenção aí', response.message, 'error', 'Tá, entendi')
+                }
+            }
+        })
+    })
 })

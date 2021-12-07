@@ -154,4 +154,56 @@ class ExpenseModel extends Model
 
         return $years;
     }
+
+    public function getDistinctYears()
+    {
+        $years = DB::select("
+                SELECT distinct year
+            FROM expenses
+            ORDER BY year
+        ");
+
+        return $years;
+    }
+
+    public function getExpensesReport(
+        $category,
+        $startMonth,
+        $endMonth,
+        $startYear,
+        $endYear,
+        $users
+     ) {
+        $expenses = DB::select("
+            SELECT
+                e.description expense_name
+                , c.description category_name
+                , m.description month_name
+                , e.year
+                , e.budgeted_amount
+                , e.realized_amount
+                , (e.budgeted_amount - e.realized_amount) pending_amount
+                , CASE WHEN
+                    e.installments > 1 THEN
+                    e.installment || ' de ' || e.installments
+                  ELSE '-'
+                END installment
+                , u.name user_name
+            FROM expenses e
+                , categories c
+                , users u
+                , months m
+            WHERE category = ?
+            AND c.id = e.category
+            AND u.id = e.user_id
+            AND m.id = e.month
+            AND e.month BETWEEN ? AND ?
+            AND e.year BETWEEN ? AND ?
+            AND e.user_id in (".$users.")
+            ORDER BY e.month
+                , e.description
+        ", [$category, $startMonth, $endMonth, $startYear, $endYear]);
+
+        return $expenses;
+    }
 }

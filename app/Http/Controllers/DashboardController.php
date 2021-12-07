@@ -264,7 +264,7 @@ class DashboardController extends Controller
             'budgeted_amount_expenses2' => $amountExpensesPeriod2,
             'realized_amount_expenses2' => $realizedExpensesPeriod2,
             'pending_amount_expenses2' => $pendingExpensesPeriod2,
-            'type_expenses' => isset($typeExpenses->gradle_format) ? $typeExpenses->gradle_format : '30',
+            'type_expenses' => '30',
             'cards' => $cards,
             'creditCardExpenses' => $allCreditCardExpenses,
             'resumeData' => [

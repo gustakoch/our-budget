@@ -343,3 +343,11 @@ input[name="year"], input[name="month"] {
 .history-btn:active {
     filter: brightness(0.9);
 }
+
+.gray-text-color {
+    color: #666;
+}
+
+table#table-reports {
+    margin-bottom: 2rem;
+}

@@ -48,6 +48,18 @@
                     </a>
                 @endif
             </li>
+
+            <li>
+                <a href="#menuRelatorios" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-newspaper"></i>
+                    Relatórios
+                </a>
+                <ul class="collapse list-unstyled" id="menuRelatorios">
+                    <li>
+                        <a href="{{ route('report.expenses.category') }}">Despesas por categorias</a>
+                    </li>
+                </ul>
+            </li>
         </li>
         <hr />
         @if (isset($_SESSION['monthName']) && isset($_SESSION['year']))

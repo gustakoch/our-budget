@@ -57,4 +57,24 @@ class CategoryModel extends Model
 
         return $status->active;
     }
+
+    public function getOnlyExpensesCategories()
+    {
+        $expenseCategories = DB::select("
+                    SELECT
+                id
+                , description
+                , active
+                , case when
+                    active = 0 then '(Desativado)'
+                  else ''
+                end active_description
+                , to_char(created_at, 'dd/mm/yyyy hh24:mi') created_at
+            FROM categories
+            WHERE belongs_to = 2
+            ORDER BY description
+        ");
+
+        return $expenseCategories;
+    }
 }
