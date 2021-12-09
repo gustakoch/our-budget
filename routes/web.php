@@ -11,6 +11,7 @@ use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,6 +67,8 @@ Route::middleware(['is.authenticated'])->group(function() {
 
     Route::get('/reports/expenses-by-category',     [ReportController::class, 'expensesByCategory'])->name('report.expenses.category');
     Route::post('/reports/search',                  [ReportController::class, 'search']);
+
+    Route::get('/tickets',                  [TicketController::class, 'index'])->name('tickets');
 
     Route::post('/invoices/pay',            [InvoicesController::class, 'pay']);
 

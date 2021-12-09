@@ -1837,7 +1837,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="">
                                     <h5>${item.category}</h5>
                                 </div>
-                                <span class="text gray-text-color">Não foram encontrados registros nesta categoria.</span>
+                                <span class="text gray-text-color">Não foram encontrados registros.</span>
                             `
                         } else {
                             table += `

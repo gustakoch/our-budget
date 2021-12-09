@@ -36,20 +36,6 @@
             @endif
 
             <li>
-                @if (session('user')['firstAccess'] != 1)
-                    <a href="{{ route('config') }}">
-                    <i class="fas fa-cogs"></i>
-                        Configurações
-                    </a>
-                @else
-                    <a href="{{ route('initial') }}">
-                        <i class="fas fa-cogs"></i>
-                        Configurações iniciais
-                    </a>
-                @endif
-            </li>
-
-            <li>
                 <a href="#menuRelatorios" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <i class="fas fa-newspaper"></i>
                     Relatórios
@@ -59,6 +45,26 @@
                         <a href="{{ route('report.expenses.category') }}">Despesas por categorias</a>
                     </li>
                 </ul>
+            </li>
+
+            <li>
+                @if (session('user')['firstAccess'] != 1)
+                    <a href="{{ route('config') }}">
+                        <i class="fas fa-cogs"></i>
+                        Configurações
+                    </a>
+                @else
+                    <a href="{{ route('initial') }}">
+                        <i class="fas fa-cogs"></i>
+                        Configurações iniciais
+                    </a>
+                @endif
+            </li>
+            <li>
+                <a href="{{ route('tickets') }}">
+                    <i class="fas fa-ticket-alt"></i>
+                    Tickets
+                </a>
             </li>
         </li>
         <hr />
