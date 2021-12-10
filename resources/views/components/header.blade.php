@@ -60,12 +60,12 @@
                     </a>
                 @endif
             </li>
-            <li>
+            {{-- <li>
                 <a href="{{ route('tickets') }}">
                     <i class="fas fa-ticket-alt"></i>
                     Tickets
                 </a>
-            </li>
+            </li> --}}
         </li>
         <hr />
         @if (isset($_SESSION['monthName']) && isset($_SESSION['year']))

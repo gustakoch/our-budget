@@ -8,17 +8,8 @@
     <span>Realize a abertura de chamados para a equipe de suporte técnico</span>
 </nav>
 
-{{-- <button
-    class="btn btn-success mb-4"
-    data-bs-toggle="modal"
-    data-bs-target="#addCategoryModal"
->
-    <i class="fas fa-plus-circle"></i>
-    Novo ticket
-</button>
-
-<div class="car">
-    Conteúdo aqui desse caralho
-</div> --}}
+<div>
+    Em breve...
+</div>
 
 @endsection
