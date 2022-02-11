@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const formNewRecipe = document.querySelector('#form-new-recipe')
     const formEditRecipe = document.querySelector('#form-edit-recipe')
     const formNewExpense = document.querySelector('#form-new-expense')
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
 
-    window.onload = function() {
+    window.onload = function () {
         let reloadingRecipe = sessionStorage.getItem('reloadingRecipe');
         let reloadingExpense = sessionStorage.getItem('reloadingExpense');
 
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            success: function(response) {
+            success: function (response) {
                 appUrl = response.appUrl
             }
         })
@@ -70,11 +70,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function swalNotification(title, text, icon, confirmButtonText) {
-        return Swal.fire({title, text, icon, confirmButtonColor: '#3085d6', confirmButtonText})
+        return Swal.fire({ title, text, icon, confirmButtonColor: '#3085d6', confirmButtonText })
     }
 
-    jQuery(document).on('click', '.save-recipe', function(e) {
-        sessionStorage.removeItem('reloadingRecipe');
+    jQuery(document).on('click', '.save-recipe', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -102,26 +101,27 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Salvar e fechar')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Salvar e fechar')
 
                 if (response.ok) {
                     jQuery('#addRecipeModal').modal('hide')
-
                     location.reload()
+
+                    sessionStorage.removeItem('reloadingRecipe')
                 }
             }
         })
     })
 
-    jQuery(document).on('click', '.save-recipe-continue', function(e) {
+    jQuery(document).on('click', '.save-recipe-continue', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -149,26 +149,27 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Salvar e continuar')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Salvar e continuar')
 
                 if (response.ok) {
                     jQuery('#addRecipeModal').modal('hide')
 
-                    location.reload()
+                    sessionStorage.setItem('reloadingRecipe', 'true');
+                    document.location.reload()
                 }
             }
         })
     })
 
-    jQuery(document).on('click', '.save-expense-continue', function(e) {
+    jQuery(document).on('click', '.save-expense-continue', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -207,14 +208,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Salvar e continuar')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Salvar e continuar')
 
                 if (response.ok) {
@@ -227,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.save-category', function(e) {
+    jQuery(document).on('click', '.save-category', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -250,14 +251,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Salvar e fechar')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Salvar e fechar')
 
                 if (response.ok) {
@@ -268,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.save-card', function(e) {
+    jQuery(document).on('click', '.save-card', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -295,14 +296,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Salvar cartão')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Salvar cartão')
 
                 if (response.ok) {
@@ -316,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '#first-access', function(e) {
+    jQuery(document).on('click', '#first-access', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -345,14 +346,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Salvar dados')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Salvar dados')
 
                 let appUrl = getAppUrl()
@@ -362,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('change', 'select[name="installments_expense"]', function(e) {
+    jQuery(document).on('change', 'select[name="installments_expense"]', function (e) {
         jQuery('input[name="repeat_next_months_expense"]').prop('checked', false)
 
         if (jQuery(this).val() == '1') {
@@ -376,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
         jQuery('input[name="repeat_next_months_expense"]').attr('disabled', true)
     })
 
-    jQuery(document).on('click', '.save-expense', function(e) {
+    jQuery(document).on('click', '.save-expense', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -415,14 +416,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Salvar e fechar')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Salvar e fechar')
 
                 if (response.ok) {
@@ -435,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.update-recipe', function(e) {
+    jQuery(document).on('click', '.update-recipe', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -462,14 +463,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Atualizar receita')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Atualizar receita')
 
                 if (response.ok) {
@@ -480,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.update-category', function(e) {
+    jQuery(document).on('click', '.update-category', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -502,14 +503,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Atualizar categoria')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Atualizar categoria')
                 jQuery('#loadingSpinner').show()
 
@@ -521,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.update-card', function(e) {
+    jQuery(document).on('click', '.update-card', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -543,14 +544,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Atualizar cartão')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Atualizar cartão')
 
                 if (response.ok) {
@@ -561,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.update-expense', function(e) {
+    jQuery(document).on('click', '.update-expense', function (e) {
         e.preventDefault()
 
         let button = jQuery(this)
@@ -622,10 +623,10 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.ok) {
                     jQuery.ajax({
                         url: 'expenses/update',
@@ -646,14 +647,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                         },
-                        beforeSend: function() {
+                        beforeSend: function () {
                             showLoadingOnButton(button, 'Carregando...')
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                             stopLoadingOnButton(button, 'Atualizar despesa')
                         },
-                        success: function(response) {
+                        success: function (response) {
                             stopLoadingOnButton(button, 'Atualizar despesa')
 
                             if (response.ok) {
@@ -705,14 +706,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                                 },
-                                beforeSend: function() {
+                                beforeSend: function () {
                                     showLoadingOnButton(button, 'Carregando...')
                                 },
-                                error: function(xhr, status, error) {
+                                error: function (xhr, status, error) {
                                     swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                                     stopLoadingOnButton(button, 'Atualizar despesa')
                                 },
-                                success: function(response) {
+                                success: function (response) {
                                     stopLoadingOnButton(button, 'Atualizar despesa')
 
                                     if (response.ok) {
@@ -732,7 +733,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.edit-recipe', function(e) {
+    jQuery(document).on('click', '.edit-recipe', function (e) {
         e.preventDefault()
 
         let id = $(this).attr('id')
@@ -745,15 +746,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#modalHeaderEditRecipe').hide()
                 jQuery('#modalFooterEditRecipe').hide()
                 jQuery('#form-edit-recipe').hide()
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 jQuery('#modalHeaderEditRecipe').show()
                 jQuery('#modalFooterEditRecipe').show()
                 jQuery('#form-edit-recipe').show()
@@ -792,7 +793,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.edit-category', function(e) {
+    jQuery(document).on('click', '.edit-category', function (e) {
         e.preventDefault()
 
         let id = $(this).attr('id')
@@ -805,10 +806,10 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 jQuery('input[name="id_category"]').val(response.id)
 
                 jQuery('input[name="description_category_edit"]').val(response.description)
@@ -827,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.edit-card', function(e) {
+    jQuery(document).on('click', '.edit-card', function (e) {
         e.preventDefault()
 
         let id = $(this).attr('id')
@@ -840,15 +841,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#modalHeaderEditCard').hide()
                 jQuery('#modalFooterEditCard').hide()
                 jQuery('#form-edit-card').hide()
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 jQuery('#modalHeaderEditCard').show()
                 jQuery('#modalFooterEditCard').show()
                 jQuery('#form-edit-card').show()
@@ -870,7 +871,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.cancel-installment', function(e) {
+    jQuery(document).on('click', '.cancel-installment', function (e) {
         e.preventDefault()
 
         let id = $(this).attr('id')
@@ -883,19 +884,19 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#loadingSpinnerInfo').show()
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 jQuery('input[name="id_expense"]').val(response.id)
             }
         })
     })
 
-    jQuery(document).on('click', '.cancel-installments', function(e) {
+    jQuery(document).on('click', '.cancel-installments', function (e) {
         e.preventDefault()
 
         let id = $(this).attr('id')
@@ -908,19 +909,19 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#loadingSpinnerInfo').show()
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 jQuery('input[name="id_expense"]').val(response.id)
             }
         })
     })
 
-    jQuery(document).on('click', '.info-expense', function(e) {
+    jQuery(document).on('click', '.info-expense', function (e) {
         e.preventDefault()
 
         let id = $(this).attr('id')
@@ -933,13 +934,13 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#loadingSpinnerInfo').show()
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 console.log(response)
                 jQuery('#loadingSpinnerInfo').hide()
 
@@ -965,7 +966,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.edit-expense', function(e) {
+    jQuery(document).on('click', '.edit-expense', function (e) {
         e.preventDefault()
 
         let id = $(this).attr('id')
@@ -978,15 +979,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#modalHeaderEditExpense').hide()
                 jQuery('#modalFooterEditExpense').hide()
                 jQuery('#form-edit-expense').hide()
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 jQuery('#modalHeaderEditExpense').show()
                 jQuery('#modalFooterEditExpense').show()
                 jQuery('#form-edit-expense').show()
@@ -1047,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.save-reason-cancellation', function(e) {
+    jQuery(document).on('click', '.save-reason-cancellation', function (e) {
         e.preventDefault()
 
         let reasonCancelled = jQuery('textarea[name="reason_cancelled"]').val()
@@ -1067,15 +1068,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#loadingSpinnerInfo').show()
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Cancelar parcela')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Cancelar parcela')
 
                 if (response.ok) {
@@ -1089,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.save-reason-cancellation-all', function(e) {
+    jQuery(document).on('click', '.save-reason-cancellation-all', function (e) {
         e.preventDefault()
 
         let reasonCancelled = jQuery('textarea[name="reason_cancelled_all"]').val()
@@ -1109,15 +1110,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#loadingSpinnerInfo').show()
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Cancelar parcelas')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Cancelar parcelas')
 
                 if (response.ok) {
@@ -1132,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '#save-my-data', function(e) {
+    jQuery(document).on('click', '#save-my-data', function (e) {
         e.preventDefault()
 
         let name = jQuery('input[name="name"]').val()
@@ -1161,15 +1162,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#loadingSpinnerInfo').show()
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Atualizar configuração')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Atualizar configuração')
 
                 if (response.ok) {
@@ -1190,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.delete-recipe', function() {
+    jQuery(document).on('click', '.delete-recipe', function () {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
@@ -1212,13 +1213,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.ok) {
                             location.reload()
-                            swalNotification('Removido', 'Sua receita foi removida com sucesso.', 'success','Continuar')
+                            swalNotification('Removido', 'Sua receita foi removida com sucesso.', 'success', 'Continuar')
                         }
                     }
                 })
@@ -1226,7 +1227,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.pay-invoice', function() {
+    jQuery(document).on('click', '.pay-invoice', function () {
         let invoiceId = jQuery(this).attr('data-js-invoice-id')
         let cardName = jQuery(this).attr('data-js-card-name')
 
@@ -1250,10 +1251,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.ok) {
                             location.reload()
                             swalNotification('Fatura paga', response.message, 'success', 'Continuar')
@@ -1264,7 +1265,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.delete-category', function() {
+    jQuery(document).on('click', '.delete-category', function () {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
@@ -1286,10 +1287,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.ok) {
                             location.reload()
                             swalNotification('Removido', 'Categoria foi removida com sucesso', 'success', 'Continuar')
@@ -1300,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.delete-card', function() {
+    jQuery(document).on('click', '.delete-card', function () {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
@@ -1322,10 +1323,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.ok) {
                             location.reload()
                             swalNotification('Removido', 'Cartão foi removido com sucesso', 'success', 'Continuar')
@@ -1336,7 +1337,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.revert-installment', function() {
+    jQuery(document).on('click', '.revert-installment', function () {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
@@ -1358,10 +1359,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.ok) {
                             location.reload()
                             swalNotification('Revertido', 'Parcela foi revertida com sucesso', 'success', 'Continuar')
@@ -1372,7 +1373,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.delete-expense', function() {
+    jQuery(document).on('click', '.delete-expense', function () {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
@@ -1394,10 +1395,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.ok) {
                             swalNotification('Removido', 'Despesa foi removida com sucesso', 'success', 'Continuar')
                             location.reload()
@@ -1408,7 +1409,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.delete-total-expense', function() {
+    jQuery(document).on('click', '.delete-total-expense', function () {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
@@ -1430,10 +1431,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.ok) {
                             swalNotification('Removidos', response.message, 'success', 'Continuar')
 
@@ -1445,7 +1446,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.history-btn', function(e) {
+    jQuery(document).on('click', '.history-btn', function (e) {
         e.preventDefault()
 
         let idExpense = jQuery('input[name="id_expense"]').val()
@@ -1460,21 +1461,21 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#loadingSpinnerHistory').show()
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 jQuery('#loadingSpinnerHistory').hide()
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.ok) {
                     jQuery('#tbody-table-history').html('')
                     jQuery('#loadingSpinnerHistory').hide()
 
                     var rows = ''
 
-                    jQuery(response.data).each(function(i, item) {
+                    jQuery(response.data).each(function (i, item) {
                         rows += `
                             <tr>
                             <td>R$ ${item.value}</td>
@@ -1486,7 +1487,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     jQuery('.table-history').show()
                     jQuery('#tbody-table-history').append(rows)
                     jQuery('#total-history').text(
-                        `R$ ${response.totalHistory.toLocaleString('pt-br', {minimumFractionDigits: 2})}`
+                        `R$ ${response.totalHistory.toLocaleString('pt-br', { minimumFractionDigits: 2 })}`
                     )
                 } else {
                     jQuery('#table-history').hide()
@@ -1495,7 +1496,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('change', 'input[name="month"], input[name="year"]', function(e) {
+    jQuery(document).on('change', 'input[name="month"], input[name="year"]', function (e) {
         let month = jQuery('input[name="month"]:checked').val()
         let year = jQuery('input[name="year"]:checked').val()
         let appUrl = getAppUrl();
@@ -1503,7 +1504,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = `${appUrl}/dashboard?month=${month}&year=${year}`
     })
 
-    jQuery(document).on('click', '.cancel-recipe', function(e) {
+    jQuery(document).on('click', '.cancel-recipe', function (e) {
         e.preventDefault()
 
         formNewRecipe.reset()
@@ -1518,18 +1519,18 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.removeItem('reloadingRecipe')
     })
 
-    jQuery(document).on('click', '.cancel-card', function(e) {
+    jQuery(document).on('click', '.cancel-card', function (e) {
         jQuery('#loadingSpinnerCard').show()
     })
 
-    jQuery(document).on('click', '.cancel-user', function(e) {
+    jQuery(document).on('click', '.cancel-user', function (e) {
         jQuery('#loadingSpinnerUser').show()
 
         formNewUser.reset()
         formEditUser.reset()
     })
 
-    jQuery(document).on('click', '.cancel-expense', function(e) {
+    jQuery(document).on('click', '.cancel-expense', function (e) {
         e.preventDefault()
 
         formNewExpense.reset()
@@ -1550,7 +1551,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.removeItem('reloadingExpense')
     })
 
-    jQuery(document).on('change', '#expense_paid', function(e) {
+    jQuery(document).on('change', '#expense_paid', function (e) {
         let budgetedAmount = jQuery('input[name="budgeted_amount_expense_edit"]').val()
         let realizedAmount = jQuery('input[name="realized_amount_expense_edit"]').val()
 
@@ -1565,7 +1566,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
-    jQuery(document).on('change', '.was_with_credit_card', function(e) {
+    jQuery(document).on('change', '.was_with_credit_card', function (e) {
         if (jQuery(this).is(':checked')) {
             jQuery('#expense_card_selection').show()
             jQuery('#expense_card_selection').children().eq(1).attr('disabled', false)
@@ -1576,7 +1577,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
-    jQuery(document).on('change', '.was_with_credit_card_edit', function(e) {
+    jQuery(document).on('change', '.was_with_credit_card_edit', function (e) {
         if (jQuery(this).is(':checked')) {
             jQuery('#expense_card_selection_edit').show()
             jQuery('#expense_card_selection_edit').children().eq(1).attr('disabled', false)
@@ -1587,7 +1588,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
-    jQuery(document).on('click', '.eye-icon-password', function(e) {
+    jQuery(document).on('click', '.eye-icon-password', function (e) {
         let type = jQuery(this).siblings()[0].type
 
         if (type == 'password') {
@@ -1599,7 +1600,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
-    jQuery(document).on('click', '.copy-to-clipboard', function(e) {
+    jQuery(document).on('click', '.copy-to-clipboard', function (e) {
         let copyButtonTooltip = jQuery(this).parent()[0]
         let inputPassword = jQuery('input[name="password_user"]')[0]
         navigator.clipboard.writeText(inputPassword.value)
@@ -1608,12 +1609,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         tooltip.show()
 
-        setTimeout(function(e) {
+        setTimeout(function (e) {
             tooltip.hide()
         }, 1000)
     })
 
-    jQuery(document).on('click', '.generate-new-password', function(e) {
+    jQuery(document).on('click', '.generate-new-password', function (e) {
         jQuery.ajax({
             url: 'users/password/generate',
             type: 'get',
@@ -1622,10 +1623,10 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.ok) {
                     jQuery('input[name="password_user"]').val(response.password)
                     jQuery('input[name="password"]').val(response.password)
@@ -1634,7 +1635,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.save-user', function(e) {
+    jQuery(document).on('click', '.save-user', function (e) {
         let name = jQuery('input[name="name_user"]').val()
         let email = jQuery('input[name="email_user"]').val()
         let password = jQuery('input[name="password_user"]').val()
@@ -1655,14 +1656,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Salvar usuário')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, 'Salvar usuário')
 
                 swalNotification('Usuário criado', response.message, 'success', 'Fechar')
@@ -1671,7 +1672,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.edit-user', function(e) {
+    jQuery(document).on('click', '.edit-user', function (e) {
         let id = jQuery(this).attr('id')
 
         jQuery.ajax({
@@ -1682,15 +1683,15 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 jQuery('#modalHeaderEditUser').hide()
                 jQuery('#modalFooterEditUser').hide()
                 jQuery('#form-edit-user').hide()
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
-            success: function(response) {
+            success: function (response) {
                 jQuery('#modalHeaderEditUser').show()
                 jQuery('#modalFooterEditUser').show()
                 jQuery('#form-edit-user').show()
@@ -1711,7 +1712,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.update-user', function(e) {
+    jQuery(document).on('click', '.update-user', function (e) {
         let name = jQuery('input[name="name"]').val()
         let email = jQuery('input[name="email"]').val()
 
@@ -1731,14 +1732,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, 'Atualizar usuário')
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.ok) {
                     swalNotification('Atualizado', response.message, 'success', 'Fechar')
                     stopLoadingOnButton(button, 'Atualizar usuário')
@@ -1751,7 +1752,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '.extend-installment', function(e) {
+    jQuery(document).on('click', '.extend-installment', function (e) {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
@@ -1773,10 +1774,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.ok) {
                             swalNotification('Prorrogado', 'As parcelas da despesa foram prorrogadas com sucesso.', 'success', 'Continuar')
 
@@ -1788,7 +1789,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    jQuery(document).on('click', '#search-expenses-by-categories', function(e) {
+    jQuery(document).on('click', '#search-expenses-by-categories', function (e) {
         let button = jQuery(this)
 
         jQuery.ajax({
@@ -1800,14 +1801,14 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 showLoadingOnButton(button, 'Carregando...')
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                 stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
             },
-            success: function(response) {
+            success: function (response) {
                 stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
 
                 if (response.ok) {
@@ -1897,7 +1898,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     })
 
-                    table +=        `</div>
+                    table += `</div>
                                 </div>
                             </div>
                         </div>
