@@ -990,13 +990,45 @@ document.addEventListener('DOMContentLoaded', function () {
             success: function (response) {
                 jQuery('#modalHeaderEditExpense').show()
                 jQuery('#modalFooterEditExpense').show()
-                jQuery('#form-edit-expense').show()
                 jQuery('#loadingSpinner').hide()
+                jQuery('#form-edit-expense').show()
 
                 jQuery('input[name="id_expense"]').val(response.id)
                 jQuery('input[name="category_active"]').val(response.category_active)
                 jQuery('input[name="description_expense_edit"]').val(response.description)
                 Number(jQuery('select[name="category_expense_edit"]').val(response.category))
+
+                if ((Number(response.budgeted_amount) - Number(response.realized_amount)) === 0) {
+                    jQuery('.message-done').show()
+                    jQuery('.update-expense').hide()
+                    jQuery('#msg-info-lancar-valor').hide()
+                    jQuery('#label-realized-value').html('Total lançado <small>(em R$)</small>')
+                    jQuery('input[name="description_expense_edit"]').attr('disabled', true)
+                    jQuery('input[name="budgeted_amount_expense_edit"]').attr('disabled', true)
+                    jQuery('input[name="realized_amount_expense_edit"]').attr('disabled', true)
+                    jQuery('input[name="realized_amount_expense_edit"]').val(response.realized_amount)
+                    jQuery('#was_with_credit_card_edit').parent().css('display', 'none')
+
+                    setTimeout(function () {
+                        jQuery('select[name="category_expense_edit"]').attr('disabled', true)
+                    }, 100)
+                } else {
+                    jQuery('.message-done').hide()
+                    jQuery('.update-expense').show()
+                    jQuery('#msg-info-lancar-valor').show()
+                    jQuery('#label-realized-value').show()
+                    jQuery('#label-realized-value').html('Lançar valor <small>(em R$)</small>')
+
+                    jQuery('input[name="description_expense_edit"]').attr('disabled', false)
+                    jQuery('input[name="budgeted_amount_expense_edit"]').attr('disabled', false)
+                    jQuery('input[name="realized_amount_expense_edit"]').attr('disabled', false)
+                    jQuery('input[name="realized_amount_expense_edit"]').val('')
+                    jQuery('#was_with_credit_card_edit').parent().css('display', 'block')
+
+                    setTimeout(function () {
+                        jQuery('select[name="category_expense_edit"]').attr('disabled', false)
+                    }, 100)
+                }
 
                 if (response.category_active != 1) {
                     jQuery('select[name="category_expense_edit"]')
@@ -1546,6 +1578,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         jQuery('#expense_card_selection').hide()
         jQuery('.history-btn').css('display', 'none')
+
+        jQuery('.message-done').hide()
+        jQuery('.update-expense').show()
+        jQuery('input[name="description_expense_edit"]').attr('disabled', false)
+
+        setTimeout(function () {
+            jQuery('select[name="category_expense_edit"]').attr('disabled', false)
+        }, 100)
 
         sessionStorage.removeItem('realizedAmount')
         sessionStorage.removeItem('reloadingExpense')
