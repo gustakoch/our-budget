@@ -44,6 +44,7 @@ class ExpensesController extends Controller
 
         $repeatNextMonths = isset($data['repeat_next_months_expense']) ? 1 : 0;
         $period = isset($data['period_expense']) ? $data['period_expense'] : 0;
+        $expensePaid = isset($data['make_expense_paid']) ? $data['make_expense_paid'] : 0;
         $data['credit_card'] = isset($data['credit_card']) ? $data['credit_card'] : null;
         $installmentsExpense = intval($data['installments_expense']);
 
@@ -103,10 +104,17 @@ class ExpensesController extends Controller
                             'year' => $this->year
                         ]);
 
+                        if ($expensePaid) {
+                            $realizedAmount = $data['budgeted_amount_expense'];
+                        } else {
+                            $realizedAmount = 0;
+                        }
+
                         $expense = ExpenseModel::create([
                             'description' => mb_convert_case($data['description_expense'], MB_CASE_TITLE, "UTF-8"),
                             'category' => (int) $data['category_expense'],
                             'budgeted_amount' => $data['budgeted_amount_expense'],
+                            'realized_amount' => $realizedAmount,
                             'period' => $period,
                             'installments' => $data['installments_expense'],
                             'installment' => $i,
@@ -156,10 +164,17 @@ class ExpensesController extends Controller
                         'year' => $this->year
                     ]);
 
+                    if ($expensePaid) {
+                        $realizedAmount = $data['budgeted_amount_expense'];
+                    } else {
+                        $realizedAmount = 0;
+                    }
+
                     ExpenseModel::create([
                         'description' => mb_convert_case($data['description_expense'], MB_CASE_TITLE, "UTF-8"),
                         'category' => (int) $data['category_expense'],
                         'budgeted_amount' => $data['budgeted_amount_expense'],
+                        'realized_amount' => $realizedAmount,
                         'period' => $period,
                         'repeat_next_months' => $repeatNextMonths,
                         'month' => $this->month,
@@ -229,10 +244,17 @@ class ExpensesController extends Controller
                 ]);
             }
 
+            if ($expensePaid) {
+                $realizedAmount = $data['budgeted_amount_expense'];
+            } else {
+                $realizedAmount = 0;
+            }
+
             ExpenseModel::create([
                 'description' => mb_convert_case($data['description_expense'], MB_CASE_TITLE, "UTF-8"),
                 'category' => (int) $data['category_expense'],
                 'budgeted_amount' => $data['budgeted_amount_expense'],
+                'realized_amount' => $realizedAmount,
                 'period' => $period,
                 'repeat_next_months' => $repeatNextMonths,
                 'month' => $this->month,

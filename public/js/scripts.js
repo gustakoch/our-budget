@@ -365,16 +365,72 @@ document.addEventListener('DOMContentLoaded', function () {
 
     jQuery(document).on('change', 'select[name="installments_expense"]', function (e) {
         jQuery('input[name="repeat_next_months_expense"]').prop('checked', false)
+        jQuery('input[name="make_expense_paid"]').prop('checked', false)
+        jQuery('#was_with_credit_card').attr('checked', false)
+
+        console.log(jQuery(this).val())
 
         if (jQuery(this).val() == '1') {
             jQuery('input[name="budgeted_amount_expense"]').attr('placeholder', 'Informe o valor orçado (R$)')
             jQuery('input[name="repeat_next_months_expense"]').attr('disabled', false)
-
-            return false
+            jQuery('input[name="make_expense_paid"]').attr('disabled', false)
+        } else {
+            jQuery('input[name="budgeted_amount_expense"]').attr('placeholder', 'Informe o valor da parcela (R$)')
+            jQuery('input[name="repeat_next_months_expense"]').attr('disabled', true)
+            jQuery('input[name="make_expense_paid"]').attr('disabled', true)
+            jQuery('#was_with_credit_card').attr('disabled', false)
         }
+    })
 
-        jQuery('input[name="budgeted_amount_expense"]').attr('placeholder', 'Informe o valor da parcela (R$)')
-        jQuery('input[name="repeat_next_months_expense"]').attr('disabled', true)
+    jQuery(document).on('change', '#make_expense_paid', function(e) {
+        jQuery('input[name="repeat_next_months_expense"]').prop('checked', false)
+        jQuery('#was_with_credit_card').prop('checked', false)
+
+        if (jQuery(this).is(':checked')) {
+            jQuery('input[name="repeat_next_months_expense"]').attr('disabled', true)
+            jQuery('#was_with_credit_card').attr('disabled', true)
+
+            jQuery('#expense_card_selection').hide()
+        } else {
+            jQuery('input[name="repeat_next_months_expense"]').attr('disabled', false)
+            jQuery('#was_with_credit_card').attr('disabled', false)
+        }
+    })
+
+    jQuery(document).on('change', '#was_with_credit_card', function(e) {
+        jQuery('input[name="repeat_next_months_expense"]').prop('checked', false)
+        jQuery('input[name="make_expense_paid"]').prop('checked', false)
+
+        if (jQuery(this).is(':checked')) {
+            jQuery('input[name="repeat_next_months_expense"]').attr('disabled', true)
+            jQuery('input[name="make_expense_paid"]').attr('disabled', true)
+
+            jQuery('#expense_card_selection').hide()
+        } else {
+            if (+jQuery('select[name="installments_expense"]').val() > 1) {
+                jQuery('input[name="make_expense_paid"]').attr('disabled', true)
+                jQuery('input[name="repeat_next_months_expense"]').attr('disabled', true)
+
+            } else {
+                jQuery('input[name="make_expense_paid"]').attr('disabled', false)
+                jQuery('input[name="repeat_next_months_expense"]').attr('disabled', false)
+            }
+        }
+    })
+
+    jQuery(document).on('change', '#repeat_next_months_expense', function(e) {
+        jQuery('input[name="make_expense_paid"]').prop('checked', false)
+        jQuery('#was_with_credit_card').prop('checked', false)
+
+        if (jQuery(this).is(':checked')) {
+            jQuery('input[name="make_expense_paid"]').attr('disabled', true)
+            jQuery('#was_with_credit_card').attr('disabled', true)
+
+            jQuery('#expense_card_selection').hide()
+        } else {
+            jQuery('input[name="make_expense_paid"]').attr('disabled', false)
+            jQuery('#was_with_credit_card').attr('disabled', false)
+        }
     })
 
     jQuery(document).on('click', '.save-expense', function (e) {
@@ -1575,6 +1631,11 @@ document.addEventListener('DOMContentLoaded', function () {
         jQuery('input[name="expense_paid"]').prop('checked', false)
         jQuery('input[name="repeat_next_months_expense"]').attr('checked', false)
         jQuery('input[name="repeat_next_months_expense"]').attr('disabled', false)
+
+        jQuery('input[name="make_expense_paid"]').attr('checked', false)
+        jQuery('input[name="make_expense_paid"]').attr('disabled', false)
+        jQuery('#was_with_credit_card').attr('checked', false)
+        jQuery('#was_with_credit_card').attr('disabled', false)
 
         jQuery('#expense_card_selection').hide()
         jQuery('.history-btn').css('display', 'none')

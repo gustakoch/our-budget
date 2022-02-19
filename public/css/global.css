@@ -351,3 +351,7 @@ input[name="year"], input[name="month"] {
 table#table-reports {
     margin-bottom: 2rem;
 }
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
