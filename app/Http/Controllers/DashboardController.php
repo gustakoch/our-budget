@@ -129,46 +129,20 @@ class DashboardController extends Controller
             ->orderBy('expenses.description', 'asc')
             ->get();
 
-        $expensesPeriod0 = [];
-        $expensesPeriod1 = [];
-        $expensesPeriod2 = [];
-        $amountExpensesPeriod0 = 0;
-        $amountExpensesPeriod1 = 0;
-        $amountExpensesPeriod2 = 0;
-        $realizedExpensesPeriod0 = 0;
-        $realizedExpensesPeriod1 = 0;
-        $realizedExpensesPeriod2 = 0;
-        $pendingExpensesPeriod0 = 0;
-        $pendingExpensesPeriod1 = 0;
-        $pendingExpensesPeriod2 = 0;
+        $expensesPeriod = [];
+        $amountExpensesPeriod = 0;
+        $realizedExpensesPeriod = 0;
+        $pendingExpensesPeriod = 0;
 
         foreach ($userExpenses as $expense) {
             if ($expense->month == $month) {
                 if ($expense->period == 0) {
-                    array_push($expensesPeriod0, $expense);
+                    array_push($expensesPeriod, $expense);
 
                     if ($expense->cancelled == 0) {
-                        $amountExpensesPeriod0 += (float) $expense->budgeted_amount;
-                        $realizedExpensesPeriod0 += (float) $expense->realized_amount;
-                        $pendingExpensesPeriod0 += (float) $expense->budgeted_amount - $expense->realized_amount;
-                    }
-                }
-                elseif ($expense->period == 1) {
-                    array_push($expensesPeriod1, $expense);
-
-                    if ($expense->cancelled == 0) {
-                        $amountExpensesPeriod1 += (float) $expense->budgeted_amount;
-                        $realizedExpensesPeriod1 += (float) $expense->realized_amount;
-                        $pendingExpensesPeriod1 += (float) $expense->budgeted_amount - $expense->realized_amount;
-                    }
-                }
-                else {
-                    array_push($expensesPeriod2, $expense);
-
-                    if ($expense->cancelled == 0) {
-                        $amountExpensesPeriod2 += (float) $expense->budgeted_amount;
-                        $realizedExpensesPeriod2 += (float) $expense->realized_amount;
-                        $pendingExpensesPeriod2 += (float) $expense->budgeted_amount - $expense->realized_amount;
+                        $amountExpensesPeriod += (float) $expense->budgeted_amount;
+                        $realizedExpensesPeriod += (float) $expense->realized_amount;
+                        $pendingExpensesPeriod += (float) $expense->budgeted_amount - $expense->realized_amount;
                     }
                 }
             }
@@ -251,19 +225,11 @@ class DashboardController extends Controller
             'allRecipeCategories' => $allRecipeCategories,
             'allExpenseCategories' => $allExpenseCategories,
             'recipes' => $currentRecipes,
-            'expenses0' => $expensesPeriod0,
-            'expenses1' => $expensesPeriod1,
-            'expenses2' => $expensesPeriod2,
+            'expenses' => $expensesPeriod,
             'budgeted_amount' => $amount,
-            'budgeted_amount_expenses0' => $amountExpensesPeriod0,
-            'realized_amount_expenses0' => $realizedExpensesPeriod0,
-            'pending_amount_expenses0' => $pendingExpensesPeriod0,
-            'budgeted_amount_expenses1' => $amountExpensesPeriod1,
-            'realized_amount_expenses1' => $realizedExpensesPeriod1,
-            'pending_amount_expenses1' => $pendingExpensesPeriod1,
-            'budgeted_amount_expenses2' => $amountExpensesPeriod2,
-            'realized_amount_expenses2' => $realizedExpensesPeriod2,
-            'pending_amount_expenses2' => $pendingExpensesPeriod2,
+            'budgeted_amount_expenses' => $amountExpensesPeriod,
+            'realized_amount_expenses' => $realizedExpensesPeriod,
+            'pending_amount_expenses' => $pendingExpensesPeriod,
             'type_expenses' => '30',
             'cards' => $cards,
             'creditCardExpenses' => $allCreditCardExpenses,

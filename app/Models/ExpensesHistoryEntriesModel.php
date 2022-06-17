@@ -23,7 +23,7 @@ class ExpensesHistoryEntriesModel extends Model
             LIMIT 1
         ", [$idExpense, session('user')['id']]);
 
-        return $total->sum;
+        return $total->sum ? floatval($total->sum) : 0;
     }
 
     public function getAllEntriesByExpense($idExpense)

@@ -789,6 +789,40 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
+    jQuery(document).on('click', '.pay-expense', function(e) {
+        let id = jQuery(this).attr('id')
+
+        Swal.fire({
+            title: 'Deseja pagar essa parcela?',
+            text: 'O histórico de lançamentos será mantido.',
+            icon: 'info',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Pagar parcela'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: `expenses/pay/${id}`,
+                    type: 'post',
+                    dataType: 'json',
+                    timeout: 20000,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    error: function (xhr, status, error) {
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                    },
+                    success: function (response) {
+                        swalNotification('Despesa paga', response.message, 'success', 'Continuar')
+                        location.reload()
+                    }
+                })
+            }
+        })
+    })
+
     jQuery(document).on('click', '.edit-recipe', function (e) {
         e.preventDefault()
 

@@ -615,4 +615,41 @@ class ExpensesController extends Controller
             'totalHistory' => $totalHistoryAmount
         ]);
     }
+
+    public function pay($id)
+    {
+        $expense = ExpenseModel::find($id);
+        $sum = $this->expensesHistoryEntriesModel->getTotalExpenseSum($id);
+
+        if ($sum == 0) {
+            ExpenseModel::where('id', $id)
+                ->update([
+                    'realized_amount' => $expense->budgeted_amount
+                ]);
+
+            ExpensesHistoryEntriesModel::create([
+                'expense_id' => $id,
+                'value' => $expense->budgeted_amount,
+                'user_id' => session('user')['id']
+            ]);
+        } else {
+            $diffMissing = ($expense->budgeted_amount - $sum);
+
+            ExpenseModel::where('id', $id)
+                ->update([
+                    'realized_amount' => ($expense->realized_amount + $diffMissing)
+                ]);
+
+            ExpensesHistoryEntriesModel::create([
+                'expense_id' => $id,
+                'value' => $diffMissing,
+                'user_id' => session('user')['id']
+            ]);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Despesa paga com sucesso.'
+        ]);
+    }
 }

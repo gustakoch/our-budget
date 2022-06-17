@@ -64,6 +64,7 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/expenses/cancel/all',             [ExpensesController::class, 'cancelAllInstallments']);
     Route::post('/expenses/extend/{id}',            [ExpensesController::class, 'extendInstallments']);
     Route::post('/expenses/history/{id}',           [ExpensesController::class, 'history']);
+    Route::post('/expenses/pay/{id}',               [ExpensesController::class, 'pay']);
 
     Route::get('/reports/expenses-by-category',     [ReportController::class, 'expensesByCategory'])->name('report.expenses.category');
     Route::post('/reports/search',                  [ReportController::class, 'search']);
