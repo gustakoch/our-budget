@@ -33,7 +33,7 @@ class CategorieController extends Controller
         CategoryModel::create([
             'description' => $data['description_category'],
             'belongs_to' => $data['belongs_to'],
-            'color' => $data['color']
+            'color' => isset($data['color']) ? $data['color'] : null
         ]);
 
         return response()->json([

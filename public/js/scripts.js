@@ -228,6 +228,18 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
+    jQuery(document).on('change', 'select[name="belongs_to"], select[name="belongs_to_edit"]', function(e) {
+        e.preventDefault()
+
+        if (e.target.value == '1') {
+            jQuery('input[name="color"]').attr('disabled', true)
+            jQuery('input[name="color"]').parent().hide()
+        } else {
+            jQuery('input[name="color"]').attr('disabled', false)
+            jQuery('input[name="color"]').parent().show()
+        }
+    })
+
     jQuery(document).on('click', '.save-category', function (e) {
         e.preventDefault()
 
