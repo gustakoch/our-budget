@@ -1113,6 +1113,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     setTimeout(function () {
                         jQuery('select[name="category_expense_edit"]').attr('disabled', true)
+                        jQuery('select[name="credit_card_edit"]').attr('disabled', true)
+                        jQuery('select[name="credit_card_edit"]').prev()[0].innerText = 'Cartão de crédito'
                     }, 100)
                 } else {
                     jQuery('.message-done').hide()
@@ -1129,6 +1131,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     setTimeout(function () {
                         jQuery('select[name="category_expense_edit"]').attr('disabled', false)
+                        jQuery('select[name="credit_card_edit"]').attr('disabled', false)
+                        jQuery('select[name="credit_card_edit"]').prev()[0].innerText = 'Diz aí, qual cartão foi?*'
                     }, 100)
                 }
 

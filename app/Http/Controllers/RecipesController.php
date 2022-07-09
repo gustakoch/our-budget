@@ -80,7 +80,7 @@ class RecipesController extends Controller
         ]);
     }
 
-public function update()
+    public function update()
     {
         $data = request()->all();
 
