@@ -53,10 +53,10 @@ class UserController extends Controller
             'name' => $data['name_user'],
             'email' => $data['email_user'],
             'password' => password_hash($data['password_user'], PASSWORD_DEFAULT),
-            'role' => $data['role_user'],
+            'role' => $data['role_user'] ?? 3,
             'first_access' => $data['first_access_user'],
-            'active' => $data['active_user'],
-            'created_by' => session('user')['id']
+            'active' => $data['active_user'] ?? 0,
+            'created_by' => session('user')['id'] ?? null
         ]);
 
         return response()->json([

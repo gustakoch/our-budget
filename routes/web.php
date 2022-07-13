@@ -16,6 +16,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',                             [HomeController::class, 'index'])->name('home');
+Route::get('/register',                     [HomeController::class, 'register'])->name('register');
+Route::post('/register/new',                 [HomeController::class, 'newUser']);
 
 Route::post('/login',                       [AuthController::class, 'login'])->name('login');
 Route::get('/logout',                       [AuthController::class, 'logout'])->name('logout');
