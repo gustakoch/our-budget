@@ -30,7 +30,7 @@
                                 <strong>Total de despesas <i class="fas fa-level-down-alt fa-lg text-danger"></i></strong>
                                 <span class="value red-background">R$ {{ number_format($resumeData['totals']['expenses'], 2, ',', '.')  }}</span>
 
-                                <strong>Diferença</i></i></strong>
+                                <strong>Saldo</i></i></strong>
                                 <span
                                     class="value {{ $resumeData['totals']['diff'] >= 0 ? 'text-success' : 'text-danger' }}"
                                 >
@@ -64,7 +64,7 @@
                                 </div>
                             @else
                                 <div class="no-expenses-yet">
-                                    Para um melhor acompanhamento dos seus gastos, primeiramente cadastre uma despesa.
+                                    Não há despesas cadastradas! Para iniciar, cadastre uma despesa.
                                 </div>
                             @endif
                         </div>

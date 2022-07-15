@@ -51,7 +51,6 @@ class ExpensesController extends Controller
         $invoice = new stdClass();
         $invoice->id = null;
 
-        // Credit card was informed...
         if ($data['credit_card']) {
             if ($installmentsExpense > 1) {
                 $uniqid = uniqid();

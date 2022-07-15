@@ -66,8 +66,14 @@ class ReportController extends Controller
             ]);
         }
 
-        $users = implode(',', $data['user']);
         $order = [];
+        $users = "";
+
+        if (is_array($data['user'])) {
+            $users = implode(',', $data['user']);
+        } else {
+            $users = $data['user'];
+        }
 
         foreach ($data['category'] as $category) {
             $expenses = $this->expenseModel->getExpensesReport(
@@ -104,7 +110,6 @@ class ReportController extends Controller
         if (!isset($order['nothing'])) {
             $order['nothing'] = [];
         }
-
 
         $report = array_merge($order['have'], $order['nothing']);
 

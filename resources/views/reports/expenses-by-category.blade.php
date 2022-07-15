@@ -60,7 +60,7 @@
                                         @foreach ($months as $i => $month)
                                             <option
                                                 value="{{ $i }}"
-                                                @if ($i == $actualMonth) {{ 'selected' }} @endif
+                                                @if ($i == 1) {{ 'selected' }} @endif
                                             >
                                                 {{ $month }}
                                             </option>
@@ -89,24 +89,34 @@
                             </div>
                             <div class="form-group mt-3">
                                 @if (count($users) > 0)
-                                    <label for="user" class="form-label">Usuário(s) cadastrado(s):</label>
-                                    <select
-                                        multiple
-                                        class="form-select"
-                                        name="user[]"
-                                        id="user"
-                                        style="height: 240px;"
-                                    >
-                                        @foreach ($users as $user)
-                                            <option
-                                                value="{{ $user->id }}"
-                                                @if ($user->id == session('user')['id']) {{ 'selected' }} @endif
-                                            >
-                                                {{ $user->name }}
-                                                @if ($user->id == session('user')['id']) {{ '(Eu)' }} @endif
+                                    @if (session('user')['role'] == 3)
+                                        <label for="user" class="form-label">Usuário cadastrado:</label>
+                                        <input type="hidden" name="user" value="{{ session('user')['id'] }}" />
+                                        <select class="form-select" name="user[]" id="user" disabled>
+                                            <option selected value="{{ session('user')['id'] }}">
+                                                {{ session('user')['name'] }} (Eu)
                                             </option>
-                                        @endforeach
-                                    </select>
+                                        </select>
+                                    @else
+                                        <label for="user" class="form-label">Usuário(s) cadastrado(s):</label>
+                                        <select
+                                            multiple
+                                            class="form-select"
+                                            name="user[]"
+                                            id="user"
+                                            style="height: 240px;"
+                                        >
+                                            @foreach ($users as $user)
+                                                <option
+                                                    value="{{ $user->id }}"
+                                                    @if ($user->id == session('user')['id']) {{ 'selected' }} @endif
+                                                >
+                                                    {{ $user->name }}
+                                                    @if ($user->id == session('user')['id']) {{ '(Eu)' }} @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @endif
                                 @else
                                     <span>Não foram encontrados registros de usuários.</span>
                                 @endif
@@ -153,7 +163,6 @@
                                     type="button"
                                     class="btn btn-primary"
                                     id="search-expenses-by-categories"
-                                    style="height: 3rem;"
                                 >
                                     <i class="fas fa-search"></i>
                                     Pesquisar dados
