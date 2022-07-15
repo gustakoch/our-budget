@@ -32,7 +32,7 @@ class AuthController extends Controller
         if ($user->active == '0') {
             return response()->json([
                 'ok' => false,
-                'message' => 'O usuário informado não possui acesso ao sistema.'
+                'message' => 'O usuário informado não possui acesso ao sistema. Por favor, aguarde a liberação.'
             ]);
         }
 

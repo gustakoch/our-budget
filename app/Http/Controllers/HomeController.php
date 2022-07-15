@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Traits\BudgetNotification;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    use BudgetNotification;
+
     private $user;
 
     public function __construct(User $user)
@@ -41,18 +44,28 @@ class HomeController extends Controller
             ]);
         }
 
-        User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-            'role' => 3,
-            'first_access' => 1,
-            'active' => 0
-        ]);
+        try {
+            User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                'role' => 3,
+                'first_access' => 1,
+                'active' => 0
+            ]);
 
-        return response()->json([
-            'ok' => true,
-            'message' => 'Sua conta foi criada com êxito e será ativada dentro das próximas 24 horas.'
-        ]);
+            // Send a message to discord webhook
+            $this->registerNotification($data['name'], $data['email']);
+
+            return response()->json([
+                'ok' => true,
+                'message' => 'Sua conta foi criada com êxito e será ativada dentro das próximas 24 horas.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'ok' => false,
+                'message' => "Erro: " . $e->getMessage()
+            ]);
+        }
     }
 }
