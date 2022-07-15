@@ -106,6 +106,7 @@ class DashboardController extends Controller
         $userRecipes = DB::table('recipes')
             ->join('categories', 'recipes.category', 'categories.id')
             ->where('recipes.user_id', '=', session('user')['id'])
+            ->where('recipes.year', '=', $year)
             ->select('recipes.*', 'categories.description as category_description')
             ->get();
 

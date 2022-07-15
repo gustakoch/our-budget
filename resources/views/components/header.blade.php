@@ -70,7 +70,7 @@
         <hr />
         @if (isset($_SESSION['monthName']) && isset($_SESSION['year']))
             <li style="padding: 10px; font-size: 1rem;">
-                Perído selecionado: <br />
+                Período selecionado: <br />
                 <span style="font-size: 0.95rem;"> >> {{ $_SESSION['monthName'] ?? '' }} de {{ $_SESSION['year'] ?? '' }}</span>
             </li>
         @endif
