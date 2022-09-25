@@ -1,8 +1,8 @@
 <section id="recipes" class="mt-5">
     <div class="container-custom">
         <div class="section-title d-flex align-items-end pb-2">
-            <img class="me-2" src="{{ asset('/images/icons/up-icon.png') }}" alt="Ícone de cadastro de receitas">
-            <h5 class="text-weight me-4">Receitas</h5>
+            <img class="me-2" src="{{ asset('/images/icons/up-icon.png') }}" alt="Ícone de cadastro de entradas">
+            <h5 class="text-weight me-4">Entradas</h5>
             <button
                 class="btn btn-primary"
                 id="add-recipe"
@@ -11,7 +11,7 @@
                 data-bs-target="#addRecipeModal"
                 style="display: none"
             >
-                Adicionar receita
+                Adicionar entrada
             </button>
         </div>
         <div class="accordion accordion-flush border shadow-sm mt-2" id="accordionResume">
@@ -26,7 +26,7 @@
                         aria-controls="collapse-recipes"
                         style="background-color: #9ac09a !important"
                     >
-                        <strong>Todas as receitas</strong>
+                        <strong>Todas as entradas</strong>
                     </button>
                 </h2>
                 <div id="collapse-recipes" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionResume">
@@ -35,7 +35,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Descrição da receita</th>
+                                        <th scope="col">Descrição da entrada</th>
                                         <th scope="col">Categoria</th>
                                         <th scope="col">Orçado (R$)</th>
                                         <th scope="col">Ações</th>
@@ -77,7 +77,7 @@
                                 </tfoot>
                             </table>
                         @else
-                            <span>Não há receitas lançadas.</span>
+                            <span>Não há entradas lançadas.</span>
                         @endif
                     </div>
                 </div>

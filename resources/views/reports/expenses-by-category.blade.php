@@ -5,7 +5,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
     <h3 class="mb-3">Relatórios</h3>
-    <span>Relatório comparativo de despesas por categoria.</span>
+    <span>Relatório comparativo de saídas por categoria.</span>
 </nav>
 
 <div class="accordion" id="accordionExample">

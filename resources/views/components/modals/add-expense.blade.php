@@ -3,14 +3,14 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
-                <h5 class="modal-title" id="exampleModalLabel">Adicionar nova despesa</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Adicionar nova saída</h5>
             </div>
             <div class="modal-body">
                 <form id="form-new-expense">
                     @csrf
 
                     <div class="mb-3">
-                        <label for="description_expense" class="form-label">Descrição da despesa*</label>
+                        <label for="description_expense" class="form-label">Descrição da saída*</label>
                         <input class="form-control mb-3" type="text" name="description_expense" id="description_expense"
                             placeholder="Informe a descrição" autocomplete="off" />
                     </div>
@@ -49,20 +49,20 @@
                     <div class="form-check my-3 mt-4">
                         <input class="form-check-input cursor-pointer" type="checkbox" name="make_expense_paid" value="1" id="make_expense_paid">
                         <label class="form-check-label cursor-pointer" for="make_expense_paid">
-                            Marcar despesa como paga
+                            Marcar saída como paga
                         </label>
                     </div>
                     <div class="form-check my-3">
                         <input class="form-check-input cursor-pointer" type="checkbox" name="repeat_next_months_expense" value="1"
                             id="repeat_next_months_expense">
                         <label class="form-check-label cursor-pointer" for="repeat_next_months_expense">
-                            Repetir esta despesa até final do ano
+                            Repetir esta saída até final do ano
                         </label>
                     </div>
                     <div class="form-check my-3 mb-4">
                         <input class="form-check-input was_with_credit_card cursor-pointer" type="checkbox" id="was_with_credit_card">
                         <label class="form-check-label cursor-pointer" for="was_with_credit_card">
-                            Despesa do cartão de crédito
+                            Saída do cartão de crédito
                         </label>
                     </div>
                     <div class="mb-3" id="expense_card_selection">

@@ -23,8 +23,8 @@
                     <div class="mb-3">
                         <label for="belongs_to_edit" class="form-label">Pertencente a*</label>
                         <select class="form-select mb-3" name="belongs_to_edit" id="belongs_to_edit">
-                            <option value="1">Receita</option>
-                            <option value="2">Despesa</option>
+                            <option value="1">Entrada</option>
+                            <option value="2">Saída</option>
                         </select>
                     </div>
 

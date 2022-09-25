@@ -76,7 +76,7 @@ class RecipesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'Receita cadastrada com sucesso!'
+            'message' => 'Entrada cadastrada com sucesso!'
         ]);
     }
 
@@ -101,7 +101,7 @@ class RecipesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'Receita atualizada com sucesso',
+            'message' => 'Entrada atualizada com sucesso',
         ]);
     }
 
@@ -120,7 +120,7 @@ class RecipesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'msg' => 'Receita removida com sucesso!'
+            'msg' => 'Entrada removida com sucesso!'
         ]);
     }
 }

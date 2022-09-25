@@ -45,7 +45,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Descrição da despesa</th>
+                                        <th scope="col">Descrição da saída</th>
                                         <th scope="col">Categoria</th>
                                         <th scope="col">Parcelas</th>
                                         <th scope="col">Orçado (R$)</th>

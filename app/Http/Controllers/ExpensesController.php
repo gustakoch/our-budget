@@ -187,7 +187,7 @@ class ExpensesController extends Controller
 
             return response()->json([
                 'ok' => true,
-                'message' => 'Despesa cadastrada com sucesso no cartão de crédito.'
+                'message' => 'Saída cadastrada com sucesso no cartão de crédito.'
             ]);
         }
 
@@ -238,7 +238,7 @@ class ExpensesController extends Controller
 
                 return response()->json([
                     'ok' => true,
-                    'message' => 'Despesa cadastrada com sucesso!',
+                    'message' => 'Saída cadastrada com sucesso!',
                     'period' => $period
                 ]);
             }
@@ -266,7 +266,7 @@ class ExpensesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'Despesa cadastrada com sucesso!',
+            'message' => 'Saída cadastrada com sucesso!',
             'period' => $period
         ]);
     }
@@ -278,7 +278,7 @@ class ExpensesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'msg' => 'Despesa removida com sucesso!',
+            'msg' => 'Saída removida com sucesso!',
             'period' => (int) $expense->period
         ]);
     }
@@ -328,7 +328,7 @@ class ExpensesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'Despesa atualizada com sucesso'
+            'message' => 'Saída atualizada com sucesso'
         ]);
     }
 
@@ -467,7 +467,7 @@ class ExpensesController extends Controller
 
             return response()->json([
                 'ok' => true,
-                'message' => 'Despesa atualizada com sucesso'
+                'message' => 'Saída atualizada com sucesso'
             ]);
         } else {
             $expense = ExpenseModel::find($data['id_expense']);
@@ -532,7 +532,7 @@ class ExpensesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'Despesa atualizada com sucesso'
+            'message' => 'Saída atualizada com sucesso'
         ]);
     }
 
@@ -586,7 +586,7 @@ class ExpensesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'As despesas foram prorrogadas com sucesso.'
+            'message' => 'As saídas foram prorrogadas com sucesso.'
         ]);
     }
 
@@ -648,7 +648,7 @@ class ExpensesController extends Controller
 
         return response()->json([
             'ok' => true,
-            'message' => 'Despesa paga com sucesso.'
+            'message' => 'Saída paga com sucesso.'
         ]);
     }
 }

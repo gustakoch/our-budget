@@ -5,7 +5,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
     <h3 class="mb-3">Categorias</h3>
-    <span>Cadastro de categorias de receitas e despesas</span>
+    <span>Cadastro de categorias de entradas e saídas</span>
 </nav>
 
 <button

@@ -3,8 +3,8 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0" id="modalHeaderEditExpense">
-                <h5 class="modal-title" id="exampleModalLabel">Editar despesa</h5>
-                <small class="message-done text-success" style="display: none;">(Despesa concluída)</small>
+                <h5 class="modal-title" id="exampleModalLabel">Editar saída</h5>
+                <small class="message-done text-success" style="display: none;">(Saída concluída)</small>
             </div>
             <div class="modal-body">
                 <div class="text-center" id="loadingSpinner">
@@ -19,7 +19,7 @@
                     <input type="hidden" name="id_expense">
                     <input type="hidden" name="category_active">
                     <div class="mb-3">
-                        <label for="description_expense" class="form-label">Descrição da despesa*</label>
+                        <label for="description_expense" class="form-label">Descrição da saída*</label>
                         <input class="form-control mb-3" type="text" name="description_expense_edit"
                             id="description_expense" placeholder="Informe a descrição" />
                     </div>
@@ -85,7 +85,7 @@
                         <input class="form-check-input was_with_credit_card_edit" type="checkbox"
                             id="was_with_credit_card_edit">
                         <label class="form-check-label" for="was_with_credit_card_edit">
-                            Despesa do cartão de crédito
+                            Saída do cartão de crédito
                         </label>
                     </div>
                     <div class="mb-3" id="expense_card_selection_edit">
@@ -104,7 +104,7 @@
                     <div class="form-check my-3">
                         <input class="form-check-input" type="checkbox" value="1" name="expense_paid" id="expense_paid">
                         <label class="form-check-label" for="expense_paid">
-                            Marcar despesa como paga
+                            Marcar saída como paga
                         </label>
                     </div>
 
@@ -113,7 +113,7 @@
             </div>
             <div class="modal-footer border-top-0" id="modalFooterEditExpense">
                 <button type="button" class="btn btn-secondary cancel-expense" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary update-expense">Atualizar despesa</button>
+                <button type="button" class="btn btn-primary update-expense">Atualizar saída</button>
             </div>
         </div>
     </div>

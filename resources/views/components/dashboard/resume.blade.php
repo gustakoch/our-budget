@@ -22,12 +22,12 @@
                 <div id="collapse-resume" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionResume">
                     <div class="d-flex">
                         <div class="my-recipes-and-expenses">
-                            <h5>Minhas receitas e despesas</h5>
+                            <h5>Minhas entradas e saídas</h5>
                             <div class="recipes-expenses">
-                                <strong>Total de receitas <i class="fas fa-level-up-alt fa-lg text-success"></i></strong>
+                                <strong>Total de entradas <i class="fas fa-level-up-alt fa-lg text-success"></i></strong>
                                 <span class="value green-background">R$ {{ number_format($resumeData['totals']['recipes'], 2, ',', '.')  }}</span>
 
-                                <strong>Total de despesas <i class="fas fa-level-down-alt fa-lg text-danger"></i></strong>
+                                <strong>Total de saídas <i class="fas fa-level-down-alt fa-lg text-danger"></i></strong>
                                 <span class="value red-background">R$ {{ number_format($resumeData['totals']['expenses'], 2, ',', '.')  }}</span>
 
                                 <strong>Saldo</i></i></strong>
@@ -64,7 +64,7 @@
                                 </div>
                             @else
                                 <div class="no-expenses-yet">
-                                    Não há despesas cadastradas! Para iniciar, cadastre uma despesa.
+                                    Não há saídas cadastradas! :(
                                 </div>
                             @endif
                         </div>

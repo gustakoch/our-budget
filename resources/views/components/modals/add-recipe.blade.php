@@ -2,14 +2,14 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
-                <h5 class="modal-title" id="exampleModalLabel">Adicionar nova receita</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Adicionar nova entrada</h5>
             </div>
             <div class="modal-body">
                 <form id="form-new-recipe">
                     @csrf
 
                     <div class="mb-3">
-                        <label class="form-label" for="description">Descrição da receita*</label>
+                        <label class="form-label" for="description">Descrição da entrada*</label>
                         <input
                             class="form-control mb-3"
                             type="text"
@@ -35,7 +35,7 @@
                     <div class="form-check my-3">
                         <input class="form-check-input" type="checkbox" name="repeat_next_months" value="1" id="loopingCheckboxAdd">
                         <label class="form-check-label" for="loopingCheckboxAdd">
-                            Repetir esta receita até o final do ano
+                            Repetir esta entrada até o final do ano
                         </label>
                     </div>
                 </form>

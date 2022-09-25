@@ -23,8 +23,8 @@
                         <label for="belongs_to" class="form-label">Pertencente a*</label>
                         <select class="form-select mb-3" name="belongs_to" id="belongs_to">
                             <option selected>Selecione o vínculo</option>
-                            <option value="1">Receita</option>
-                            <option value="2">Despesa</option>
+                            <option value="1">Entrada</option>
+                            <option value="2">Saída</option>
                         </select>
                     </div>
 

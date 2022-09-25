@@ -21,8 +21,8 @@ class CategoryModel extends Model
                 , description
                 , to_char(created_at, 'DD/MM/YYYY HH24:MI') created_at
                 , CASE
-                    WHEN belongs_to = 1 THEN 'Receita'
-                    WHEN belongs_to = 2 THEN 'Despesa'
+                    WHEN belongs_to = 1 THEN 'Entrada'
+                    WHEN belongs_to = 2 THEN 'Saída'
                 END AS type
                 , color
             FROM categories

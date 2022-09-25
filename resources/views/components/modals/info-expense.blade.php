@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0" id="modalHeaderEditExpense">
-                <h5 class="modal-title" id="exampleModalLabel">Informações da despesa</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Informações da saída</h5>
             </div>
             <div class="modal-body">
                 <div class="text-center" id="loadingSpinnerInfo">
@@ -13,7 +13,7 @@
 
                 <form id="form-info-expense">
                     <div class="mb-3">
-                        <label for="description_expense" class="form-label">Descrição da despesa</label>
+                        <label for="description_expense" class="form-label">Descrição da saída</label>
                         <input class="form-control mb-3" type="text" name="description_expense_info" disabled />
                     </div>
                     <div class="row">
@@ -73,7 +73,7 @@
                         <div class="col-md-12">
                             <div class="my-3">
                                 <strong>Observação!</strong><br />
-                                <span>Esta despesa possui um total de <span id="total_installments"></span> parcela(s).</span>
+                                <span>Esta saída possui um total de <span id="total_installments"></span> parcela(s).</span>
                             </div>
                         </div>
                     </div>

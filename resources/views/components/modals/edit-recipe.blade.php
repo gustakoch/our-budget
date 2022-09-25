@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0" id="modalHeaderEditRecipe">
-                <h5 class="modal-title" id="exampleModalLabel">Editar receita</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Editar entrada</h5>
             </div>
             <div class="modal-body">
                 <div class="text-center" id="loadingSpinnerRecipe">
@@ -17,7 +17,7 @@
                     <input type="hidden" name="id_recipe">
                     <input type="hidden" name="category_active">
                     <div class="mb-3">
-                        <label for="description_edit" class="form-label">Descrição da receita</label>
+                        <label for="description_edit" class="form-label">Descrição da entrada</label>
                         <input class="form-control mb-3" type="text" name="description_edit" id="description_edit" placeholder="Informe a descrição" />
                     </div>
                     <div class="mb-3">
@@ -37,7 +37,7 @@
             </div>
             <div class="modal-footer border-top-0" id="modalFooterEditRecipe">
                 <button type="button" class="btn btn-secondary cancel-recipe" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary update-recipe">Atualizar receita</button>
+                <button type="button" class="btn btn-primary update-recipe">Atualizar entrada</button>
             </div>
         </div>
     </div>

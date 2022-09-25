@@ -41,7 +41,10 @@
                     </a>
                     <ul class="collapse list-unstyled" id="menuRelatorios">
                         <li>
-                            <a href="{{ route('report.expenses.category') }}">Despesas por categorias</a>
+                            <a href="{{ route('report.expenses.category') }}">Saídas por categorias</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('report.expenses.category') }}">Total de entradas</a>
                         </li>
                     </ul>
                 </li>

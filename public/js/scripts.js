@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let creditCard = Number(jQuery('select[name="credit_card"]').val())
 
             if (!creditCard) {
-                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular na despesa.', 'error', 'Tá, entendi')
+                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular na saída.', 'error', 'Tá, entendi')
                 return false
             }
         }
@@ -470,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let creditCard = Number(jQuery('select[name="credit_card"]').val())
 
             if (!creditCard) {
-                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular a despesa.', 'error', 'Tá, entendi')
+                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular a saída.', 'error', 'Tá, entendi')
                 return false
             }
         }
@@ -536,10 +536,10 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
-                stopLoadingOnButton(button, 'Atualizar receita')
+                stopLoadingOnButton(button, 'Atualizar entrada')
             },
             success: function (response) {
-                stopLoadingOnButton(button, 'Atualizar receita')
+                stopLoadingOnButton(button, 'Atualizar entrada')
 
                 if (response.ok) {
                     jQuery('#editRecipeModal').modal('hide')
@@ -670,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (isWithCreditCard) {
             if (!creditCard) {
-                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular na despesa.', 'error', 'Tá, entendi')
+                swalNotification('Cartão de crédito', 'Por favor, selecione o cartão de crédito para vincular na saída.', 'error', 'Tá, entendi')
                 return false
             }
         }
@@ -720,10 +720,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         },
                         error: function (xhr, status, error) {
                             swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
-                            stopLoadingOnButton(button, 'Atualizar despesa')
+                            stopLoadingOnButton(button, 'Atualizar saída')
                         },
                         success: function (response) {
-                            stopLoadingOnButton(button, 'Atualizar despesa')
+                            stopLoadingOnButton(button, 'Atualizar saída')
 
                             if (response.ok) {
                                 jQuery('#loadingSpinner').show()
@@ -739,13 +739,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     let textMessage
 
                     if (response.invoice) {
-                        textMessage = 'Atenção! TODAS as parcelas desta despesa serão removidas da fatura do cartão.'
+                        textMessage = 'Atenção! TODAS as parcelas desta saída serão removidas da fatura do cartão.'
                     } else {
-                        textMessage = 'Atenção! TODAS as parcelas desta despesa serão adicionadas na fatura do cartão.'
+                        textMessage = 'Atenção! TODAS as parcelas desta saída serão adicionadas na fatura do cartão.'
                     }
 
                     Swal.fire({
-                        title: 'Despesa com parcelamento, continuar?',
+                        title: 'Saída com parcelamento, continuar?',
                         text: textMessage,
                         icon: 'warning',
                         showCancelButton: true,
@@ -779,10 +779,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 },
                                 error: function (xhr, status, error) {
                                     swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
-                                    stopLoadingOnButton(button, 'Atualizar despesa')
+                                    stopLoadingOnButton(button, 'Atualizar saída')
                                 },
                                 success: function (response) {
-                                    stopLoadingOnButton(button, 'Atualizar despesa')
+                                    stopLoadingOnButton(button, 'Atualizar saída')
 
                                     if (response.ok) {
                                         jQuery('#loadingSpinner').show()
@@ -827,7 +827,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
                     },
                     success: function (response) {
-                        swalNotification('Despesa paga', response.message, 'success', 'Continuar')
+                        swalNotification('Saída paga', response.message, 'success', 'Continuar')
                         location.reload()
                     }
                 })
@@ -884,10 +884,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 jQuery('input[name="repeat_next_months"]').attr('disabled', true)
                 if (response.repeat_next_months == 1) {
                     jQuery('input[name="repeat_next_months"]').attr('checked', true)
-                    jQuery('.label-checkbox-repeat').text('Esta receita é repetida nos meses seguintes')
+                    jQuery('.label-checkbox-repeat').text('Esta entrada é repetida nos meses seguintes')
                 } else {
                     jQuery('input[name="repeat_next_months"]').attr('checked', false)
-                    jQuery('.label-checkbox-repeat').text('Esta receita é exclusiva do mês atual')
+                    jQuery('.label-checkbox-repeat').text('Esta entrada é exclusiva do mês atual')
                 }
 
                 jQuery('input[name="budgeted_amount_edit"]').val(response.budgeted_amount)
@@ -1054,10 +1054,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 jQuery('input[name="repeat_next_months"]').attr('disabled', true)
                 if (response.repeat_next_months == 1) {
                     jQuery('input[name="repeat_next_months"]').attr('checked', true)
-                    jQuery('.label-checkbox-repeat').text('Esta receita é repetida nos meses seguintes')
+                    jQuery('.label-checkbox-repeat').text('Esta entrada é repetida nos meses seguintes')
                 } else {
                     jQuery('input[name="repeat_next_months"]').attr('checked', false)
-                    jQuery('.label-checkbox-repeat').text('Esta receita é exclusiva do mês atual')
+                    jQuery('.label-checkbox-repeat').text('Esta entrada é exclusiva do mês atual')
                 }
 
                 jQuery('input[name="budgeted_amount_expense_info"]').val(response.budgeted_amount)
@@ -1357,7 +1357,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     success: function (response) {
                         if (response.ok) {
                             location.reload()
-                            swalNotification('Removido', 'Sua receita foi removida com sucesso.', 'success', 'Continuar')
+                            swalNotification('Removido', 'Sua entrada foi removida com sucesso.', 'success', 'Continuar')
                         }
                     }
                 })
@@ -1371,7 +1371,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         Swal.fire({
             title: 'Pagamento da fatura',
-            text: `TODAS as despesas cadastradas no cartão de crédito ${cardName} serão pagas, deseja prosseguir?`,
+            text: `TODAS as saídas cadastradas no cartão de crédito ${cardName} serão pagas, deseja prosseguir?`,
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
@@ -1480,7 +1480,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         Swal.fire({
             title: 'Deseja realmente reverter este cancelamento?',
-            text: "Esta ação irá reverter o cancelamento desta despesa/parcela",
+            text: "Esta ação irá reverter o cancelamento desta saída/parcela",
             icon: 'info',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
@@ -1538,7 +1538,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     success: function (response) {
                         if (response.ok) {
-                            swalNotification('Removido', 'Despesa foi removida com sucesso', 'success', 'Continuar')
+                            swalNotification('Removido', 'Saída foi removida com sucesso', 'success', 'Continuar')
                             location.reload()
                         }
                     }
@@ -1552,7 +1552,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         Swal.fire({
             title: 'Excluir todo o parcelamento?',
-            text: 'Esta ação irá excluir TODAS as parcelas vinculadas à despesa selecionada.',
+            text: 'Esta ação irá excluir TODAS as parcelas vinculadas à saída selecionada.',
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
@@ -1908,7 +1908,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         Swal.fire({
             title: 'Deseja realmente prorrogar?',
-            text: 'Esta ação irá adiar TODAS as parcelas não pagas desta despesa em 1 (um) mês.',
+            text: 'Esta ação irá adiar TODAS as parcelas não pagas desta saída em 1 (um) mês.',
             icon: 'info',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
@@ -1930,7 +1930,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     success: function (response) {
                         if (response.ok) {
-                            swalNotification('Prorrogado', 'As parcelas da despesa foram prorrogadas com sucesso.', 'success', 'Continuar')
+                            swalNotification('Prorrogado', 'As parcelas da saída foram prorrogadas com sucesso.', 'success', 'Continuar')
 
                             location.reload()
                         }
@@ -1999,7 +1999,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <table id="table-reports" class="table bg-white table-hover" style="vertical-align: middle">
                                     <thead class="table-secondary">
                                         <tr>
-                                            <th>Descrição da despesa</th>
+                                            <th>Descrição da saída</th>
                                             <th>Parcela(s)</th>
                                             <th>Mês/Ano</th>
                                             <th>Vlr. Orçado (R$)</th>

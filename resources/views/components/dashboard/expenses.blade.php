@@ -1,17 +1,17 @@
 <section id="expenses" class="mt-5">
     <div class="container-custom">
         <div class="section-title d-flex align-items-end pb-2">
-            <img class="me-2" src="{{ asset('/images/icons/down-icon.png') }}" alt="Ícone de cadastro de despesas">
-            <h5 class="text-weight me-4">Despesas</h5>
+            <img class="me-2" src="{{ asset('/images/icons/down-icon.png') }}" alt="Ícone de cadastro de saídas">
+            <h5 class="text-weight me-4">Saídas</h5>
             <button
                 class="btn btn-primary"
-                id="adicionar-despesa"
+                id="adicionar-saida"
                 type="button"
                 data-bs-toggle="modal"
                 data-bs-target="#addExpenseModal"
                 style="display: none"
             >
-                Adicionar despesa
+                Adicionar saída
             </button>
         </div>
         <div class="accordion accordion-flush border shadow-sm mt-2" id="accordionResume">
@@ -26,7 +26,7 @@
                         aria-controls="collapse-expensesOne"
                         style="background-color: #cea1a1 !important"
                     >
-                        <strong>Todas as despesas</strong>
+                        <strong>Todas as saídas</strong>
                     </button>
                 </h2>
                 <div id="collapse-expensesOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#accordionResume">
@@ -35,7 +35,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Descrição da despesa</th>
+                                        <th scope="col">Descrição da saída</th>
                                         <th scope="col">Categoria</th>
                                         <th scope="col">Parcelas</th>
                                         <th scope="col">Orçado (R$)</th>
@@ -133,7 +133,7 @@
                                                                 span class="d-inline-block"
                                                                 tabindex="0"
                                                                 data-bs-toggle="tooltip"
-                                                                title="{{ $expense->installments > 1 ? 'Pagar parcela' : 'Pagar despesa' }}"
+                                                                title="{{ $expense->installments > 1 ? 'Pagar parcela' : 'Pagar saída' }}"
                                                             >
                                                                 <button
                                                                     type="button"
@@ -165,7 +165,7 @@
                         @elseif (count($creditCardExpenses) > 0)
                         {{--  --}}
                         @else
-                            <span>Não há despesas lançadas.</span>
+                            <span>Não há saídas lançadas.</span>
                         @endif
 
                         @include('components.dashboard.credit-cards', [$creditCardExpenses])
