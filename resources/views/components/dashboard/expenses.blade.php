@@ -133,7 +133,7 @@
                                                                 span class="d-inline-block"
                                                                 tabindex="0"
                                                                 data-bs-toggle="tooltip"
-                                                                title="Pagar despesa"
+                                                                title="{{ $expense->installments > 1 ? 'Pagar parcela' : 'Pagar despesa' }}"
                                                             >
                                                                 <button
                                                                     type="button"
