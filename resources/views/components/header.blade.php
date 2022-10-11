@@ -16,6 +16,11 @@
                     Dashboard
                 </a>
 
+                {{-- <a href="{{ route('dashboard') }}">
+                    <i class="fas fa-coins"></i>
+                    Investimentos
+                </a> --}}
+
                 <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <i class="fas fa-plus"></i>
                     Cadastros
