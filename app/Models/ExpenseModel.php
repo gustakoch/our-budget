@@ -173,7 +173,7 @@ class ExpenseModel extends Model
         $startYear,
         $endYear,
         $users
-     ) {
+    ) {
         $expenses = DB::select("
             SELECT
                 e.description expense_name

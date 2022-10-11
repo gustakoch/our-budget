@@ -4,8 +4,8 @@
 @section('content')
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
-    <h3 class="mb-3">Relatório | Saídas por categorias</h3>
-    <span>Relatório comparativo de saídas por categoria.</span>
+    <h3 class="mb-3">Relatório | Total de entradas</h3>
+    <span>Valor acumulado de cada tipo de entrada.</span>
 </nav>
 
 <div class="accordion" id="accordionExample">
@@ -31,9 +31,9 @@
             data-bs-parent="#accordionExample"
         >
             <div class="accordion-body">
-                <form id="form-search-expenses-by-categories">
+                <form id="form-search-recipes-by-categories">
                     @csrf
-                    <input type="hidden" name="search-type" value="2" />
+                    <input type="hidden" name="search-type" value="1" />
 
                     <div class="row">
                         <div class="col-md-5">
@@ -163,7 +163,7 @@
                                 <button
                                     type="button"
                                     class="btn btn-primary"
-                                    id="search-expenses-by-categories"
+                                    id="search-recipes-by-categories"
                                 >
                                     <i class="fas fa-search"></i>
                                     Pesquisar
@@ -177,7 +177,7 @@
     </div>
 </div>
 
-<section id="table-reports-expenses" class="mt-3">
+<section id="table-reports-recipes" class="mt-3">
     <span class="d-block mt-3">
         <i class="fas fa-info-circle fa-lg"></i>
         Selecione os filtros acima e clique em pesquisar para buscar os dados.

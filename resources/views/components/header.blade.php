@@ -44,7 +44,7 @@
                             <a href="{{ route('report.expenses.category') }}">Saídas por categorias</a>
                         </li>
                         <li>
-                            <a href="{{ route('report.expenses.category') }}">Total de entradas</a>
+                            <a href="{{ route('report.recipes.all') }}">Total de entradas</a>
                         </li>
                     </ul>
                 </li>

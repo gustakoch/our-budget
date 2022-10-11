@@ -1983,7 +1983,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             hr = ''
                         }
 
-                        if (item.expenses.length == 0) {
+                        if (item.results.length == 0) {
                             table += `
                                 ${hr}
                                 <div class="">
@@ -2013,7 +2013,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             let budgetedSum = 0
                             let realizedSum = 0
                             let pendingSum = 0
-                            jQuery(item.expenses).each((i, expense) => {
+
+                            jQuery(item.results).each((i, expense) => {
                                 budgetedSum += Number(expense.budgeted_amount)
                                 realizedSum += Number(expense.realized_amount)
                                 pendingSum += Number(expense.pending_amount)
@@ -2028,7 +2029,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <td>${amountParseFloat(expense.pending_amount)}</td>
                                         <td>${expense.user_name}</td>
                                     </tr>
-
                                 `
                             })
                             table += `
@@ -2055,7 +2055,117 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     `
 
-                    jQuery('#table-reports').html(table)
+                    jQuery('#table-reports-expenses').html(table)
+                } else {
+                    swalNotification('Presta atenção aí', response.message, 'error', 'Tá, entendi')
+                }
+            }
+        })
+    })
+
+    jQuery(document).on('click', '#search-recipes-by-categories', function (e) {
+        let button = jQuery(this)
+
+        jQuery.ajax({
+            url: 'search',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-search-recipes-by-categories').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function () {
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
+            },
+            success: function (response) {
+                stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
+
+                if (response.ok) {
+                    jQuery('#btn-accordion-search').click()
+
+                    let table = `
+                    <div class="accordion" id="accordionResults">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingResults">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResults" aria-expanded="true" aria-controls="collapseResults">
+                                <strong>Resultados da pesquisa</strong>
+                            </button>
+                            </h2>
+                            <div id="collapseResults" class="accordion-collapse collapse show" aria-labelledby="headingResults" data-bs-parent="#accordionResults">
+                                <div class="accordion-body">`
+
+                    jQuery(response.data).each((index, item) => {
+                        let hr = '<hr />'
+
+                        if (index == 0) {
+                            hr = ''
+                        }
+
+                        if (item.results.length == 0) {
+                            table += `
+                                ${hr}
+                                <div class="">
+                                    <h5>${item.category}</h5>
+                                </div>
+                                <span class="text gray-text-color">Não foram encontrados registros.</span>
+                            `
+                        } else {
+                            table += `
+                                <div class="">
+                                    <h5>${item.category}</h5>
+                                </div>
+                                <table id="table-reports" class="table bg-white table-hover" style="vertical-align: middle">
+                                    <thead class="table-secondary">
+                                        <tr>
+                                            <th>Descrição da entrada</th>
+                                            <th>Mês/Ano</th>
+                                            <th>Vlr. Orçado (R$)</th>
+                                            <th>Lançado por</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="gray-text-color">`
+
+                            let budgetedSum = 0
+
+                            jQuery(item.results).each((i, recipe) => {
+                                budgetedSum += Number(recipe.budgeted_amount)
+
+                                table += `
+                                    <tr>
+                                        <td>${recipe.description}</td>
+                                        <td>${recipe.month_name}/${recipe.year}</td>
+                                        <td>${amountParseFloat(recipe.budgeted_amount)}</td>
+                                        <td>${recipe.user_name}</td>
+                                    </tr>
+                                `
+                            })
+                            table += `
+                                <tr style="border: 1px solid #fff;">
+                                    <td></td>
+                                    <td></td>
+                                    <td><strong>${amountParseFloat(budgetedSum)}</strong></td>
+                                    <td></td>
+                                </tr>
+                            `
+
+                            table += `</tbody>
+                                </table>
+                            `
+                        }
+                    })
+
+                    table += `</div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+
+                    jQuery('#table-reports-recipes').html(table)
                 } else {
                     swalNotification('Presta atenção aí', response.message, 'error', 'Tá, entendi')
                 }

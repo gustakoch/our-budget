@@ -69,6 +69,7 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/expenses/pay/{id}',               [ExpensesController::class, 'pay']);
 
     Route::get('/reports/expenses-by-category',     [ReportController::class, 'expensesByCategory'])->name('report.expenses.category');
+    Route::get('/reports/recipes-all',              [ReportController::class, 'allRecipes'])->name('report.recipes.all');
     Route::post('/reports/search',                  [ReportController::class, 'search']);
 
     Route::get('/tickets',                  [TicketController::class, 'index'])->name('tickets');

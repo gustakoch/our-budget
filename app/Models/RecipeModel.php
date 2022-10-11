@@ -25,4 +25,34 @@ class RecipeModel extends Model
 
         return $recipesSum->recipes_sum;
     }
+
+    public function getRecipesReport(
+        $category,
+        $startMonth,
+        $endMonth,
+        $startYear,
+        $endYear,
+        $users
+    ) {
+        $recipes = DB::select("
+            SELECT r.description
+                , m.description month_name
+                , r.year
+                , r.budgeted_amount
+                , u.name user_name
+              FROM recipes r
+                , months m
+                , users u
+             WHERE r.month = m.id
+               AND u.id = r.user_id
+               AND category = ?
+               AND r.month between ? AND ?
+               AND r.year between ? AND ?
+               AND r.user_id in (".$users.")
+          ORDER BY r.month
+            , r.description",
+        [$category, $startMonth, $endMonth, $startYear, $endYear]);
+
+        return $recipes;
+    }
 }
