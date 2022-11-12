@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RecipesController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InvestmentsController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TicketController;
@@ -71,6 +72,8 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/reports/expenses-by-category',     [ReportController::class, 'expensesByCategory'])->name('report.expenses.category');
     Route::get('/reports/recipes-all',              [ReportController::class, 'allRecipes'])->name('report.recipes.all');
     Route::post('/reports/search',                  [ReportController::class, 'search']);
+
+    Route::get('/investments',                     [InvestmentsController::class, 'index'])->name('investments.index');
 
     Route::get('/tickets',                  [TicketController::class, 'index'])->name('tickets');
 

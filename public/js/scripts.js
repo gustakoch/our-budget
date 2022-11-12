@@ -805,14 +805,14 @@ document.addEventListener('DOMContentLoaded', function () {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
-            title: 'Deseja pagar essa parcela?',
+            title: 'Deseja confirmar o pagamento?',
             text: 'O histórico de lançamentos será mantido.',
             icon: 'info',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Pagar parcela'
+            confirmButtonText: 'Confirmar pagamento'
         }).then((result) => {
             if (result.isConfirmed) {
                 jQuery.ajax({

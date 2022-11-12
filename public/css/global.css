@@ -196,12 +196,17 @@ small.erro {
 }
 
 .green-background {
-    background-color: #9ac09a !important;
+    background-color: #7aa77a !important;
     color: #fff !important;
 }
 
 .red-background {
     background-color: #cea1a1 !important;
+    color: #fff !important;
+}
+
+.blue-background {
+    background-color: #537be7 !important;
     color: #fff !important;
 }
 

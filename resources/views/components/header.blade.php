@@ -16,10 +16,10 @@
                     Dashboard
                 </a>
 
-                {{-- <a href="{{ route('dashboard') }}">
+                <a href="{{ route('investments.index') }}">
                     <i class="fas fa-coins"></i>
                     Investimentos
-                </a> --}}
+                </a>
 
                 <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <i class="fas fa-plus"></i>

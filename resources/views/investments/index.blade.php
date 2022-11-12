@@ -5,10 +5,12 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
     <h3 class="mb-3">Investimentos</h3>
-    <span>Cadastro de investimentos</span>
+    <span>Painel geral dos investimentos</span>
 </nav>
 
-<section id="investments" class="mt-5">
+Em construção...
+
+{{-- <section id="investments" class="mt-5">
     <div class="container-custom">
         <div class="section-title d-flex align-items-end pb-2">
             <img class="me-2" src="{{ asset('/images/icons/resume-icon.png') }}" alt="Ícone de resumo">
@@ -75,6 +77,6 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 
 @endsection
