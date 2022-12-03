@@ -108,6 +108,8 @@ class DashboardController extends Controller
             ->where('recipes.user_id', '=', session('user')['id'])
             ->where('recipes.year', '=', $year)
             ->select('recipes.*', 'categories.description as category_description')
+            ->orderBy('recipes.description', 'asc')
+            ->orderBy('categories.description', 'asc')
             ->get();
 
         $currentRecipes = [];
@@ -128,6 +130,7 @@ class DashboardController extends Controller
             ->select('expenses.*', 'categories.description as category_description')
             ->orderBy(DB::raw('expenses.budgeted_amount - expenses.realized_amount = 0'), 'asc')
             ->orderBy('expenses.description', 'asc')
+            ->orderBy('categories.description', 'asc')
             ->get();
 
         $expensesPeriod = [];

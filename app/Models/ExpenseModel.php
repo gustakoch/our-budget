@@ -46,6 +46,8 @@ class ExpenseModel extends Model
             AND e.month = ?
             AND e.year = ?
             ORDER BY e.budgeted_amount - e.realized_amount = 0 asc
+                , e.description asc
+            	, c.description asc
         ', [session('user')['id'], $creditCard, $month, $year]);
 
         return $expenses;
