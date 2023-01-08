@@ -16,11 +16,6 @@
                     Dashboard
                 </a>
 
-                <a href="{{ route('investments.index') }}">
-                    <i class="fas fa-coins"></i>
-                    Investimentos
-                </a>
-
                 <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <i class="fas fa-plus"></i>
                     Cadastros
@@ -38,6 +33,16 @@
                     </li>
                     @endif
                 </ul>
+
+                <a href="{{ route('investments.index') }}">
+                    <i class="fas fa-coins"></i>
+                    Investimentos
+                </a>
+
+                <a href="{{ route('submit-expense.index') }}">
+                    <i class="fas fa-money-check-alt"></i>
+                    Saídas enviadas
+                </a>
 
                 <li>
                     <a href="#menuRelatorios" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">

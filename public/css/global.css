@@ -360,3 +360,23 @@ table#table-reports {
 .cursor-pointer {
     cursor: pointer !important;
 }
+
+.submitted-expenses-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border: 1px solid #ddd;
+    background-color: #f5f2c5;
+}
+
+.submitted-expenses-content {
+    display: flex;
+    align-items: center;
+}
+
+.submitted-expenses-labels {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
+}

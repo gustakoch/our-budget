@@ -119,7 +119,7 @@
                     beforeSend: function() {
                         jQuery(button).html(`
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Acessando sistema...
+                            Carregando...
                         `)
                         jQuery(button).attr('disabled', true)
                     },

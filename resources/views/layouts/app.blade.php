@@ -57,8 +57,38 @@
                     "infoEmpty": "Nenhum registro disponível",
                     "infoFiltered": "(Filtrado de um total de _MAX_ registros)",
                     "paginate": {
-                        "previous": "Anterior",
-                        "next": "Próxima"
+                        "previous": "<<",
+                        "next": ">>"
+                    },
+                    "search": "Pesquisar"
+                },
+            });
+
+            jQuery('#dataTableSaidasPendentes').DataTable({
+                "language": {
+                    "lengthMenu": "Saídas pendentes",
+                    "zeroRecords": "Nenhum registro encontrado",
+                    "info": "Exibindo página _PAGE_ de _PAGES_",
+                    "infoEmpty": "Nenhum registro disponível",
+                    "infoFiltered": "(Filtrado de um total de _MAX_ registros)",
+                    "paginate": {
+                        "previous": "<<",
+                        "next": ">>"
+                    },
+                    "search": "Pesquisar"
+                },
+            });
+
+            jQuery('#dataTableSaidasAprovadas').DataTable({
+                "language": {
+                    "lengthMenu": "Saídas aprovadas",
+                    "zeroRecords": "Nenhum registro encontrado",
+                    "info": "Exibindo página _PAGE_ de _PAGES_",
+                    "infoEmpty": "Nenhum registro disponível",
+                    "infoFiltered": "(Filtrado de um total de _MAX_ registros)",
+                    "paginate": {
+                        "previous": "<<",
+                        "next": ">>"
                     },
                     "search": "Pesquisar"
                 },

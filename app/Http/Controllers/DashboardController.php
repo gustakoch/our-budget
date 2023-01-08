@@ -8,6 +8,7 @@ use App\Models\CreditCardInvoiceModel;
 use App\Models\CreditCardModel;
 use App\Models\ExpenseModel;
 use App\Models\RecipeModel;
+use App\Models\SubmitExpenseModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ class DashboardController extends Controller
     private $expenseModel;
     private $creditCardInvoiceModel;
     private $appConfigModel;
+    private $submitExpenseModel;
 
     public function __construct(
         User $user,
@@ -28,7 +30,8 @@ class DashboardController extends Controller
         RecipeModel $recipeModel,
         ExpenseModel $expenseModel,
         CreditCardInvoiceModel $creditCardInvoiceModel,
-        AppConfigModel $appConfigModel
+        AppConfigModel $appConfigModel,
+        SubmitExpenseModel $submitExpenseModel
     ) {
         $this->user = $user;
         $this->creditCardModel = $creditCardModel;
@@ -36,6 +39,7 @@ class DashboardController extends Controller
         $this->expenseModel = $expenseModel;
         $this->creditCardInvoiceModel = $creditCardInvoiceModel;
         $this->appConfigModel = $appConfigModel;
+        $this->submitExpenseModel = $submitExpenseModel;
     }
 
     public function index()
@@ -141,6 +145,8 @@ class DashboardController extends Controller
         foreach ($userExpenses as $expense) {
             if ($expense->month == $month) {
                 if ($expense->period == 0) {
+                    $expense->to_user = $this->submitExpenseModel->getUserSentExpense($expense->submitted_expense_id);
+
                     array_push($expensesPeriod, $expense);
 
                     if ($expense->cancelled == 0) {
@@ -151,6 +157,8 @@ class DashboardController extends Controller
                 }
             }
         }
+
+        $receivedExpenses = $this->submitExpenseModel->getReceivedExpenses();
 
         $cards = $this->creditCardModel->getCardsWithFlags();
         $allCreditCardExpenses = [];
@@ -230,6 +238,7 @@ class DashboardController extends Controller
             'allExpenseCategories' => $allExpenseCategories,
             'recipes' => $currentRecipes,
             'expenses' => $expensesPeriod,
+            'receivedExpenses' => $receivedExpenses,
             'budgeted_amount' => $amount,
             'budgeted_amount_expenses' => $amountExpensesPeriod,
             'realized_amount_expenses' => $realizedExpensesPeriod,

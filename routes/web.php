@@ -12,6 +12,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvestmentsController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SubmitExpenseController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -73,13 +74,21 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/reports/recipes-all',              [ReportController::class, 'allRecipes'])->name('report.recipes.all');
     Route::post('/reports/search',                  [ReportController::class, 'search']);
 
-    Route::get('/investments',                     [InvestmentsController::class, 'index'])->name('investments.index');
+    Route::get('/investments',                      [InvestmentsController::class, 'index'])->name('investments.index');
 
-    Route::get('/tickets',                  [TicketController::class, 'index'])->name('tickets');
+    Route::get('/submit-expense',                   [SubmitExpenseController::class, 'index'])->name('submit-expense.index');
+    Route::get('/submit-expense/{id}',              [SubmitExpenseController::class, 'show']);
+    Route::get('/submit-expense/destroy/{id}',      [SubmitExpenseController::class, 'destroy']);
+    Route::get('/submit-expense/convert/{id}',      [SubmitExpenseController::class, 'convertToExpense']);
+    Route::post('/submit-expense/store',            [SubmitExpenseController::class, 'store']);
+    Route::post('/submit-expense/update',           [SubmitExpenseController::class, 'update']);
+    Route::post('/submit-expense/refuse',           [SubmitExpenseController::class, 'refuse']);
 
-    Route::post('/invoices/pay',            [InvoicesController::class, 'pay']);
+    Route::get('/tickets',                          [TicketController::class, 'index'])->name('tickets');
 
-    Route::get('/charts/index',             [ChartController::class, 'index']);
+    Route::post('/invoices/pay',                    [InvoicesController::class, 'pay']);
 
-    Route::post('/config/store',            [AppConfigController::class, 'store']);
+    Route::get('/charts/index',                     [ChartController::class, 'index']);
+
+    Route::post('/config/store',                    [AppConfigController::class, 'store']);
 });

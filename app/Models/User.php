@@ -58,6 +58,35 @@ class User extends Authenticatable
         return $users;
     }
 
+    public function getActives()
+    {
+        $users = DB::select("
+            SELECT
+                u.id
+                , u.name
+                , u.email
+                , u.role
+                , r.description role_name
+                , CASE
+                    WHEN u.first_access = 0 THEN 'Não'
+                    WHEN u.first_access = 1 THEN 'Sim'
+                END AS first_access
+                , CASE
+                    WHEN u.active = 0 THEN 'Não'
+                    WHEN u.active = 1 THEN 'Sim'
+                END AS active
+                , to_char(u.created_at, 'DD/MM/YYYY HH24:MI') created_at
+            FROM users u
+                , roles r
+            WHERE r.id = u.role
+              AND u.active = 1
+              AND u.id != ?
+            ORDER BY u.name
+        ", [session('user')['id']]);
+
+        return $users;
+    }
+
     public function generatePassword($size)
     {
         $capital = "ABCDEFGHIJKLMNOPQRSTUVYXWZ";

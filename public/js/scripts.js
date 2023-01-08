@@ -2,11 +2,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const formNewRecipe = document.querySelector('#form-new-recipe')
     const formEditRecipe = document.querySelector('#form-edit-recipe')
     const formNewExpense = document.querySelector('#form-new-expense')
-    const formEditExpense = document.querySelector('#form-edit-expense')
     const formExpenseCancellation = document.querySelector('#form-expense-cancellation')
-    const formExpenseCancellations = document.querySelector('#form-expense-cancellation-all')
     const formNewUser = document.querySelector('#form-new-user')
     const formEditUser = document.querySelector('#form-edit-user')
+    const formRefuseDetail = document.querySelector('#form-refuse-detail')
 
     let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -504,6 +503,55 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
+    jQuery(document).on('click', '.save-submitted-expense', function (e) {
+        e.preventDefault()
+
+        let button = jQuery(this)
+
+        let description = jQuery('input[name="description"]').val()
+        let category = jQuery('select[name="category"]').val()
+        let month = jQuery('select[name="month"]').val()
+        let toUser = jQuery('select[name="to_user"]').val()
+        let installments = jQuery('select[name="installments"]').val()
+        let amount = jQuery('input[name="amount"]').val()
+
+        if (!description || !category || !month || !toUser || !installments || !amount) {
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem ser preenchidos.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        if (amount == '0') {
+            swalNotification('Oops...', 'O valor informado deve ser maior do que zero.', 'error', 'Tentar novamente')
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'submit-expense/store',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-new-submitted-expense').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function () {
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Lançar saída')
+            },
+            success: function (response) {
+                stopLoadingOnButton(button, 'Lançar saída')
+
+                if (response.ok) {
+                    location.reload()
+                    swalNotification('Enviado', 'Saída enviada com sucesso.', 'success', 'Continuar')
+                }
+            }
+        })
+    })
+
     jQuery(document).on('click', '.update-recipe', function (e) {
         e.preventDefault()
 
@@ -895,6 +943,46 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
+    jQuery(document).on('click', '.edit-submitted-expense', function (e) {
+        e.preventDefault()
+
+        let id = $(this).attr('id')
+
+        jQuery.ajax({
+            url: `submit-expense/${id}`,
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function () {
+                jQuery('#modalHeaderSubmittedExpense').hide()
+                jQuery('#modalFooterSubmittedExpense').hide()
+                jQuery('#form-update-submitted-expense').hide()
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+            },
+            success: function (response) {
+                jQuery('#modalHeaderSubmittedExpense').show()
+                jQuery('#modalFooterSubmittedExpense').show()
+                jQuery('#form-update-submitted-expense').show()
+                jQuery('#loadingSpinnerSubmittedExpense').hide()
+
+                jQuery('input[name="id_submitted_expense"]').val(response.data.id)
+                jQuery('input[name="description"]').val(response.data.description)
+
+                jQuery('select[name="category"]').val(response.data.category)
+                jQuery('select[name="month"]').val(response.data.month)
+                jQuery('select[name="to_user"]').val(response.data.to_user)
+                jQuery('select[name="installments"]').val(response.data.installments)
+
+                jQuery('input[name="amount"]').val(response.data.value)
+            }
+        })
+    })
+
     jQuery(document).on('click', '.edit-category', function (e) {
         e.preventDefault()
 
@@ -996,6 +1084,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 jQuery('input[name="id_expense"]').val(response.id)
             }
         })
+    })
+
+    jQuery(document).on('click', '.get-submitted-expense-id', function (e) {
+        e.preventDefault()
+
+        jQuery('textarea[name="refuse_detail"]').val('')
+
+        let id = $(this).attr('id')
+        jQuery('input[name="id_submitted_expense"]').val(id)
     })
 
     jQuery(document).on('click', '.cancel-installments', function (e) {
@@ -1228,6 +1325,47 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
+    jQuery(document).on('click', '.refuse-submitted-expense', function (e) {
+        e.preventDefault()
+
+        let button = jQuery(this)
+        let refuseDetail = jQuery('textarea[name="refuse_detail"]').val()
+
+        if (!refuseDetail) {
+            swalNotification('Presta atenção aí', 'É necessário informar o motivo da recusa do lançamento recebido.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'submit-expense/refuse',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-refuse-detail').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function () {
+                jQuery('#loadingSpinnerInfo').show()
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Recusar lançamento')
+            },
+            success: function (response) {
+                stopLoadingOnButton(button, 'Recusar lançamento')
+
+                if (response.ok) {
+                    jQuery('input[name="id_submitted_expense"]').val('')
+
+                    swalNotification('Recusado', response.message, 'success', 'Continuar')
+                    location.reload()
+                }
+            }
+        })
+    })
+
     jQuery(document).on('click', '.save-reason-cancellation-all', function (e) {
         e.preventDefault()
 
@@ -1365,6 +1503,42 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
+    jQuery(document).on('click', '.confirm-submitted-expense', function () {
+        let id = jQuery(this).attr('id')
+
+        Swal.fire({
+            title: 'Cadastrar saída?',
+            text: "Esta ação não poderá ser desfeita",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, pode cadastrar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: `submit-expense/convert/${id}`,
+                    type: 'get',
+                    dataType: 'json',
+                    timeout: 20000,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    error: function (xhr, status, error) {
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                    },
+                    success: function (response) {
+                        if (response.ok) {
+                            location.reload()
+                            swalNotification('Saída cadastrada', 'Saída cadastrada com sucesso.', 'success', 'Continuar')
+                        }
+                    }
+                })
+            }
+        })
+    })
+
     jQuery(document).on('click', '.pay-invoice', function () {
         let invoiceId = jQuery(this).attr('data-js-invoice-id')
         let cardName = jQuery(this).attr('data-js-card-name')
@@ -1468,6 +1642,42 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (response.ok) {
                             location.reload()
                             swalNotification('Removido', 'Cartão foi removido com sucesso', 'success', 'Continuar')
+                        }
+                    }
+                })
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.delete-submitted-expense', function () {
+        let id = jQuery(this).attr('id')
+
+        Swal.fire({
+            title: 'Excluir lançamento de saída?',
+            text: "Esta ação não poderá ser desfeita",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, pode excluir'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: `submit-expense/destroy/${id}`,
+                    type: 'get',
+                    dataType: 'json',
+                    timeout: 20000,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    error: function (xhr, status, error) {
+                        swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                    },
+                    success: function (response) {
+                        if (response.ok) {
+                            location.reload()
+                            swalNotification('Removido', 'Lançamento de saída foi removido com sucesso', 'success', 'Continuar')
                         }
                     }
                 })
@@ -1898,6 +2108,60 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     stopLoadingOnButton(button, 'Atualizar usuário')
                     swalNotification('Houve um erro', 'Erro interno ao atualizar usuário.', 'error', 'Tentar novamente')
+                }
+            }
+        })
+    })
+
+    jQuery(document).on('click', '.update-submitted-expense', function (e) {
+        e.preventDefault()
+
+        let button = jQuery(this)
+
+        let description = jQuery('input[name="description"]').val()
+        let category = jQuery('select[name="category"]').val()
+        let month = jQuery('select[name="month"]').val()
+        let toUser = jQuery('select[name="to_user"]').val()
+        let installments = jQuery('select[name="installments"]').val()
+        let amount = jQuery('input[name="amount"]').val()
+
+        if (!description || !category || !month || !toUser || !installments || !amount) {
+            swalNotification('Presta atenção aí', 'Os dados obrigatórios devem estar preenchidos.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        if (amount == '0') {
+            swalNotification('Oops...', 'O valor informado deve ser maior do que zero.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'submit-expense/update',
+            type: 'post',
+            dataType: 'json',
+            data: jQuery('#form-update-submitted-expense').serialize(),
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function () {
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, 'Atualizar saída')
+            },
+            success: function (response) {
+                if (response.ok) {
+                    swalNotification('Atualizado', response.message, 'success', 'Fechar')
+                    stopLoadingOnButton(button, 'Atualizar saída')
+                    location.reload()
+                } else if (!response.fieldChanged) {
+                    stopLoadingOnButton(button, 'Atualizar saída')
+                    swalNotification('Não é possível atualizar', response.message, 'error', 'Tentar novamente')
+                } else {
+                    stopLoadingOnButton(button, 'Atualizar saída')
+                    swalNotification('Houve um erro', 'Erro interno ao atualizar lançamento.', 'error', 'Tentar novamente')
                 }
             }
         })
