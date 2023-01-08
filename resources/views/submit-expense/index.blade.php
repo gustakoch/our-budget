@@ -84,7 +84,17 @@
                                 </ul>
                             </div>
                         @else
-                            -
+                            <div class="input-group" style="width: 72.46px !important;">
+                                <span
+                                    span class="d-inline-block"
+                                    tabindex="0"
+                                    data-bs-toggle="tooltip"
+                                    title="Não há ações disponíveis para este item!"
+                                    style="width: 100% !important;"
+                                >
+                                    <button disabled class="btn btn-outline-secondary d-flex align-items-center btn-options" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100% !important;"></button>
+                                </span>
+                            </div>
                         @endif
                     </td>
                 </tr>
@@ -125,7 +135,19 @@
                     <td>{{ $expense->to_user }}</td>
                     <td>{{ $expense->created_at }}</td>
                     <td>@if ($expense->status == 1) <span class="text-success">Aprovado</span> @endif</td>
-                    <td>-</td>
+                    <td>
+                        <div class="input-group" style="width: 72.46px !important;">
+                            <span
+                                span class="d-inline-block"
+                                tabindex="0"
+                                data-bs-toggle="tooltip"
+                                title="Não há ações disponíveis para este item!"
+                                style="width: 100% !important;"
+                            >
+                                <button disabled class="btn btn-outline-secondary d-flex align-items-center btn-options" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100% !important;"></button>
+                            </span>
+                        </div>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
