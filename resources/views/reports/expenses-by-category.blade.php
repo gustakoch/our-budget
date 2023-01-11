@@ -90,7 +90,7 @@
                             </div>
                             <div class="form-group mt-3">
                                 @if (count($users) > 0)
-                                    @if (session('user')['role'] !== 3)
+                                    @if (in_array(session('user')['role'], ['1', '2']))
                                         <label for="user" class="form-label">Usuários:</label>
                                         <select
                                             multiple

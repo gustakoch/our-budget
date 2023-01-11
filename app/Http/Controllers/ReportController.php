@@ -74,7 +74,7 @@ class ReportController extends Controller
         $users = "";
         $searchType = $data['search-type'];
 
-        if (session('user')['role'] == 3) {
+        if (!in_array(session('user')['role'], ['1,' ,'2'])) {
             $users = session('user')['id'];
         } else {
             $users = implode(',', $data['user']);

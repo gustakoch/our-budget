@@ -90,22 +90,13 @@
                             </div>
                             <div class="form-group mt-3">
                                 @if (count($users) > 0)
-                                    @if (session('user')['role'] == 3)
-                                        <label for="user" class="form-label">Usuário cadastrado:</label>
-                                        <input type="hidden" name="user" value="{{ session('user')['id'] }}" />
-                                        <select class="form-select" name="user[]" id="user" disabled>
-                                            <option selected value="{{ session('user')['id'] }}">
-                                                {{ session('user')['name'] }} (Eu)
-                                            </option>
-                                        </select>
-                                    @else
-                                        <label for="user" class="form-label">Usuário(s) cadastrado(s):</label>
+                                    @if (in_array(session('user')['role'], ['1', '2']))
+                                        <label for="user" class="form-label">Usuários:</label>
                                         <select
                                             multiple
                                             class="form-select"
                                             name="user[]"
                                             id="user"
-                                            style="height: 240px;"
                                         >
                                             @foreach ($users as $user)
                                                 <option
@@ -121,6 +112,17 @@
                                 @else
                                     <span>Não foram encontrados registros de usuários.</span>
                                 @endif
+                            </div>
+                            <div class="form-group d-flex flex-column">
+                                <label class="form-label">&nbsp;</label>
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    id="search-recipes-by-categories"
+                                >
+                                    <i class="fas fa-search"></i>
+                                    Pesquisar
+                                </button>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -157,17 +159,6 @@
                                 @else
                                     <span>Não foram encontrados registros de anos.</span>
                                 @endif
-                            </div>
-                            <div class="form-group mt-3 d-flex flex-column">
-                                <label class="form-label">&nbsp;</label>
-                                <button
-                                    type="button"
-                                    class="btn btn-primary"
-                                    id="search-recipes-by-categories"
-                                >
-                                    <i class="fas fa-search"></i>
-                                    Pesquisar
-                                </button>
                             </div>
                         </div>
                     </div>

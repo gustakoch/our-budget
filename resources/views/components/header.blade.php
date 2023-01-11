@@ -27,10 +27,11 @@
                     <li>
                         <a href="{{ route('cards.index') }}">Cartões de crédito</a>
                     </li>
-                    @if (session('user')['role'] == '1' || session('user')['role'] == '2')
-                    <li>
-                        <a href="{{ route('users.index') }}">Usuários</a>
-                    </li>
+
+                    @if (in_array(session('user')['role'], ['1', '2']))
+                        <li>
+                            <a href="{{ route('users.index') }}">Usuários</a>
+                        </li>
                     @endif
                 </ul>
 
@@ -39,10 +40,12 @@
                     Investimentos
                 </a>
 
-                <a href="{{ route('submit-expense.index') }}">
-                    <i class="fas fa-money-check-alt"></i>
-                    Saídas enviadas
-                </a>
+                @if (in_array(session('user')['role'], ['1', '2', '3']))
+                    <a href="{{ route('submit-expense.index') }}">
+                        <i class="fas fa-money-check-alt"></i>
+                        Saídas enviadas
+                    </a>
+                @endif
 
                 <li>
                     <a href="#menuRelatorios" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
