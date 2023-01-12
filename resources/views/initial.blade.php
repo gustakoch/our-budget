@@ -5,7 +5,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
     <h3 class="mb-3">Configurações iniciais</h3>
-    <span>Verifique seus dados abaixo e clique em "Confirmar" para salvar as alterações.</span>
+    <span>Verifique seus dados abaixo e clique em "Salvar dados" para salvar as alterações.</span>
 </nav>
 
 
