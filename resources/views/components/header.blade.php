@@ -41,9 +41,9 @@
                 </a>
 
                 @if (in_array(session('user')['role'], ['1', '2', '3']))
-                    <a href="{{ route('submit-expense.index') }}">
+                    <a href="{{ route('billing.index') }}">
                         <i class="fas fa-money-check-alt"></i>
-                        Saídas enviadas
+                        Cobranças enviadas
                     </a>
                 @endif
 

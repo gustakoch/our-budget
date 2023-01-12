@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Saídas enviadas')
+@section('title', 'Cobranças enviadas')
 
 @section('content')
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
-    <h3 class="mb-3">Saídas enviadas</h3>
+    <h3 class="mb-3">Cobranças enviadas</h3>
     <span>Painel de envio de despesas para os usuários da plataforma.</span>
 </nav>
 
@@ -13,10 +13,10 @@
     data-bs-toggle="modal"
     data-bs-target="#addSubmitExpenseModal"
 >
-    Nova saída
+    Nova cobrança
 </button>
 
-<h4 class="my-3">Saídas enviadas pendentes</h4>
+<h4 class="my-3">Pendentes</h4>
 
 @if (count($pendingSubmittedExpenses) > 0)
     <table id="dataTableSaidasPendentes" class="table" style="vertical-align: middle">
@@ -105,7 +105,7 @@
     <span>Nenhum registro encontrado.</span>
 @endif
 
-<h4 class="mt-4 mb-3">Saídas enviadas aprovadas</h4>
+<h4 class="mt-4 mb-3">Aprovadas</h4>
 
 @if (count($approvedSubmittedExpenses) > 0)
     <table id="dataTableSaidasAprovadas" class="table" style="vertical-align: middle">
@@ -156,13 +156,13 @@
     <span>Nenhum registro encontrado.</span>
 @endif
 
-@include('submit-expense.modals.add', [
+@include('billing.modals.add', [
     'expenseCategories' => $expenseCategories,
     'installments' => $installments,
     'years' => $years
 ])
 
-@include('submit-expense.modals.edit', [
+@include('billing.modals.edit', [
     'expenseCategories' => $expenseCategories,
 ])
 

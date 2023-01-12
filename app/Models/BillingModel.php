@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class SubmitExpenseModel extends Model
+class BillingModel extends Model
 {
     use HasFactory;
     protected $table = "submitted_expenses";
@@ -68,7 +68,7 @@ class SubmitExpenseModel extends Model
             return '';
         }
 
-        $submittedExpense = SubmitExpenseModel::find($id);
+        $submittedExpense = BillingModel::find($id);
         $user = User::find($submittedExpense->from_user);
 
         return $user->name;

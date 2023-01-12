@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppConfigModel;
-use App\Models\Configuration;
+use App\Models\BillingModel;
 use App\Models\CreditCardInvoiceModel;
 use App\Models\CreditCardModel;
 use App\Models\ExpenseModel;
 use App\Models\RecipeModel;
-use App\Models\SubmitExpenseModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +21,7 @@ class DashboardController extends Controller
     private $expenseModel;
     private $creditCardInvoiceModel;
     private $appConfigModel;
-    private $submitExpenseModel;
+    private $billingModel;
 
     public function __construct(
         User $user,
@@ -31,7 +30,7 @@ class DashboardController extends Controller
         ExpenseModel $expenseModel,
         CreditCardInvoiceModel $creditCardInvoiceModel,
         AppConfigModel $appConfigModel,
-        SubmitExpenseModel $submitExpenseModel
+        BillingModel $billingModel
     ) {
         $this->user = $user;
         $this->creditCardModel = $creditCardModel;
@@ -39,7 +38,7 @@ class DashboardController extends Controller
         $this->expenseModel = $expenseModel;
         $this->creditCardInvoiceModel = $creditCardInvoiceModel;
         $this->appConfigModel = $appConfigModel;
-        $this->submitExpenseModel = $submitExpenseModel;
+        $this->billingModel = $billingModel;
     }
 
     public function index()
@@ -145,7 +144,7 @@ class DashboardController extends Controller
         foreach ($userExpenses as $expense) {
             if ($expense->month == $month) {
                 if ($expense->period == 0) {
-                    $expense->to_user = $this->submitExpenseModel->getUserSentExpense($expense->submitted_expense_id);
+                    $expense->to_user = $this->billingModel->getUserSentExpense($expense->submitted_expense_id);
 
                     array_push($expensesPeriod, $expense);
 
@@ -158,7 +157,7 @@ class DashboardController extends Controller
             }
         }
 
-        $receivedExpenses = $this->submitExpenseModel->getReceivedExpenses();
+        $receivedExpenses = $this->billingModel->getReceivedExpenses();
 
         $cards = $this->creditCardModel->getCardsWithFlags();
         $allCreditCardExpenses = [];

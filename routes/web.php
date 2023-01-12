@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppConfigController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\CreditCardController;
@@ -12,9 +13,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvestmentsController;
 use App\Http\Controllers\InvoicesController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\SubmitExpenseController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',                             [HomeController::class, 'index'])->name('home');
@@ -76,13 +77,13 @@ Route::middleware(['is.authenticated'])->group(function() {
 
     Route::get('/investments',                      [InvestmentsController::class, 'index'])->name('investments.index');
 
-    Route::get('/submit-expense',                   [SubmitExpenseController::class, 'index'])->name('submit-expense.index');
-    Route::get('/submit-expense/{id}',              [SubmitExpenseController::class, 'show']);
-    Route::get('/submit-expense/destroy/{id}',      [SubmitExpenseController::class, 'destroy']);
-    Route::get('/submit-expense/convert/{id}',      [SubmitExpenseController::class, 'convertToExpense']);
-    Route::post('/submit-expense/store',            [SubmitExpenseController::class, 'store']);
-    Route::post('/submit-expense/update',           [SubmitExpenseController::class, 'update']);
-    Route::post('/submit-expense/refuse',           [SubmitExpenseController::class, 'refuse']);
+    Route::get('/billing',                           [BillingController::class, 'index'])->name('billing.index');
+    Route::get('/billing/{id}',                      [BillingController::class, 'show']);
+    Route::get('/billing/destroy/{id}',              [BillingController::class, 'destroy']);
+    Route::get('/billing/convert/{id}',              [BillingController::class, 'convertToExpense']);
+    Route::post('/billing/store',                    [BillingController::class, 'store']);
+    Route::post('/billing/update',                   [BillingController::class, 'update']);
+    Route::post('/billing/refuse',                   [BillingController::class, 'refuse']);
 
     Route::get('/tickets',                          [TicketController::class, 'index'])->name('tickets');
 

@@ -5,27 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\MonthModel;
 use App\Models\AppConfigModel;
+use App\Models\BillingModel;
 use App\Models\ExpenseModel;
 use App\Models\RecipeModel;
-use App\Models\SubmitExpenseModel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class SubmitExpenseController extends Controller
+class BillingController extends Controller
 {
-    private $submitExpenseModel;
+    private $billingModel;
     private $appConfigModel;
     private $expenseModel;
     private $userModel;
 
     public function __construct(
-        SubmitExpenseModel $submitExpenseModel,
+        BillingModel $billingModel,
         AppConfigModel $appConfigModel,
         ExpenseModel $expenseModel,
         User $userModel
     ) {
-        $this->submitExpenseModel = $submitExpenseModel;
+        $this->billingModel = $billingModel;
         $this->appConfigModel = $appConfigModel;
         $this->userModel = $userModel;
         $this->expenseModel = $expenseModel;
@@ -41,13 +41,13 @@ class SubmitExpenseController extends Controller
             ->where('active', 1)
             ->orderBy('description', 'asc')
             ->get();
-        $pendingSubmittedExpenses = $this->submitExpenseModel->getSubmittedExpenses([0, 2]);
-        $approvedSubmittedExpenses = $this->submitExpenseModel->getSubmittedExpenses([1]);
+        $pendingSubmittedExpenses = $this->billingModel->getSubmittedExpenses([0, 2]);
+        $approvedSubmittedExpenses = $this->billingModel->getSubmittedExpenses([1]);
         $activeUsers = $this->userModel->getActives();
         $months = MonthModel::all();
         $years = $this->expenseModel->getDistinctYears();
 
-        return view('submit-expense.index', [
+        return view('billing.index', [
             'pendingSubmittedExpenses' => $pendingSubmittedExpenses,
             'approvedSubmittedExpenses' => $approvedSubmittedExpenses,
             'installments' => $configNumberOfInstallments,
@@ -60,7 +60,7 @@ class SubmitExpenseController extends Controller
 
     public function show($id)
     {
-        $submittedExpense = SubmitExpenseModel::find($id);
+        $submittedExpense = BillingModel::find($id);
 
         if (!$submittedExpense) {
             return response()->json([
@@ -82,7 +82,7 @@ class SubmitExpenseController extends Controller
         session_start();
         $data = $request->all();
 
-        SubmitExpenseModel::create([
+        BillingModel::create([
             'description' => mb_convert_case($data['description'], MB_CASE_TITLE, "UTF-8"),
             'category' => $data['category'],
             'month' => $data['month'],
@@ -104,7 +104,7 @@ class SubmitExpenseController extends Controller
         $data = $request->all();
         $fieldChanged = true;
 
-        $submittedExpense = SubmitExpenseModel::find($data['id_submitted_expense']);
+        $submittedExpense = BillingModel::find($data['id_submitted_expense']);
 
         if ($submittedExpense['description'] == $data['description']
             && $submittedExpense['category'] == $data['category']
@@ -123,7 +123,7 @@ class SubmitExpenseController extends Controller
             ]);
         }
 
-        SubmitExpenseModel::where('id', $data['id_submitted_expense'])
+        BillingModel::where('id', $data['id_submitted_expense'])
             ->update([
                 'description' => mb_convert_case($data['description'], MB_CASE_TITLE, "UTF-8"),
                 'category' => $data['category'],
@@ -145,7 +145,7 @@ class SubmitExpenseController extends Controller
     {
         $data = $request->all();
 
-        SubmitExpenseModel::where('id', $data['id_submitted_expense'])
+        BillingModel::where('id', $data['id_submitted_expense'])
             ->update([
                 'status' => 2,
                 'refuse_details' => $data['refuse_detail']
@@ -159,7 +159,7 @@ class SubmitExpenseController extends Controller
 
     public function convertToExpense($id)
     {
-        $submittedExpense = SubmitExpenseModel::find($id);
+        $submittedExpense = BillingModel::find($id);
         $month = $submittedExpense['month'];
         $year = $submittedExpense['year'];
 
@@ -206,7 +206,7 @@ class SubmitExpenseController extends Controller
 
     public function destroy($id)
     {
-        $submittedExpense = SubmitExpenseModel::find($id);
+        $submittedExpense = BillingModel::find($id);
         $submittedExpense->delete();
 
         return response()->json([

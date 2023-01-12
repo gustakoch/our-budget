@@ -215,6 +215,6 @@
     </div>
 </section>
 
-@include('submit-expense.modals.view', [
+@include('billing.modals.view', [
     'receivedExpenses' => $receivedExpenses
 ])

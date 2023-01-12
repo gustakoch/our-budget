@@ -526,7 +526,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         jQuery.ajax({
-            url: 'submit-expense/store',
+            url: 'billing/store',
             type: 'post',
             dataType: 'json',
             timeout: 20000,
@@ -949,7 +949,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let id = $(this).attr('id')
 
         jQuery.ajax({
-            url: `submit-expense/${id}`,
+            url: `billing/${id}`,
             type: 'get',
             dataType: 'json',
             timeout: 20000,
@@ -1337,7 +1337,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         jQuery.ajax({
-            url: 'submit-expense/refuse',
+            url: 'billing/refuse',
             type: 'post',
             dataType: 'json',
             timeout: 20000,
@@ -1518,7 +1518,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 jQuery.ajax({
-                    url: `submit-expense/convert/${id}`,
+                    url: `billing/convert/${id}`,
                     type: 'get',
                     dataType: 'json',
                     timeout: 20000,
@@ -1664,7 +1664,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 jQuery.ajax({
-                    url: `submit-expense/destroy/${id}`,
+                    url: `billing/destroy/${id}`,
                     type: 'get',
                     dataType: 'json',
                     timeout: 20000,
@@ -2136,7 +2136,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         jQuery.ajax({
-            url: 'submit-expense/update',
+            url: 'billing/update',
             type: 'post',
             dataType: 'json',
             data: jQuery('#form-update-submitted-expense').serialize(),

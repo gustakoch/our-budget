@@ -66,7 +66,7 @@
 
             jQuery('#dataTableSaidasPendentes').DataTable({
                 "language": {
-                    "lengthMenu": "Saídas pendentes",
+                    "lengthMenu": "Cobranças recusadas ou aguardando aprovação",
                     "zeroRecords": "Nenhum registro encontrado",
                     "info": "Exibindo página _PAGE_ de _PAGES_",
                     "infoEmpty": "Nenhum registro disponível",
@@ -81,7 +81,7 @@
 
             jQuery('#dataTableSaidasAprovadas').DataTable({
                 "language": {
-                    "lengthMenu": "Saídas aprovadas",
+                    "lengthMenu": "Cobranças aprovadas",
                     "zeroRecords": "Nenhum registro encontrado",
                     "info": "Exibindo página _PAGE_ de _PAGES_",
                     "infoEmpty": "Nenhum registro disponível",
