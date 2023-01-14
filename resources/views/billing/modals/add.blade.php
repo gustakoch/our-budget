@@ -5,7 +5,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Nova cobrança</h5>
             </div>
             <div class="modal-body">
-                <form id="form-new-submitted-expense">
+                <form id="form-new-submitted-expense" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-3">
@@ -82,9 +82,26 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="amount" class="form-label">Valor total da cobrança*</label>
-                        <input class="form-control" type="number" name="amount" id="amount" placeholder="Informe o valor" />
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="document" class="form-label">Anexar documento</label>
+                                <input type="file" class="form-control" id="document" name="document" />
+                              </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Valor total da cobrança*</label>
+                                <input class="form-control" type="number" name="amount" id="amount" placeholder="Informe o valor" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="generate_receipt" value="1" id="generate_receipt">
+                        <label class="form-check-label" for="generate_receipt">
+                            Gerar recebimento de entrada
+                        </label>
                     </div>
                 </form>
 

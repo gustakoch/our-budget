@@ -12,6 +12,7 @@ use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvestmentsController;
 use App\Http\Controllers\InvoicesController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
@@ -77,13 +78,13 @@ Route::middleware(['is.authenticated'])->group(function() {
 
     Route::get('/investments',                      [InvestmentsController::class, 'index'])->name('investments.index');
 
-    Route::get('/billing',                           [BillingController::class, 'index'])->name('billing.index');
-    Route::get('/billing/{id}',                      [BillingController::class, 'show']);
-    Route::get('/billing/destroy/{id}',              [BillingController::class, 'destroy']);
-    Route::get('/billing/convert/{id}',              [BillingController::class, 'convertToExpense']);
-    Route::post('/billing/store',                    [BillingController::class, 'store']);
-    Route::post('/billing/update',                   [BillingController::class, 'update']);
-    Route::post('/billing/refuse',                   [BillingController::class, 'refuse']);
+    Route::get('/billing',                          [BillingController::class, 'index'])->name('billing.index');
+    Route::get('/billing/{id}',                     [BillingController::class, 'show']);
+    Route::get('/billing/destroy/{id}',             [BillingController::class, 'destroy']);
+    Route::get('/billing/convert/{id}',             [BillingController::class, 'convert']);
+    Route::post('/billing/store',                   [BillingController::class, 'store']);
+    Route::post('/billing/update',                  [BillingController::class, 'update']);
+    Route::post('/billing/refuse',                  [BillingController::class, 'refuse']);
 
     Route::get('/tickets',                          [TicketController::class, 'index'])->name('tickets');
 
@@ -92,4 +93,6 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/charts/index',                     [ChartController::class, 'index']);
 
     Route::post('/config/store',                    [AppConfigController::class, 'store']);
+
+    Route::get('/notifications',                    [NotificationController::class, 'index'])->name('notifications.index');
 });

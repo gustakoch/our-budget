@@ -62,6 +62,7 @@
                                         <th scope="col">Realizado (R$)</th>
                                         <th scope="col">Pendente (R$)</th>
                                         <th scope="col">Situação</th>
+                                        <th scope="col">Arquivo</th>
                                         <th style="width: 100px;" scope="col">Ações</th>
                                     </tr>
                                 </thead>
@@ -75,7 +76,7 @@
                                         >
                                             <td>
                                                 {{ $expense->description }}
-                                                @if ($expense->submitted_expense_id)
+                                                @if ($expense->submitted_expense_id && $expense->generate_receipt)
                                                     <small>({{ ($expense->budgeted_amount - $expense->realized_amount == 0) ? 'Pago' : 'Pagar'}} para <strong>{{ $expense->to_user }}</strong>)</small>
                                                 @endif
                                             </td>
@@ -100,8 +101,24 @@
                                                 @endif
                                             </td>
                                             <td>
+                                                @if ($expense->document)
+                                                    <span
+                                                        span class="d-inline-block"
+                                                        tabindex="0"
+                                                        data-bs-toggle="tooltip"
+                                                        title="Clique para visualizar o documento!"
+                                                    >
+                                                        <a href="{{ url("storage/documents/{$expense->document}") }}" target="_blank" style="margin-right: 5px;">
+                                                            <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                                        </a>
+                                                    </span>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
                                                 <div class="actions-pay d-flex align-items-center">
-                                                    @if (!$expense->submitted_expense_id)
+                                                    @if (!$expense->submitted_expense_id || !$expense->generate_receipt)
                                                         <div class="input-group" style="width: auto !important;">
                                                             <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center btn-options" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                                 <svg height="14" widht="14" style="enable-background:new 0 0 24 24;" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="info"/><g id="icons"><path d="M22.2,14.4L21,13.7c-1.3-0.8-1.3-2.7,0-3.5l1.2-0.7c1-0.6,1.3-1.8,0.7-2.7l-1-1.7c-0.6-1-1.8-1.3-2.7-0.7   L18,5.1c-1.3,0.8-3-0.2-3-1.7V2c0-1.1-0.9-2-2-2h-2C9.9,0,9,0.9,9,2v1.3c0,1.5-1.7,2.5-3,1.7L4.8,4.4c-1-0.6-2.2-0.2-2.7,0.7   l-1,1.7C0.6,7.8,0.9,9,1.8,9.6L3,10.3C4.3,11,4.3,13,3,13.7l-1.2,0.7c-1,0.6-1.3,1.8-0.7,2.7l1,1.7c0.6,1,1.8,1.3,2.7,0.7L6,18.9   c1.3-0.8,3,0.2,3,1.7V22c0,1.1,0.9,2,2,2h2c1.1,0,2-0.9,2-2v-1.3c0-1.5,1.7-2.5,3-1.7l1.2,0.7c1,0.6,2.2,0.2,2.7-0.7l1-1.7   C23.4,16.2,23.1,15,22.2,14.4z M12,16c-2.2,0-4-1.8-4-4c0-2.2,1.8-4,4-4s4,1.8,4,4C16,14.2,14.2,16,12,16z" id="settings"/></g></svg>

@@ -90,19 +90,13 @@ class DashboardController extends Controller
         $activeRecipeCategories = DB::table('categories')
             ->where('belongs_to', 1)
             ->where('active', 1)
+            ->whereNotIn('id', [38])
             ->orderBy('description', 'asc')
             ->get();
+
         $activeExpenseCategories = DB::table('categories')
             ->where('belongs_to', 2)
             ->where('active', 1)
-            ->orderBy('description', 'asc')
-            ->get();
-        $allRecipeCategories = DB::table('categories')
-            ->where('belongs_to', 1)
-            ->orderBy('description', 'asc')
-            ->get();
-        $allExpenseCategories = DB::table('categories')
-            ->where('belongs_to', 2)
             ->orderBy('description', 'asc')
             ->get();
 
@@ -145,6 +139,8 @@ class DashboardController extends Controller
             if ($expense->month == $month) {
                 if ($expense->period == 0) {
                     $expense->to_user = $this->billingModel->getUserSentExpense($expense->submitted_expense_id);
+                    $expense->generate_receipt = $this->billingModel->isGeneratedReceipt($expense->submitted_expense_id);
+                    $expense->document = $this->billingModel->getDocument($expense->submitted_expense_id);
 
                     array_push($expensesPeriod, $expense);
 
@@ -233,8 +229,6 @@ class DashboardController extends Controller
             'years' => $years,
             'activeRecipeCategories' => $activeRecipeCategories,
             'activeExpenseCategories' => $activeExpenseCategories,
-            'allRecipeCategories' => $allRecipeCategories,
-            'allExpenseCategories' => $allExpenseCategories,
             'recipes' => $currentRecipes,
             'expenses' => $expensesPeriod,
             'receivedExpenses' => $receivedExpenses,

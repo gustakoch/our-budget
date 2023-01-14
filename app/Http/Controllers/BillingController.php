@@ -9,11 +9,15 @@ use App\Models\BillingModel;
 use App\Models\ExpenseModel;
 use App\Models\RecipeModel;
 
+use App\Traits\UploadLocalFiles;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BillingController extends Controller
 {
+    use UploadLocalFiles;
+
     private $billingModel;
     private $appConfigModel;
     private $expenseModel;
@@ -81,6 +85,20 @@ class BillingController extends Controller
     {
         session_start();
         $data = $request->all();
+        $uploadedNameFile = '';
+
+        if ($request->hasFile('document') && $request->file('document')->isValid()) {
+            $upload = $this->storeDocument($request);
+
+            if (!$upload['ok']) {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Erro ao fazer upload do arquivo!'
+                ]);
+            }
+
+            $uploadedNameFile = $upload['nameFile'];
+        }
 
         BillingModel::create([
             'description' => mb_convert_case($data['description'], MB_CASE_TITLE, "UTF-8"),
@@ -90,7 +108,9 @@ class BillingController extends Controller
             'installments' => $data['installments'],
             'value' => $data['amount'],
             'from_user' => session('user')['id'],
-            'to_user' => $data['to_user']
+            'to_user' => $data['to_user'],
+            'document' => $uploadedNameFile,
+            'generate_receipt' => $data['generate_receipt'] ?? null
         ]);
 
         return response()->json([
@@ -157,42 +177,65 @@ class BillingController extends Controller
         ]);
     }
 
-    public function convertToExpense($id)
+    public function convert($id)
     {
         $submittedExpense = BillingModel::find($id);
         $month = $submittedExpense['month'];
         $year = $submittedExpense['year'];
 
-        for ($i = 1; $i <= $submittedExpense['installments']; $i++) {
-            if ($month == 13) {
-                $month = 1;
-                $year++;
+        if ($submittedExpense['generate_receipt']) {
+            for ($i = 1; $i <= $submittedExpense['installments']; $i++) {
+                if ($month == 13) {
+                    $month = 1;
+                    $year++;
+                }
+
+                RecipeModel::create([
+                    'description' => mb_convert_case($submittedExpense['description'], MB_CASE_TITLE, "UTF-8"),
+                    'category' => 38,
+                    'month' => $month,
+                    'year' => $year,
+                    'repeat_next_months' => 0,
+                    'budgeted_amount' => floatval($submittedExpense['value']) / intval($submittedExpense['installments']),
+                    'user_id' => $submittedExpense['from_user'],
+                    'submitted_expense_id' => $submittedExpense['id']
+                ]);
+
+                ExpenseModel::create([
+                    'description' => mb_convert_case($submittedExpense['description'], MB_CASE_TITLE, "UTF-8"),
+                    'category' => $submittedExpense['category'],
+                    'installment' => $i,
+                    'installments' => $submittedExpense['installments'],
+                    'month' => $month,
+                    'year' => $year,
+                    'budgeted_amount' => floatval($submittedExpense['value']) / intval($submittedExpense['installments']),
+                    'user_id' => $submittedExpense['to_user'],
+                    'submitted_expense_id' => $submittedExpense['id']
+                ]);
+
+                $month++;
             }
+        } else {
+            for ($i = 1; $i <= $submittedExpense['installments']; $i++) {
+                if ($month == 13) {
+                    $month = 1;
+                    $year++;
+                }
 
-            RecipeModel::create([
-                'description' => mb_convert_case($submittedExpense['description'], MB_CASE_TITLE, "UTF-8"),
-                'category' => 38,
-                'month' => $month,
-                'year' => $year,
-                'repeat_next_months' => 0,
-                'budgeted_amount' => floatval($submittedExpense['value']) / intval($submittedExpense['installments']),
-                'user_id' => $submittedExpense['from_user'],
-                'submitted_expense_id' => $submittedExpense['id']
-            ]);
+                ExpenseModel::create([
+                    'description' => mb_convert_case($submittedExpense['description'], MB_CASE_TITLE, "UTF-8"),
+                    'category' => $submittedExpense['category'],
+                    'installment' => $i,
+                    'installments' => $submittedExpense['installments'],
+                    'month' => $month,
+                    'year' => $year,
+                    'budgeted_amount' => floatval($submittedExpense['value']) / intval($submittedExpense['installments']),
+                    'user_id' => $submittedExpense['to_user'],
+                    'submitted_expense_id' => $submittedExpense['id']
+                ]);
 
-            ExpenseModel::create([
-                'description' => mb_convert_case($submittedExpense['description'], MB_CASE_TITLE, "UTF-8"),
-                'category' => $submittedExpense['category'],
-                'installment' => $i,
-                'installments' => $submittedExpense['installments'],
-                'month' => $month,
-                'year' => $year,
-                'budgeted_amount' => floatval($submittedExpense['value']) / intval($submittedExpense['installments']),
-                'user_id' => $submittedExpense['to_user'],
-                'submitted_expense_id' => $submittedExpense['id']
-            ]);
-
-            $month++;
+                $month++;
+            }
         }
 
         $submittedExpense->status = 1;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BillingModel;
 use App\Models\CategoryModel;
 use App\Models\CreditCardInvoiceModel;
 use App\Models\ExpenseInstallmentsModel;
@@ -275,6 +276,9 @@ class ExpensesController extends Controller
     {
         $expense = ExpenseModel::find($id);
         $expense->delete();
+
+        $submittedExpense = BillingModel::find($expense->submitted_expense_id);
+        $submittedExpense->delete();
 
         return response()->json([
             'ok' => true,

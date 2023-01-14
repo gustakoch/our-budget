@@ -26,6 +26,8 @@ class BillingModel extends Model
                 'u.name as to_user',
                 'c.description as category',
                 'se.refuse_details',
+                'se.document',
+                'se.generate_receipt',
                 DB::raw("to_char(se.created_at, 'dd/mm/yyyy hh24:mi') as created_at"))
             ->join('categories as c', 'se.category', 'c.id')
             ->join('users as u', 'se.to_user', 'u.id')
@@ -50,6 +52,8 @@ class BillingModel extends Model
                 'se.status',
                 'u.name as from_user',
                 'c.description as category',
+                'se.document',
+                'se.generate_receipt',
                 DB::raw("to_char(se.created_at, 'dd/mm/yyyy hh24:mi') as received_at"))
             ->join('categories as c', 'se.category', 'c.id')
             ->join('users as u', 'se.from_user', 'u.id')
@@ -72,5 +76,31 @@ class BillingModel extends Model
         $user = User::find($submittedExpense->from_user);
 
         return $user->name;
+    }
+
+    public function isGeneratedReceipt($id)
+    {
+        if (!$id) {
+            return false;
+        }
+
+        $submittedExpense = BillingModel::find($id);
+
+        if (!$submittedExpense['generate_receipt']) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getDocument($id)
+    {
+        if (!$id) {
+            return '';
+        }
+
+        $submittedExpense = BillingModel::find($id);
+
+        return $submittedExpense->document;
     }
 }

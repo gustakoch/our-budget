@@ -1,5 +1,5 @@
 <div class="modal fade" id="viewSubmitExpenseModal" data-bs-backdrop="static" data-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 1360px;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1440px;">
         <div class="modal-content">
             <div class="modal-header border-bottom-0">
                 <h5 class="modal-title" id="exampleModalLabel">Lançamentos de saídas recebidos</h5>
@@ -15,6 +15,7 @@
                             <th scope="col">Valor total</th>
                             <th scope="col">Registrado em</th>
                             <th scope="col">Recebido de</th>
+                            <th scope="col">Informações</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -28,6 +29,35 @@
                                 <td>{{ number_format($expense->value, 2, ',', '.') }}</td>
                                 <td>{{ $expense->received_at }}</td>
                                 <td>{{ $expense->from_user }}</td>
+                                <td>
+                                    @if (!$expense->document && !$expense->generate_receipt)
+                                        -
+                                    @endif
+
+                                    @if ($expense->document)
+                                        <span
+                                            span class="d-inline-block"
+                                            tabindex="0"
+                                            data-bs-toggle="tooltip"
+                                            title="Um documento foi anexado! Clique para visualizar."
+                                        >
+                                            <a href="{{ url("storage/documents/{$expense->document}") }}" target="_blank" style="margin-right: 5px;">
+                                                <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                            </a>
+                                        </span>
+                                    @endif
+
+                                    @if ($expense->generate_receipt)
+                                        <span
+                                            span class="d-inline-block"
+                                            tabindex="0"
+                                            data-bs-toggle="tooltip"
+                                            title="Esta despesa irá gerar uma entrada para o usuário remetente."
+                                        >
+                                            <i class="fas fa-info-circle fa-2x text-warning"></i>
+                                        </span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="input-group">
                                         <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center btn-options" type="button" data-bs-toggle="dropdown" aria-expanded="false">

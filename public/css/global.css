@@ -380,3 +380,10 @@ table#table-reports {
     flex-direction: column;
     margin-left: 1rem;
 }
+
+.badge-notification {
+    background-color: #dc3545;
+    top: -20px !important;
+    right: 20px;
+    padding: 3px 5px;
+}

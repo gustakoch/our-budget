@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const formExpenseCancellation = document.querySelector('#form-expense-cancellation')
     const formNewUser = document.querySelector('#form-new-user')
     const formEditUser = document.querySelector('#form-edit-user')
-    const formRefuseDetail = document.querySelector('#form-refuse-detail')
 
     let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -525,12 +524,17 @@ document.addEventListener('DOMContentLoaded', function () {
             return false
         }
 
+        let formData = new FormData(jQuery('#form-new-submitted-expense')[0]);
+
         jQuery.ajax({
             url: 'billing/store',
             type: 'post',
+            enctype: 'multipart/form-data',
+            contentType: false,
+            processData: false,
             dataType: 'json',
             timeout: 20000,
-            data: jQuery('#form-new-submitted-expense').serialize(),
+            data: formData,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
@@ -1508,7 +1512,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         Swal.fire({
             title: 'Cadastrar saída?',
-            text: "Esta ação não poderá ser desfeita",
+            text: "Esta ação irá adicionar esse lançamento na sua lista de saídas.",
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',

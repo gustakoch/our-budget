@@ -31,6 +31,7 @@
                 <th>Para quem</th>
                 <th>Data de envio</th>
                 <th>Situação</th>
+                <th>Informações</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -64,6 +65,31 @@
                                     </span>
                                 </div>
                             </div>
+                        @endif
+                    </td>
+                    <td>
+                        @if ($expense->document)
+                            <span
+                                span class="d-inline-block"
+                                tabindex="0"
+                                data-bs-toggle="tooltip"
+                                title="Um arquivo foi anexado! Clique para visualizar."
+                            >
+                                <a href="{{ url("storage/documents/{$expense->document}") }}" target="_blank" style="margin-right: 5px;">
+                                    <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                </a>
+                            </span>
+                        @endif
+
+                        @if ($expense->generate_receipt)
+                            <span
+                                span class="d-inline-block"
+                                tabindex="0"
+                                data-bs-toggle="tooltip"
+                                title="Esta despesa irá gerar uma entrada no meu controle."
+                            >
+                                <i class="fas fa-info-circle fa-2x text-warning"></i>
+                            </span>
                         @endif
                     </td>
                     <td>
@@ -120,6 +146,7 @@
                 <th>Para quem</th>
                 <th>Data de criação</th>
                 <th>Situação</th>
+                <th>Informações</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -135,6 +162,35 @@
                     <td>{{ $expense->to_user }}</td>
                     <td>{{ $expense->created_at }}</td>
                     <td>@if ($expense->status == 1) <span class="text-success">Aprovado</span> @endif</td>
+                    <td>
+                        @if (!$expense->document && !$expense->generate_receipt)
+                            -
+                        @endif
+
+                        @if ($expense->document)
+                            <span
+                                span class="d-inline-block"
+                                tabindex="0"
+                                data-bs-toggle="tooltip"
+                                title="Um arquivo foi anexado! Clique para visualizar."
+                            >
+                                <a href="{{ url("storage/documents/{$expense->document}") }}" target="_blank" style="margin-right: 5px;">
+                                    <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                </a>
+                            </span>
+                        @endif
+
+                        @if ($expense->generate_receipt)
+                            <span
+                                span class="d-inline-block"
+                                tabindex="0"
+                                data-bs-toggle="tooltip"
+                                title="Esta despesa gerou uma entrada no meu controle."
+                            >
+                                <i class="fas fa-info-circle fa-2x text-warning"></i>
+                            </span>
+                        @endif
+                    </td>
                     <td>
                         <div class="input-group" style="width: 72.46px !important;">
                             <span
