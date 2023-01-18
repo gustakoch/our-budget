@@ -1,10 +1,9 @@
 <nav id="sidebar">
     <div class="sidebar-header">
         <h3>Our <br /> Budget</h3>
-        <strong>OB</strong>
 
         <div class="user-info">
-            <small>Olá, {{ session('user')['name'] }}</small>
+            <small>Olá, {{ session('user')['name'] ?? 'Visitante' }}</small>
         </div>
     </div>
 
