@@ -277,8 +277,10 @@ class ExpensesController extends Controller
         $expense = ExpenseModel::find($id);
         $expense->delete();
 
-        $submittedExpense = BillingModel::find($expense->submitted_expense_id);
-        $submittedExpense->delete();
+        if ($expense->submitted_expense_id) {
+            $submittedExpense = BillingModel::find($expense->submitted_expense_id);
+            $submittedExpense->delete();
+        }
 
         return response()->json([
             'ok' => true,
