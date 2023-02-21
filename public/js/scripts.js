@@ -7,8 +7,37 @@ document.addEventListener('DOMContentLoaded', function () {
     const formEditUser = document.querySelector('#form-edit-user')
 
     let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
+
+    jQuery.ajax({
+        url: 'notifications/get',
+        type: 'get',
+        dataType: 'json',
+        timeout: 20000,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        },
+        error: function (xhr, status, error) {
+            swalNotification('Houve um erro', `${status} - ${error}`, 'error', 'Fechar')
+        },
+        success: function (response) {
+            if (response.length > 0) {
+                setTimeout(function() {
+                    jQuery('#toggle-new-system-notifications').click();
+                }, 3000)
+
+                setTimeout(function() {
+                    jQuery('#toggle-new-system-notifications').click();
+                }, 10000)
+            }
+        }
     })
 
     window.onload = function () {
@@ -2437,6 +2466,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     swalNotification('Presta atenção aí', response.message, 'error', 'Tá, entendi')
                 }
+            }
+        })
+    })
+
+    jQuery(document).on('click', '#notification-button', function (e) {
+        jQuery.ajax({
+            url: 'notifications/read',
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+            },
+            success: function (response) {
+                console.log(response)
             }
         })
     })

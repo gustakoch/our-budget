@@ -95,4 +95,6 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/config/store',                    [AppConfigController::class, 'store']);
 
     Route::get('/notifications',                    [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/get',                [NotificationController::class, 'get']);
+    Route::get('/notifications/read',               [NotificationController::class, 'read']);
 });

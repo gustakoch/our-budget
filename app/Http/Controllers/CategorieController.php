@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoryModel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CategorieController extends Controller
 {

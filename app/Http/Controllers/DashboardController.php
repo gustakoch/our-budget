@@ -7,6 +7,7 @@ use App\Models\BillingModel;
 use App\Models\CreditCardInvoiceModel;
 use App\Models\CreditCardModel;
 use App\Models\ExpenseModel;
+use App\Models\NotificationModel;
 use App\Models\RecipeModel;
 use App\Models\User;
 use DateTime;
@@ -221,6 +222,8 @@ class DashboardController extends Controller
 
         $expensesByCategories = $this->expenseModel->totalAmountExpensesByCategories($_SESSION['month'], $_SESSION['year']);
         $configNumberOfInstallments = $this->appConfigModel->getNumberOfInstallments();
+        $notifications = NotificationModel::where('to_user', session('user')['id'])->limit(3)->orderBy('created_at', 'desc')->get();
+        $numberNotifications = NotificationModel::where('to_user', session('user')['id'])->where('viewed', 0)->get()->count();
 
         return view('dashboard', [
             'month' => $month,
@@ -245,7 +248,9 @@ class DashboardController extends Controller
             ],
             'config' => [
                 'installments' => $configNumberOfInstallments
-            ]
+            ],
+            'notifications' => $notifications,
+            'numberNotifications' => $numberNotifications
         ]);
     }
 

@@ -3,25 +3,10 @@
 
 @section('content')
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light d-flex flex-column justify-content-start align-items-start">
-    <div class="d-flex justify-content-between w-100">
-        <div class="title-subtitle">
-            <h3 class="mb-3">Dashboard</h3>
-            <span>"Um plano não é nada, mas o planejamento é tudo." <small>(Dwight D. Eisenhower)</small></span>
-        </div>
-
-        {{-- <div class="btn-group notification-area">
-            <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: #4b5da7">
-                <i class="fas fa-bell fa-2x"></i> <span class="badge badge-notification">4</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end p-3 text-muted" aria-labelledby="dropdownMenuButton" style="width: 400px;">
-                <p>Você recebeu uma nova notificação!</p>
-                <li><hr class="dropdown-divider"></li>
-                <li><a href="{{ route('notifications.index') }}">Ver todas as notificações</a></li>
-            </ul>
-        </div> --}}
-    </div>
-</nav>
+@include('components.nav', [
+    'titleNav' => 'Dashboard',
+    'subtitleNav' => '"Um plano não é nada, mas o planejamento é tudo." (Dwight D. Eisenhower)'
+])
 
 @include('components.dashboard.filters', [
     'years' => $years,

@@ -7,6 +7,7 @@ use App\Models\MonthModel;
 use App\Models\AppConfigModel;
 use App\Models\BillingModel;
 use App\Models\ExpenseModel;
+use App\Models\NotificationModel;
 use App\Models\RecipeModel;
 
 use App\Traits\UploadLocalFiles;
@@ -111,6 +112,14 @@ class BillingController extends Controller
             'to_user' => $data['to_user'],
             'document' => $uploadedNameFile,
             'generate_receipt' => $data['generate_receipt'] ?? null
+        ]);
+
+        $amountValue = number_format($data['amount'], 2, ',', '.');
+
+        NotificationModel::create([
+            'title' => 'Nova cobrança recebida!',
+            'text' => "Você recebeu uma nova cobrança no valor de R$ {$amountValue} com parcelamento em {$data['installments']} vez(es). Verifique na sua lista de saídas.",
+            'to_user' => $data['to_user']
         ]);
 
         return response()->json([

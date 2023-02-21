@@ -395,3 +395,24 @@ table#table-reports {
     align-items: center;
     padding-top: 2rem;
 }
+
+.message-datetime {
+    display: block;
+    text-align: end;
+    margin-top: 1rem;
+}
+
+.list-notification {
+    width: 550px;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.popover-header {
+    background-color: #4b5da7 !important;
+    color: #fff !important;
+}
+
+.not-clickable {
+    cursor: none !important;
+}
