@@ -19,44 +19,43 @@ use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/',                             [HomeController::class, 'index'])->name('home');
-Route::get('/register',                     [HomeController::class, 'register'])->name('register');
-Route::post('/register/new',                [HomeController::class, 'newUser']);
+Route::get('/',                                    [HomeController::class, 'index'])->name('home');
+Route::get('/register',                            [HomeController::class, 'register'])->name('register');
+Route::post('/register/new',                       [HomeController::class, 'newUser']);
 
-Route::post('/login',                       [AuthController::class, 'login'])->name('login');
-Route::get('/logout',                       [AuthController::class, 'logout'])->name('logout');
+Route::post('/login',                              [AuthController::class, 'login'])->name('login');
+Route::get('/logout',                              [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['is.authenticated'])->group(function() {
-    Route::get('/dashboard',                [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/config',                   [DashboardController::class, 'config'])->name('config');
-    Route::post('/first-access',            [DashboardController::class, 'firstAccess'])->name('first-access');
-    Route::get('/initial',                  [DashboardController::class, 'initial'])->name('initial');
+    Route::get('/dashboard',                        [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/config',                           [DashboardController::class, 'config'])->name('config');
+    Route::post('/first-access',                    [DashboardController::class, 'firstAccess'])->name('first-access');
+    Route::get('/initial',                          [DashboardController::class, 'initial'])->name('initial');
+    Route::get('/app/url',                          [DashboardController::class, 'appUrl']);
 
-    Route::get('/app/url',                  [DashboardController::class, 'appUrl']);
+    Route::get('/categories',                       [CategorieController::class, 'index'])->name('categories.index');
+    Route::get('/categories/{id}',                  [CategorieController::class, 'show']);
+    Route::post('/categories/store',                [CategorieController::class, 'store']);
+    Route::post('/categories/update',               [CategorieController::class, 'update']);
+    Route::get('/categories/destroy/{id}',          [CategorieController::class, 'destroy']);
 
-    Route::get('/categories',               [CategorieController::class, 'index'])->name('categories.index');
-    Route::get('/categories/{id}',          [CategorieController::class, 'show']);
-    Route::post('/categories/store',        [CategorieController::class, 'store']);
-    Route::post('/categories/update',       [CategorieController::class, 'update']);
-    Route::get('/categories/destroy/{id}',  [CategorieController::class, 'destroy']);
+    Route::get('/cards',                            [CreditCardController::class, 'index'])->name('cards.index');
+    Route::post('/cards/store',                     [CreditCardController::class, 'store']);
+    Route::get('/cards/{id}',                       [CreditCardController::class, 'show']);
+    Route::post('/cards/update',                    [CreditCardController::class, 'update']);
+    Route::get('/cards/destroy/{id}',               [CreditCardController::class, 'destroy']);
 
-    Route::get('/cards',                    [CreditCardController::class, 'index'])->name('cards.index');
-    Route::post('/cards/store',             [CreditCardController::class, 'store']);
-    Route::get('/cards/{id}',               [CreditCardController::class, 'show']);
-    Route::post('/cards/update',            [CreditCardController::class, 'update']);
-    Route::get('/cards/destroy/{id}',       [CreditCardController::class, 'destroy']);
+    Route::get('/users',                            [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/password/generate',          [UserController::class, 'passwordGenerate']);
+    Route::get('/users/{id}',                       [UserController::class, 'show']);
+    Route::post('/users/store',                     [UserController::class, 'store']);
+    Route::post('/users/update',                    [UserController::class, 'update']);
 
-    Route::get('/users',                    [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/password/generate',  [UserController::class, 'passwordGenerate']);
-    Route::get('/users/{id}',               [UserController::class, 'show']);
-    Route::post('/users/store',             [UserController::class, 'store']);
-    Route::post('/users/update',            [UserController::class, 'update']);
-
-    Route::get('/recipes',                  [RecipesController::class, 'index']);
-    Route::get('/recipes/{id}',             [RecipesController::class, 'show']);
-    Route::post('/recipes/store',           [RecipesController::class, 'store']);
-    Route::post('/recipes/update',          [RecipesController::class, 'update']);
-    Route::get('/recipes/destroy/{id}',     [RecipesController::class, 'destroy'])->name('recipe.destroy');
+    Route::get('/recipes',                          [RecipesController::class, 'index']);
+    Route::get('/recipes/{id}',                     [RecipesController::class, 'show']);
+    Route::post('/recipes/store',                   [RecipesController::class, 'store']);
+    Route::post('/recipes/update',                  [RecipesController::class, 'update']);
+    Route::get('/recipes/destroy/{id}',             [RecipesController::class, 'destroy'])->name('recipe.destroy');
 
     Route::get('/expenses',                         [ExpensesController::class, 'index']);
     Route::get('/expenses/{id}',                    [ExpensesController::class, 'show']);
@@ -89,10 +88,9 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/tickets',                          [TicketController::class, 'index'])->name('tickets');
 
     Route::post('/invoices/pay',                    [InvoicesController::class, 'pay']);
-
-    Route::get('/charts/index',                     [ChartController::class, 'index']);
-
     Route::post('/config/store',                    [AppConfigController::class, 'store']);
+    Route::get('/charts/index',                     [ChartController::class, 'index']);
+    Route::get('/session',                          [AuthController::class, 'session']);
 
     Route::get('/notifications',                    [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/get',                [NotificationController::class, 'get']);

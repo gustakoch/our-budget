@@ -51,7 +51,8 @@ class AuthController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role,
-            'firstAccess' => $user->first_access
+            'firstAccess' => $user->first_access,
+            'loggedInTimestamp' => time()
         ]);
 
         if ($user->first_access == 1) {
@@ -72,5 +73,25 @@ class AuthController extends Controller
         session()->forget('user');
 
         return redirect()->route('home');
+    }
+
+    public function session()
+    {
+        if (!isset($_ENV['SESSION_EXPIRE']) || !$_ENV['SESSION_EXPIRE']) {
+            return response()->json(['ok' => false]);
+        }
+
+        $elapsedTimestamp = time() - session('user')['loggedInTimestamp'];
+
+        if ($elapsedTimestamp >= $_ENV['SESSION_EXPIRE']) {
+            $this->logout();
+
+            return response()->json([
+                'ok' => true,
+                'redirect' => $_ENV['APP_URL']
+            ]);
+        }
+
+        return response()->json(['ok' => false]);
     }
 }

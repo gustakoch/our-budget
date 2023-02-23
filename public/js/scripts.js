@@ -40,6 +40,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
 
+    setInterval(function() {
+        jQuery.ajax({
+            url: 'session',
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', 'Erro interno da aplicação! Por favor, reporte ao setor de suporte.', 'error', 'Fechar')
+            },
+            success: function (response) {
+                if (response.ok) {
+                    window.location.href = response.redirect
+                }
+            }
+        })
+    }, 60000)
+
     window.onload = function () {
         let reloadingRecipe = sessionStorage.getItem('reloadingRecipe');
         let reloadingExpense = sessionStorage.getItem('reloadingExpense');
