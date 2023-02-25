@@ -24,9 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
         },
-        error: function (xhr, status, error) {
-            swalNotification('Houve um erro', `${status} - ${error}`, 'error', 'Fechar')
-        },
         success: function (response) {
             if (response.length > 0) {
                 setTimeout(function() {

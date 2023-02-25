@@ -7,17 +7,11 @@ jQuery(document).ready(function() {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
         },
-        beforeSend: function() {
-            // Colocar um loading...
-        },
-        error: function(xhr, status, error) {
-            console.log(status, error)
-        },
         success: function(response) {
-            const categories = []
-            const percetages = []
-            const values = []
-            const colors = []
+            let categories = []
+            let percetages = []
+            let values = []
+            let colors = []
 
             jQuery(response).each(function() {
                 categories.push(this.category)
@@ -26,27 +20,23 @@ jQuery(document).ready(function() {
                 colors.push(this.color)
             })
 
-            const data = {
-                // labels: categories,
+            let data = {
+                labels: categories,
                 datasets: [{
-                    label: 'Where is my money going?',
                     backgroundColor: colors,
                     data: percetages,
                 }]
             };
 
-            const config = {
-                type: 'pie',
+            let config = {
+                type: 'polarArea',
                 data: data,
                 options: {
                     responsive: true
                 }
             };
 
-            let myChart = new Chart(
-                document.getElementById('myChart'),
-                config
-            );
+            new Chart(document.getElementById('myChart'), config);
         }
     })
 })
