@@ -46,9 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             },
-            error: function (xhr, status, error) {
-                swalNotification('Houve um erro', 'Erro interno da aplicação! Por favor, reporte ao setor de suporte.', 'error', 'Fechar')
-            },
             success: function (response) {
                 if (response.ok) {
                     window.location.href = response.redirect

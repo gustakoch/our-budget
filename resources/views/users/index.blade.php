@@ -9,7 +9,7 @@
 </nav>
 
 <button
-    class="btn btn-success mb-4"
+    class="btn btn-primary mb-4"
     data-bs-toggle="modal"
     data-bs-target="#addUserModal"
 >

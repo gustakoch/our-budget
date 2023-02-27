@@ -79,7 +79,7 @@
                                 <label class="form-label">&nbsp;</label>
                                 <div class="row">
                                     <div class="col-12">
-                                        <button type="button" class="generate-new-password btn btn-info">
+                                        <button type="button" class="generate-new-password btn btn-primary">
                                             <i class="fas fa-key"></i> Gerar senha
                                         </button>
 
@@ -90,7 +90,7 @@
                                             data-bs-trigger="manual"
                                             title="Copiado!"
                                         >
-                                            <button type="button" class="copy-to-clipboard btn btn-info">
+                                            <button type="button" class="copy-to-clipboard btn btn-primary">
                                                 <i class="fas fa-copy"></i> Copiar
                                             </button>
                                         </span>
