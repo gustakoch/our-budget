@@ -20,6 +20,8 @@ class CheckUserLogged
             return redirect()->route('home');
         }
 
+        $request->session()->put('loggedInTimestamp', time());
+
         return $next($request);
     }
 }

@@ -26,6 +26,8 @@ Route::post('/register/new',                       [HomeController::class, 'newU
 Route::post('/login',                              [AuthController::class, 'login'])->name('login');
 Route::get('/logout',                              [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/session',                             [AuthController::class, 'session']);
+
 Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/dashboard',                        [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/config',                           [DashboardController::class, 'config'])->name('config');
@@ -90,7 +92,6 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::post('/invoices/pay',                    [InvoicesController::class, 'pay']);
     Route::post('/config/store',                    [AppConfigController::class, 'store']);
     Route::get('/charts/index',                     [ChartController::class, 'index']);
-    Route::get('/session',                          [AuthController::class, 'session']);
 
     Route::get('/notifications',                    [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/get',                [NotificationController::class, 'get']);

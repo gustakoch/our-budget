@@ -46,13 +46,13 @@ class AuthController extends Controller
             setcookie('email', '', time() -1);
         }
 
+        $request->session()->put('loggedInTimestamp', time());
         $request->session()->put('user', [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role,
-            'firstAccess' => $user->first_access,
-            'loggedInTimestamp' => time()
+            'firstAccess' => $user->first_access
         ]);
 
         if ($user->first_access == 1) {
@@ -81,7 +81,7 @@ class AuthController extends Controller
             return response()->json(['ok' => false]);
         }
 
-        $elapsedTimestamp = time() - session('user')['loggedInTimestamp'];
+        $elapsedTimestamp = time() - session('loggedInTimestamp');
 
         if ($elapsedTimestamp >= $_ENV['SESSION_EXPIRE']) {
             $this->logout();
@@ -92,6 +92,6 @@ class AuthController extends Controller
             ]);
         }
 
-        return response()->json(['ok' => false]);
+        return response()->json(['ok' => false, 'elapsed' => $elapsedTimestamp]);
     }
 }
