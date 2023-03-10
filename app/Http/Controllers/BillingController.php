@@ -115,11 +115,11 @@ class BillingController extends Controller
         ]);
 
         $amountValue = number_format($data['amount'], 2, ',', '.');
-        $selectedMonth = MonthModel::find($data['month'])->select('description')->first();
+        $month = MonthModel::where('id', intval($data['month']))->first();
 
         NotificationModel::create([
             'title' => 'Nova cobrança recebida!',
-            'text' => "Você recebeu uma nova cobrança no valor de R$ {$amountValue} com parcelamento em {$data['installments']} vez(es) para o mês de {$selectedMonth->description}. Verifique na sua lista de saídas.",
+            'text' => "Você recebeu uma nova cobrança no valor de R$ {$amountValue} com parcelamento em {$data['installments']} vez(es) para o mês de {$month->description}. Verifique na sua lista de saídas.",
             'to_user' => $data['to_user']
         ]);
 
