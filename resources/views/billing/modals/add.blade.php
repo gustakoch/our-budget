@@ -18,7 +18,7 @@
                             <div class="b-3">
                                 <label class="form-label" for="category">Categoria*</label>
                                 <select class="form-select mb-3" name="category" id="category">
-                                    <option selected>Selecione a categoria</option>
+                                    <option value="" selected>Selecione a categoria</option>
                                     @foreach ($expenseCategories as $category)
                                         <option value="{{ $category->id }}">{{ $category->description }}</option>
                                     @endforeach
