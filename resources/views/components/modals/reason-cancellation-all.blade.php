@@ -6,12 +6,6 @@
             </div>
             <div class="modal-body">
                 <form id="form-expense-cancellation-all">
-                    <div class="mb-5">
-                        <small class="text-danger">
-                            <strong>Atenção: </strong>
-                            Esta ação não poderá ser desfeita e irá cancelar a parcela atual e TODAS as seguintes.
-                        </small>
-                    </div>
                     @csrf
 
                     <input type="hidden" name="id_expense" />
@@ -25,6 +19,7 @@
                         ></textarea>
                     </div>
                 </form>
+                <small class="text-danger"><strong>Atenção: </strong>Esta ação não poderá ser desfeita e irá cancelar a parcela atual e TODAS as seguintes.</small><br /><br />
 
                 <small>(* Dados obrigatórios)</small>
             </div>

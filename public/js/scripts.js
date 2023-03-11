@@ -1187,13 +1187,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function (response) {
-                console.log(response)
                 jQuery('#loadingSpinnerInfo').hide()
+                jQuery('.cancelled_info_box').css('display', 'none')
+                jQuery('.message-right-top').css('display', 'none')
+                jQuery('.message-right-top').text('')
 
                 jQuery('input[name="description_expense_info"]').val(response.description)
                 Number(jQuery('select[name="category_expense_info"]').val(response.category))
                 Number(jQuery('select[name="period_expense_info"]').val(response.period))
-                Number(jQuery('select[name="installments_expense_info"]').val(response.installment))
+
+                if (response.installments == 1) {
+                    Number(jQuery('input[name="installments_expense_info"]').val('Única'))
+                } else {
+                    Number(jQuery('input[name="installments_expense_info"]').val(`${response.installment} de ${response.installments}`))
+                }
 
                 jQuery('input[name="repeat_next_months"]').attr('disabled', true)
                 if (response.repeat_next_months == 1) {
@@ -1206,8 +1213,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 jQuery('input[name="budgeted_amount_expense_info"]').val(response.budgeted_amount)
                 jQuery('input[name="realized_amount_expense_info"]').val(response.realized_amount)
-                jQuery('textarea[name="reason_cancelled_info"]').html(response.reason_cancelled)
-                jQuery('#total_installments').html(response.installments)
+                jQuery('input[name="last_expense_updated"]').val(response.updated_at)
+
+                if (Number(response.budgeted_amount) - Number(response.realized_amount) == 0) {
+                    jQuery('.message-right-top').css('display', 'block')
+                    jQuery('.message-right-top').css('color', '#198754')
+                    jQuery('.message-right-top').text('(Saída concluída)')
+                }
+
+                if (response.cancelled == 1 && response.reason_cancelled != '') {
+                    jQuery('.cancelled_info_box').css('display', 'block')
+                    jQuery('textarea[name="reason_cancelled_info"]').html(response.reason_cancelled)
+
+                    jQuery('.message-right-top').css('display', 'block')
+                    jQuery('.message-right-top').text(`(Saída cancelada)`)
+                    jQuery('.message-right-top').css('color', '#D79E00')
+                }
             }
         })
     })

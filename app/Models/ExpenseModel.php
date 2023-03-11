@@ -29,6 +29,19 @@ class ExpenseModel extends Model
         return $accumulatedTotals;
     }
 
+    public function getExpenseByid($id)
+    {
+        $expense = DB::table('expenses')
+            ->select(
+                '*',
+                DB::raw("to_char(created_at, 'dd/mm/yyyy hh24:mi:ss') as created_at"),
+                DB::raw("to_char(updated_at, 'dd/mm/yyyy hh24:mi:ss') as updated_at"))
+            ->where('id', $id)
+            ->first();
+
+        return $expense;
+    }
+
     public function getExpensesByCreditCardMonthYear($creditCard, $month, $year) {
         $expenses = DB::select('
             SELECT

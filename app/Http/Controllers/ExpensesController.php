@@ -362,9 +362,9 @@ class ExpensesController extends Controller
 
     public function show($id)
     {
-        $expense = ExpenseModel::find($id);
-        $expense['category_active'] = $this->categoryModel->isCategoryActive($expense['category']);
-        $expense['has_history'] = $this->expensesHistoryEntriesModel->verifyIsExpenseHasHistory($id);
+        $expense = $this->expenseModel->getExpenseByid($id);
+        $expense->category_active = $this->categoryModel->isCategoryActive($expense->category);
+        $expense->has_history = $this->expensesHistoryEntriesModel->verifyIsExpenseHasHistory($id);
 
         return response()->json($expense);
     }
