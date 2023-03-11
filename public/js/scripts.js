@@ -1182,12 +1182,17 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             beforeSend: function () {
                 jQuery('#loadingSpinnerInfo').show()
+                jQuery('#form-info-expense').hide()
             },
             error: function (xhr, status, error) {
+                jQuery('#loadingSpinnerInfo').hide()
+                jQuery('#form-info-expense').show()
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
             },
             success: function (response) {
                 jQuery('#loadingSpinnerInfo').hide()
+                jQuery('#form-info-expense').show()
+
                 jQuery('.cancelled_info_box').css('display', 'none')
                 jQuery('.message-right-top').css('display', 'none')
                 jQuery('.message-right-top').text('')
