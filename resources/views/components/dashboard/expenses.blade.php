@@ -141,6 +141,11 @@
                                                                 @endif
 
                                                                 @if ($expense->installments > 1 && $expense->cancelled == 0 && (floatval($expense->budgeted_amount) - floatval($expense->realized_amount)) != 0)
+                                                                    <li><a class="dropdown-item d-flex align-items-center edit-expense" id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#editExpenseModal">
+                                                                        <img class="me-2" src="{{ asset('/images/icons/edit-icon.png') }}" alt="Editar">
+                                                                        Editar
+                                                                    </a></li>
+                                                                    <li><hr class="dropdown-divider"></li>
                                                                     <li><a class="dropdown-item d-flex align-items-center cancel-installment" id="{{ $expense->id }}" data-bs-toggle="modal" data-bs-target="#oneReasonCancellation">
                                                                         <img class="me-2" src="{{ asset('/images/icons/icon-cancel.png') }}">
                                                                         Cancelar parcela
