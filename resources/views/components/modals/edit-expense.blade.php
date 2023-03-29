@@ -63,8 +63,7 @@
                         <div class="col-md-6" style="margin-top: -12px;">
                             <div class="d-flex align-items-end">
                                 <label id="label-realized-value" for="realized_amount_expense_edit"
-                                    class="form-label">Lançar valor <small>(em
-                                        R$)</small></label>
+                                    class="form-label">Lançar valor</label>
                                 <div style="height: 42px;">
                                     <button class="history-btn" data-toggle="modal" data-target="#modalHistoryExpenses"
                                         title="Visualizar histórico de lançamentos" style="display: none;">

@@ -29,7 +29,7 @@ jQuery(document).ready(function() {
             };
 
             let config = {
-                type: 'polarArea',
+                type: 'doughnut',
                 data: data,
                 options: {
                     responsive: true

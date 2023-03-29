@@ -1170,6 +1170,7 @@ document.addEventListener('DOMContentLoaded', function () {
     jQuery(document).on('click', '.info-expense', function (e) {
         e.preventDefault()
 
+        jQuery('.history-btn').css('display', 'none')
         let id = $(this).attr('id')
 
         jQuery.ajax({
@@ -1197,6 +1198,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 jQuery('.message-right-top').css('display', 'none')
                 jQuery('.message-right-top').text('')
 
+                jQuery('input[name="id_expense"]').val(response.id)
                 jQuery('input[name="description_expense_info"]').val(response.description)
                 Number(jQuery('select[name="category_expense_info"]').val(response.category))
                 Number(jQuery('select[name="period_expense_info"]').val(response.period))
@@ -1224,6 +1226,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     jQuery('.message-right-top').css('display', 'block')
                     jQuery('.message-right-top').css('color', '#198754')
                     jQuery('.message-right-top').text('(Saída concluída)')
+                }
+
+                if (response.has_history >= 1) {
+                    jQuery('.history-btn').css('display', 'block')
                 }
 
                 if (response.cancelled == 1 && response.reason_cancelled != '') {
@@ -1899,7 +1905,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     jQuery(response.data).each(function (i, item) {
                         rows += `
                             <tr>
-                            <td>R$ ${item.value}</td>
+                                <td>R$ ${item.value}</td>
                                 <td>${item.date}</td>
                             </tr>
                         `

@@ -416,3 +416,9 @@ table#table-reports {
 .not-clickable {
     cursor: none !important;
 }
+
+.absolute-position-history-btn {
+    position: absolute;
+    top: 105px;
+    right: 222px;
+}

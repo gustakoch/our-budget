@@ -13,6 +13,8 @@
                 </div>
 
                 <form id="form-info-expense">
+                    <input type="hidden" name="id_expense" />
+
                     <div class="row mb-3">
                         <div class="col-8">
                             <label for="description_expense" class="form-label">Descrição da saída</label>
@@ -31,16 +33,21 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-4">
+                        <div class="col-6">
                             <label for="installments_expense" class="form-label">Parcela</label>
                             <input type="text" class="form-control mb-3" name="installments_expense_info" disabled />
                         </div>
-                        <div class="col-4">
-                            <label for="budgeted_amount_expense" class="form-label">Valor orçado</small></label>
-                            <input class="form-control" type="number" name="budgeted_amount_expense_info" disabled />
-                        </div>
-                        <div class="col-4">
-                            <label for="realized_amount_expense_edit" class="form-label">Valor realizado</small></label>
+                        <div class="col-6">
+                            <div class="d-flex align-items-end">
+                                <label id="label-realized-value" for="realized_amount_expense_edit"
+                                    class="form-label">Lançar valor</label>
+                                <div>
+                                    <button class="history-btn absolute-position-history-btn" data-toggle="modal" data-target="#modalHistoryExpenses"
+                                        title="Visualizar histórico de lançamentos" style="display: none;">
+                                        <i class="fas fa-history fa-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <input class="form-control" type="number" name="realized_amount_expense_info" disabled />
                         </div>
                     </div>
