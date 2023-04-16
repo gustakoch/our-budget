@@ -16,14 +16,13 @@ class CreditCardModel extends Model
     public function getCardsWithFlags()
     {
         $cards = DB::select('
-            SELECT
-                ca.*
+            SELECT ca.*
                 , cf.description card_flag_name
-            FROM credit_cards ca
-            LEFT JOIN card_flags cf
-            ON (cf.id = ca.flag)
-            AND ca.user_id = ?
-            ORDER BY ca.description;
+              FROM credit_cards ca
+                , card_flags cf
+             WHERE cf.id = ca.flag
+               AND ca.user_id = ?
+          ORDER BY ca.description;
         ', [session('user')['id']]);
 
         return $cards;
