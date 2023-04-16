@@ -155,7 +155,7 @@ class DashboardController extends Controller
         }
 
         $receivedExpenses = $this->billingModel->getReceivedExpenses();
-
+        $activeCards = $this->creditCardModel->getActiveCardsWithFlags();
         $cards = $this->creditCardModel->getCardsWithFlags();
         $allCreditCardExpenses = [];
 
@@ -241,6 +241,7 @@ class DashboardController extends Controller
             'pending_amount_expenses' => $pendingExpensesPeriod,
             'type_expenses' => '30',
             'cards' => $cards,
+            'activeCards' => $activeCards,
             'creditCardExpenses' => $allCreditCardExpenses,
             'resumeData' => [
                 'totals' => $resumeTotal,

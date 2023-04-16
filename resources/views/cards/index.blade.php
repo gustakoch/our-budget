@@ -24,6 +24,7 @@
             <th>Número</th>
             <th>Bandeira</th>
             <th>Vencimento da fatura</th>
+            <th>Status</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -35,6 +36,12 @@
                 <td>{{ $card->number ? substr_replace($card->number, '****-****-****-', 0, 15) : '--' }}</td>
                 <td>{{ $card->card_flag_name ?? '--' }}</td>
                 <td>Sempre dia {{ $card->invoice_day }}</td>
+                <td>
+                    <label class="switch" title="{{ $card->active == 1 ? 'Inativar cartão' : 'Ativar cartão'}}">
+                        <input class="onoffelement" type="checkbox" value="{{ $card->active }}" id="{{ $card->id }}" {{ $card->active == 1 ? 'checked' : ''}} />
+                        <span class="slider round"></span>
+                    </label>
+                </td>
                 <td>
                     <div class="input-group">
                         <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center btn-options" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,10 +56,6 @@
                                 >
                                     <img class="me-2" src="{{ asset('/images/icons/edit-icon.png') }}" alt="Editar">
                                 Editar
-                            </a></li>
-                            <li><a class="dropdown-item d-flex align-items-center delete-card" id="{{ $card->id }}">
-                                <img class="me-2" src="{{ asset('/images/icons/del-icon.png') }}" alt="Remover">
-                                Excluir
                             </a></li>
                         </ul>
                     </div>

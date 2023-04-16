@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('css/template.css') }}?v=<?= filemtime('css/template.css'); ?>">
     <link rel="stylesheet" href="{{ asset('css/global.css') }}?v=<?= filemtime('css/global.css'); ?>">
     <link rel="stylesheet" href="{{ asset('css/fab.css') }}?v=<?= filemtime('css/fab.css'); ?>">
+    <link rel="stylesheet" href="{{ asset('css/switch-button.css') }}?v=<?= filemtime('css/switch-button.css'); ?>">
     <title>@yield('title') | Our Budget</title>
 </head>
 <body>

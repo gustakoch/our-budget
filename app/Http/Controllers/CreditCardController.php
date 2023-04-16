@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CardFlagModel;
 use App\Models\CreditCardModel;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CreditCardController extends Controller
 {
@@ -92,14 +92,38 @@ class CreditCardController extends Controller
 
     public function destroy($id)
     {
-        CreditCardModel::where('id', $id)
-            ->update([
-                'active' => 0,
+        $card = CreditCardModel::find($id);
+        $invoices = DB::table('credit_card_invoices')
+            ->where('credit_card', $card->id)
+            ->where('payment', 0)
+            ->get();
+        if (count($invoices) > 0) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'O cartão não pode ser excluído pois há faturas em aberto.'
             ]);
+        }
+        $card->delete();
 
         return response()->json([
             'ok' => true,
-            'msg' => 'Cartão removido com sucesso!'
+            'message' => 'Cartão removido com sucesso!'
+        ]);
+    }
+
+    public function switchStatus($id)
+    {
+        $card = CreditCardModel::find($id);
+        if ($card->active == 1) {
+            CreditCardModel::where('id', $id)->update(['active' => 0]);
+        }
+        if ($card->active == 0) {
+            CreditCardModel::where('id', $id)->update(['active' => 1]);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Status atualizado com sucesso!'
         ]);
     }
 }

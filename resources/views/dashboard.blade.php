@@ -23,7 +23,7 @@
 @include('components.modals.add-expense', [
     'expenseCategories' => $activeExpenseCategories,
     'type_expenses' => $type_expenses,
-    'cards' => $cards,
+    'cards' => $activeCards,
     'installments' => $config['installments']
 ])
 @include('components.modals.edit-expense', [

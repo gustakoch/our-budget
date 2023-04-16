@@ -46,6 +46,7 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/cards/{id}',                       [CreditCardController::class, 'show']);
     Route::post('/cards/update',                    [CreditCardController::class, 'update']);
     Route::get('/cards/destroy/{id}',               [CreditCardController::class, 'destroy']);
+    Route::get('/cards/switch-status/{id}',         [CreditCardController::class, 'switchStatus']);
 
     Route::get('/users',                            [UserController::class, 'index'])->name('users.index');
     Route::get('/users/password/generate',          [UserController::class, 'passwordGenerate']);

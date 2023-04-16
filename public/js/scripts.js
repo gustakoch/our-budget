@@ -1692,7 +1692,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
-    jQuery(document).on('click', '.delete-card', function () {
+    jQuery(document).on('click', '.destroy-card', function () {
         let id = jQuery(this).attr('id')
 
         Swal.fire({
@@ -1720,10 +1720,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     success: function (response) {
                         if (response.ok) {
                             location.reload()
-                            swalNotification('Removido', 'Cartão foi removido com sucesso', 'success', 'Continuar')
+                            swalNotification('Removido', response.message, 'success', 'Continuar')
+                        } else {
+                            swalNotification('Houve um erro', response.message, 'error', 'Continuar')
                         }
                     }
                 })
+            }
+        })
+    })
+
+    jQuery(document).on('change', '.onoffelement', function () {
+        let id = jQuery(this).attr('id')
+
+        jQuery.ajax({
+            url: `cards/switch-status/${id}`,
+            type: 'get',
+            dataType: 'json',
+            timeout: 20000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+            },
+            success: function (response) {
+                location.reload()
             }
         })
     })
