@@ -48,7 +48,6 @@ class ExpensesController extends Controller
         $expensePaid = isset($data['make_expense_paid']) ? $data['make_expense_paid'] : 0;
         $data['credit_card'] = isset($data['credit_card']) ? $data['credit_card'] : null;
         $installmentsExpense = intval($data['installments_expense']);
-
         $invoice = new stdClass();
         $invoice->id = null;
 

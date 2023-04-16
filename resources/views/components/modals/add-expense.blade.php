@@ -74,7 +74,7 @@
                                 <option value="{{ $card->id }}">{{ $card->description }}</option>
                             @endforeach
                             @else
-                                <option selected value="0">Não há cartões de crédito disponíveis.</option>
+                                <option selected value="">Não há cartões de crédito disponíveis.</option>
                             @endif
                         </select>
                     </div>
