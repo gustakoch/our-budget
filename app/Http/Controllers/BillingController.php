@@ -49,7 +49,7 @@ class BillingController extends Controller
         $pendingSubmittedExpenses = $this->billingModel->getSubmittedExpenses([0, 2]);
         $approvedSubmittedExpenses = $this->billingModel->getSubmittedExpenses([1]);
         $activeUsers = $this->userModel->getActives();
-        $months = MonthModel::where('id', '>=', intval($_SESSION['month']))->get();
+        $months = MonthModel::where('id', '>=', intval($_SESSION['month']['id']))->get();
         $years = $this->expenseModel->getDistinctYears();
 
         return view('billing.index', [

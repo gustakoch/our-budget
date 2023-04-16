@@ -83,10 +83,10 @@
             </li> --}}
         </li>
         <hr />
-        @if (isset($_SESSION['monthName']) && isset($_SESSION['year']))
+        @if (isset($_SESSION['month']['description']) && isset($_SESSION['year']))
             <li style="padding: 10px; font-size: 1rem;">
                 Período selecionado: <br />
-                <span style="font-size: 0.95rem;"> >> {{ $_SESSION['monthName'] ?? '' }} de {{ $_SESSION['year'] ?? '' }}</span>
+                <span style="font-size: 0.95rem;"> >> {{ $_SESSION['month']['description'] ?? '' }} de {{ $_SESSION['year'] ?? '' }}</span>
             </li>
         @endif
         <li class="logout-li">

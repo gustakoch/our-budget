@@ -32,7 +32,7 @@
                                     @foreach ($months as $month)
                                         <option
                                             value="{{ $month->id }}"
-                                            {{ $month->id == $_SESSION['month'] ? 'selected' : '' }}
+                                            {{ $month->id == $_SESSION['month']['id'] ? 'selected' : '' }}
                                         >
                                             {{ $month->description }}
                                         </option>

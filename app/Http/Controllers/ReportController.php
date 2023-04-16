@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\CategoryModel;
 use App\Models\ExpenseModel;
+use App\Models\MonthModel;
 use App\Models\RecipeModel;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
@@ -34,27 +34,14 @@ class ReportController extends Controller
         $categories = $this->categoryModel->getOnlyExpensesCategories();
         $years = $this->expenseModel->getDistinctYears();
         $users = $this->userModel->getAll();
-        $months = array(
-            '1' => 'Janeiro',
-            '2' => 'Fevereiro',
-            '3' => 'Março',
-            '4' => 'Abril',
-            '5' => 'Maio',
-            '6' => 'Junho',
-            '7' => 'Julho',
-            '8' => 'Agosto',
-            '9' => 'Setembro',
-            '10' => 'Outubro',
-            '11' => 'Novembro',
-            '12' => 'Dezembro'
-        );
+        $months = MonthModel::all();
 
         return view('reports.expenses-by-category', [
             'categories' => $categories,
             'months' => $months,
             'years' => $years,
             'users' => $users,
-            'actualMonth' => $_SESSION['month'],
+            'actualMonth' => $_SESSION['month']['id'],
             'actualYear' => $_SESSION['year']
         ]);
     }
@@ -144,20 +131,7 @@ class ReportController extends Controller
         $categories = $this->categoryModel->getOnlyRecipesCategories();
         $years = $this->expenseModel->getDistinctYears();
         $users = $this->userModel->getAll();
-        $months = array(
-            '1' => 'Janeiro',
-            '2' => 'Fevereiro',
-            '3' => 'Março',
-            '4' => 'Abril',
-            '5' => 'Maio',
-            '6' => 'Junho',
-            '7' => 'Julho',
-            '8' => 'Agosto',
-            '9' => 'Setembro',
-            '10' => 'Outubro',
-            '11' => 'Novembro',
-            '12' => 'Dezembro'
-        );
+        $months = MonthModel::all();
 
         return view('reports.recipes-all', [
             'categories' => $categories,

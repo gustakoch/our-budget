@@ -20,7 +20,7 @@ class RecipesController extends Controller
     public function index()
     {
         session_start();
-        $month = $_SESSION['month'];
+        $month = $_SESSION['month']['id'];
 
         $userRecipes = DB::table('recipes')
             ->join('categories', 'recipes.category', 'categories.id')
@@ -51,7 +51,7 @@ class RecipesController extends Controller
         $repeatNextMonths = isset($data['repeat_next_months']) ? 1 : 0;
 
         if ($repeatNextMonths == '1') {
-            for ($i = $_SESSION['month']; $i <= 12; $i++) {
+            for ($i = $_SESSION['month']['id']; $i <= 12; $i++) {
                 RecipeModel::create([
                     'description' => mb_convert_case($data['description'], MB_CASE_TITLE, "UTF-8"),
                     'category' => (int) $data['category'],
@@ -68,7 +68,7 @@ class RecipesController extends Controller
                 'category' => (int) $data['category'],
                 'budgeted_amount' => $data['budgeted_amount'],
                 'repeat_next_months' => $repeatNextMonths,
-                'month' => $_SESSION['month'],
+                'month' => $_SESSION['month']['id'],
                 'year' => $_SESSION['year'],
                 'user_id' => session('user')['id']
             ]);

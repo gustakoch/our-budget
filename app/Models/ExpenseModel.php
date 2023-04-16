@@ -133,7 +133,7 @@ class ExpenseModel extends Model
 
     public function totalAmountExpensesByCategories($month, $year)
     {
-        $totalGeneral = $this->expensesTotalSum($_SESSION['month'], $_SESSION['year']);
+        $totalGeneral = $this->expensesTotalSum($_SESSION['month']['id'], $_SESSION['year']);
         $expenses = DB::select('
             SELECT
                 c.description category

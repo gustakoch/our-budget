@@ -19,7 +19,7 @@ class InvoicesController extends Controller
     public function pay()
     {
         $data = request()->all();
-        $expenses = $this->expenseModel->getExpensesForPay($data['invoiceId'], $_SESSION['month'], $_SESSION['year']);
+        $expenses = $this->expenseModel->getExpensesForPay($data['invoiceId'], $_SESSION['month']['id'], $_SESSION['year']);
 
         foreach ($expenses as $expense) {
             ExpenseModel::where('id', $expense->id)

@@ -11,9 +11,9 @@
     <div class="months">
         <strong>Meses</strong>
         <div class="months-years-row">
-            @foreach ($months as $i => $monthOfYear)
-                <input type="radio" name="month" id="month-{{ $i +1 }}" value="{{ $i +1 }}" {{ $i + 1 == $month ? 'checked' : '' }}>
-                <label for="month-{{ $i +1 }}">{{ $monthOfYear }}</label>
+            @foreach ($months as $i => $_month)
+                <input type="radio" name="month" id="month-{{ $_month->id }}" value="{{ $_month->id }}" {{ $_month->id == $month ? 'checked' : '' }}>
+                <label for="month-{{ $_month->id }}">{{ $_month->description }}</label>
             @endforeach
         </div>
     </div>

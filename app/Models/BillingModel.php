@@ -59,7 +59,7 @@ class BillingModel extends Model
             ->join('users as u', 'se.from_user', 'u.id')
             ->join('months as m', 'se.month', 'm.id')
             ->where('se.to_user', session('user')['id'])
-            ->where('se.month', $_SESSION['month'])
+            ->where('se.month', $_SESSION['month']['id'])
             ->where('se.status', 0)
             ->get();
 

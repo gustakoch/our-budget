@@ -35,7 +35,7 @@ class ExpensesController extends Controller
         $this->expensesHistoryEntriesModel = $expensesHistoryEntriesModel;
 
         session_start();
-        $this->month = $_SESSION['month'];
+        $this->month = $_SESSION['month']['id'];
         $this->year = $_SESSION['year'];
     }
 
@@ -383,7 +383,7 @@ class ExpensesController extends Controller
         if ($data['credit_card_edit'] != null) {
             $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear(
                 $data['credit_card_edit'],
-                $_SESSION['month'],
+                $_SESSION['month']['id'],
                 $_SESSION['year']
             );
 

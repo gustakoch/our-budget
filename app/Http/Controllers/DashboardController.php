@@ -7,6 +7,7 @@ use App\Models\BillingModel;
 use App\Models\CreditCardInvoiceModel;
 use App\Models\CreditCardModel;
 use App\Models\ExpenseModel;
+use App\Models\MonthModel;
 use App\Models\NotificationModel;
 use App\Models\RecipeModel;
 use App\Models\User;
@@ -47,39 +48,28 @@ class DashboardController extends Controller
         if ($this->user->isFirstAccess()) {
             return redirect()->route('initial');
         }
-
         $date = new DateTime();
         $currentMonth = intval($date->format('m'));
         $currentYear = intval($date->format('Y'));
         $queryMonth = 0;
         $queryYear = 0;
-
         $queryString = $_SERVER['QUERY_STRING'];
         $queryItems = explode('&', $queryString);
-
         if (isset($queryItems[0]) && isset($queryItems[1])) {
             $monthValues = explode('=', $queryItems[0]);
             $yearValues = explode('=', $queryItems[1]);
         }
-
         if (isset($monthValues[0]) && $monthValues[0] == 'month') {
             $queryMonth = $monthValues[1];
         }
         if (isset($yearValues[0]) && $yearValues[0] == 'year') {
             $queryYear = $yearValues[1];
         }
-
         $month = $queryMonth ? $queryMonth : $currentMonth;
         $year = $queryYear ? $queryYear : $currentYear;
-
-        $months = [
-            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-        ];
-
+        $months = MonthModel::all();
         session_start();
-        $_SESSION['month'] = $month;
-        $_SESSION['monthName'] = $months[$month -1];
+        $_SESSION['month'] = MonthModel::where('id', $month)->first();
         $_SESSION['year'] = $year;
 
         $years = $this->expenseModel->getExpensesYears();
@@ -162,7 +152,7 @@ class DashboardController extends Controller
         foreach ($cards as $card) {
             $cardExpenses = $this->expenseModel->getExpensesByCreditCardMonthYear(
                 $card->id,
-                $_SESSION['month'],
+                $_SESSION['month']['id'],
                 $_SESSION['year']
             );
 
@@ -172,7 +162,7 @@ class DashboardController extends Controller
 
             $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear(
                 $card->id,
-                $_SESSION['month'],
+                $_SESSION['month']['id'],
                 $_SESSION['year']
             );
 
@@ -216,11 +206,11 @@ class DashboardController extends Controller
 
         // Data for the resume section...
         $resumeTotal = [];
-        $resumeTotal['recipes'] = $this->recipeModel->recipesTotalSum($_SESSION['month'], $_SESSION['year']);
-        $resumeTotal['expenses'] = $this->expenseModel->expensesTotalSum($_SESSION['month'], $_SESSION['year']);
+        $resumeTotal['recipes'] = $this->recipeModel->recipesTotalSum($_SESSION['month']['id'], $_SESSION['year']);
+        $resumeTotal['expenses'] = $this->expenseModel->expensesTotalSum($_SESSION['month']['id'], $_SESSION['year']);
         $resumeTotal['diff'] = floatval($resumeTotal['recipes']) - floatval($resumeTotal['expenses']);
 
-        $expensesByCategories = $this->expenseModel->totalAmountExpensesByCategories($_SESSION['month'], $_SESSION['year']);
+        $expensesByCategories = $this->expenseModel->totalAmountExpensesByCategories($_SESSION['month']['id'], $_SESSION['year']);
         $configNumberOfInstallments = $this->appConfigModel->getNumberOfInstallments();
         $notifications = NotificationModel::where('to_user', session('user')['id'])->limit(3)->orderBy('created_at', 'desc')->get();
         $numberNotifications = NotificationModel::where('to_user', session('user')['id'])->where('viewed', 0)->get()->count();

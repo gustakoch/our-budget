@@ -17,7 +17,7 @@ class ChartController extends Controller
     public function index()
     {
         $expensesByCategories = $this->expenseModel->totalAmountExpensesByCategories(
-            $_SESSION['month'],
+            $_SESSION['month']['id'],
             $_SESSION['year']
         );
 
