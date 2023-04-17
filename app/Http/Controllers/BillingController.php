@@ -9,9 +9,7 @@ use App\Models\BillingModel;
 use App\Models\ExpenseModel;
 use App\Models\NotificationModel;
 use App\Models\RecipeModel;
-
 use App\Traits\UploadLocalFiles;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,7 +37,6 @@ class BillingController extends Controller
     public function index()
     {
         session_start();
-
         $configNumberOfInstallments = $this->appConfigModel->getNumberOfInstallments();
         $activeExpenseCategories = DB::table('categories')
             ->where('belongs_to', 2)
@@ -66,7 +63,6 @@ class BillingController extends Controller
     public function show($id)
     {
         $submittedExpense = BillingModel::find($id);
-
         if (!$submittedExpense) {
             return response()->json([
                 'ok' => false,
@@ -87,20 +83,16 @@ class BillingController extends Controller
         session_start();
         $data = $request->all();
         $uploadedNameFile = '';
-
         if ($request->hasFile('document') && $request->file('document')->isValid()) {
             $upload = $this->storeDocument($request);
-
             if (!$upload['ok']) {
                 return response()->json([
                     'ok' => false,
                     'message' => 'Erro ao fazer upload do arquivo!'
                 ]);
             }
-
             $uploadedNameFile = $upload['nameFile'];
         }
-
         BillingModel::create([
             'description' => mb_convert_case($data['description'], MB_CASE_TITLE, "UTF-8"),
             'category' => $data['category'],
@@ -113,10 +105,8 @@ class BillingController extends Controller
             'document' => $uploadedNameFile,
             'generate_receipt' => $data['generate_receipt'] ?? null
         ]);
-
         $amountValue = number_format($data['amount'], 2, ',', '.');
         $month = MonthModel::where('id', intval($data['month']))->first();
-
         NotificationModel::create([
             'title' => 'Nova cobrança recebida!',
             'text' => "Você recebeu uma nova cobrança no valor de R$ {$amountValue} com parcelamento em {$data['installments']} vez(es) para o mês de {$month->description}. Verifique na sua lista de saídas.",
@@ -133,9 +123,7 @@ class BillingController extends Controller
     {
         $data = $request->all();
         $fieldChanged = true;
-
         $submittedExpense = BillingModel::find($data['id_submitted_expense']);
-
         if ($submittedExpense['description'] == $data['description']
             && $submittedExpense['category'] == $data['category']
             && $submittedExpense['month'] == $data['month']
@@ -144,7 +132,6 @@ class BillingController extends Controller
             && $submittedExpense['value'] == $data['amount']) {
                 $fieldChanged = false;
         }
-
         if (!$fieldChanged) {
             return response()->json([
                 'ok' => false,
@@ -152,18 +139,16 @@ class BillingController extends Controller
                 'message' => 'Algum dado deve ser alterado. Os campos permaneceram iguais.'
             ]);
         }
-
-        BillingModel::where('id', $data['id_submitted_expense'])
-            ->update([
-                'description' => mb_convert_case($data['description'], MB_CASE_TITLE, "UTF-8"),
-                'category' => $data['category'],
-                'month' => $data['month'],
-                'to_user' => $data['to_user'],
-                'installments' => $data['installments'],
-                'value' => $data['amount'],
-                'status' => 0,
-                'refuse_details' => null
-            ]);
+        BillingModel::where('id', $data['id_submitted_expense'])->update([
+            'description' => mb_convert_case($data['description'], MB_CASE_TITLE, "UTF-8"),
+            'category' => $data['category'],
+            'month' => $data['month'],
+            'to_user' => $data['to_user'],
+            'installments' => $data['installments'],
+            'value' => $data['amount'],
+            'status' => 0,
+            'refuse_details' => null
+        ]);
 
         return response()->json([
             'ok' => true,
@@ -174,12 +159,10 @@ class BillingController extends Controller
     public function refuse(Request $request)
     {
         $data = $request->all();
-
-        BillingModel::where('id', $data['id_submitted_expense'])
-            ->update([
-                'status' => 2,
-                'refuse_details' => $data['refuse_detail']
-            ]);
+        BillingModel::where('id', $data['id_submitted_expense'])->update([
+            'status' => 2,
+            'refuse_details' => $data['refuse_detail']
+        ]);
 
         return response()->json([
             'ok' => true,
@@ -192,14 +175,12 @@ class BillingController extends Controller
         $submittedExpense = BillingModel::find($id);
         $month = $submittedExpense['month'];
         $year = $submittedExpense['year'];
-
         if ($submittedExpense['generate_receipt']) {
             for ($i = 1; $i <= $submittedExpense['installments']; $i++) {
                 if ($month == 13) {
                     $month = 1;
                     $year++;
                 }
-
                 RecipeModel::create([
                     'description' => mb_convert_case($submittedExpense['description'], MB_CASE_TITLE, "UTF-8"),
                     'category' => 38,
@@ -210,7 +191,6 @@ class BillingController extends Controller
                     'user_id' => $submittedExpense['from_user'],
                     'submitted_expense_id' => $submittedExpense['id']
                 ]);
-
                 ExpenseModel::create([
                     'description' => mb_convert_case($submittedExpense['description'], MB_CASE_TITLE, "UTF-8"),
                     'category' => $submittedExpense['category'],
@@ -222,7 +202,6 @@ class BillingController extends Controller
                     'user_id' => $submittedExpense['to_user'],
                     'submitted_expense_id' => $submittedExpense['id']
                 ]);
-
                 $month++;
             }
         } else {
@@ -231,7 +210,6 @@ class BillingController extends Controller
                     $month = 1;
                     $year++;
                 }
-
                 ExpenseModel::create([
                     'description' => mb_convert_case($submittedExpense['description'], MB_CASE_TITLE, "UTF-8"),
                     'category' => $submittedExpense['category'],
@@ -243,11 +221,9 @@ class BillingController extends Controller
                     'user_id' => $submittedExpense['to_user'],
                     'submitted_expense_id' => $submittedExpense['id']
                 ]);
-
                 $month++;
             }
         }
-
         $submittedExpense->status = 1;
         $submittedExpense->save();
 

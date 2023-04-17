@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AppConfigModel;
 use App\Models\BillingModel;
+use App\Models\CategoryModel;
 use App\Models\CreditCardInvoiceModel;
 use App\Models\CreditCardModel;
 use App\Models\ExpenseModel;
@@ -12,7 +13,6 @@ use App\Models\NotificationModel;
 use App\Models\RecipeModel;
 use App\Models\User;
 use DateTime;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class DashboardController extends Controller
@@ -24,6 +24,7 @@ class DashboardController extends Controller
     private $creditCardInvoiceModel;
     private $appConfigModel;
     private $billingModel;
+    private $categoryModel;
 
     public function __construct(
         User $user,
@@ -32,7 +33,8 @@ class DashboardController extends Controller
         ExpenseModel $expenseModel,
         CreditCardInvoiceModel $creditCardInvoiceModel,
         AppConfigModel $appConfigModel,
-        BillingModel $billingModel
+        BillingModel $billingModel,
+        CategoryModel $categoryModel
     ) {
         $this->user = $user;
         $this->creditCardModel = $creditCardModel;
@@ -41,13 +43,12 @@ class DashboardController extends Controller
         $this->creditCardInvoiceModel = $creditCardInvoiceModel;
         $this->appConfigModel = $appConfigModel;
         $this->billingModel = $billingModel;
+        $this->categoryModel = $categoryModel;
     }
 
     public function index()
     {
-        if ($this->user->isFirstAccess()) {
-            return redirect()->route('initial');
-        }
+        if ($this->user->isFirstAccess()) return redirect()->route('initial');
         $date = new DateTime();
         $currentMonth = intval($date->format('m'));
         $currentYear = intval($date->format('Y'));
@@ -71,108 +72,54 @@ class DashboardController extends Controller
         session_start();
         $_SESSION['month'] = MonthModel::where('id', $month)->first();
         $_SESSION['year'] = $year;
-
         $years = $this->expenseModel->getExpensesYears();
         if (!$years) {
             $years[] = new stdClass();
             $years[0]->year = $currentYear;
         }
-
-        $activeRecipeCategories = DB::table('categories')
-            ->where('belongs_to', 1)
-            ->where('active', 1)
-            ->whereNotIn('id', [38])
-            ->orderBy('description', 'asc')
-            ->get();
-
-        $activeExpenseCategories = DB::table('categories')
-            ->where('belongs_to', 2)
-            ->where('active', 1)
-            ->orderBy('description', 'asc')
-            ->get();
-
-        $userRecipes = DB::table('recipes')
-            ->join('categories', 'recipes.category', 'categories.id')
-            ->where('recipes.user_id', '=', session('user')['id'])
-            ->where('recipes.year', '=', $year)
-            ->select('recipes.*', 'categories.description as category_description')
-            ->orderBy('recipes.description', 'asc')
-            ->orderBy('categories.description', 'asc')
-            ->get();
-
-        $currentRecipes = [];
-        $amount = 0;
-
-        foreach ($userRecipes as $recipe) {
-            if ($recipe->month == $month) {
-                array_push($currentRecipes, $recipe);
-                $amount += (float) $recipe->budgeted_amount;
+        $activeRecipeCategories = $this->categoryModel->activeRecipeCategories();
+        $activeExpenseCategories = $this->categoryModel->activeExpenseCategories();
+        $monthRecipes = $this->recipeModel->userRecipes($year, $month);
+        $monthAmount = 0;
+        foreach ($monthRecipes as $recipe) {
+            $monthAmount += (float) $recipe->budgeted_amount;
+        }
+        $monthExpenses = $this->expenseModel->userExpenses($year, $month);
+        $amountExpenses = 0;
+        $realizedExpenses = 0;
+        $pendingExpenses = 0;
+        foreach ($monthExpenses as $expense) {
+            $expense->to_user = $this->billingModel->getUserSentExpense($expense->submitted_expense_id);
+            $expense->generate_receipt = $this->billingModel->isGeneratedReceipt($expense->submitted_expense_id);
+            $expense->document = $this->billingModel->getDocument($expense->submitted_expense_id);
+            if ($expense->cancelled == 0) {
+                $amountExpenses += (float) $expense->budgeted_amount;
+                $realizedExpenses += (float) $expense->realized_amount;
+                $pendingExpenses += (float) $expense->budgeted_amount - $expense->realized_amount;
             }
         }
-
-        $userExpenses = DB::table('expenses')
-            ->join('categories', 'expenses.category', 'categories.id')
-            ->where('expenses.user_id', '=', session('user')['id'])
-            ->where('expenses.credit_card', '=', null)
-            ->where('expenses.year', '=', $year)
-            ->select('expenses.*', 'categories.description as category_description')
-            ->orderBy(DB::raw('expenses.budgeted_amount - expenses.realized_amount = 0'), 'asc')
-            ->orderBy('expenses.description', 'asc')
-            ->orderBy('categories.description', 'asc')
-            ->get();
-
-        $expensesPeriod = [];
-        $amountExpensesPeriod = 0;
-        $realizedExpensesPeriod = 0;
-        $pendingExpensesPeriod = 0;
-
-        foreach ($userExpenses as $expense) {
-            if ($expense->month == $month) {
-                if ($expense->period == 0) {
-                    $expense->to_user = $this->billingModel->getUserSentExpense($expense->submitted_expense_id);
-                    $expense->generate_receipt = $this->billingModel->isGeneratedReceipt($expense->submitted_expense_id);
-                    $expense->document = $this->billingModel->getDocument($expense->submitted_expense_id);
-
-                    array_push($expensesPeriod, $expense);
-
-                    if ($expense->cancelled == 0) {
-                        $amountExpensesPeriod += (float) $expense->budgeted_amount;
-                        $realizedExpensesPeriod += (float) $expense->realized_amount;
-                        $pendingExpensesPeriod += (float) $expense->budgeted_amount - $expense->realized_amount;
-                    }
-                }
-            }
-        }
-
         $receivedExpenses = $this->billingModel->getReceivedExpenses();
-        $activeCards = $this->creditCardModel->getActiveCardsWithFlags();
-        $cards = $this->creditCardModel->getCardsWithFlags();
-        $allCreditCardExpenses = [];
-
-        foreach ($cards as $card) {
+        $userCards = $this->creditCardModel->getCardsWithFlags();
+        $userActiveCards = $this->creditCardModel->getActiveCardsWithFlags();
+        $creditCardExpenses = [];
+        foreach ($userCards as $card) {
             $cardExpenses = $this->expenseModel->getExpensesByCreditCardMonthYear(
                 $card->id,
                 $_SESSION['month']['id'],
                 $_SESSION['year']
             );
-
-            if (!$cardExpenses) {
-                continue;
-            }
-
+            if (!$cardExpenses) continue;
             $invoice = $this->creditCardInvoiceModel->getInvoiceByCreditCardAndMonthAndYear(
                 $card->id,
                 $_SESSION['month']['id'],
                 $_SESSION['year']
             );
-
             if (!$invoice) {
                 $invoice = new stdClass();
                 $invoice->id = null;
                 $invoice->payment = null;
                 $invoice->pay_day = null;
             }
-
             $expenseObject = new stdClass();
             $expenseObject->credit_card = $cardExpenses[0]->credit_card;
             $expenseObject->credit_card_description = $cardExpenses[0]->credit_card_description;
@@ -188,28 +135,21 @@ class DashboardController extends Controller
             $expenseObject->total_budgeted_amount = 0;
             $expenseObject->total_realized_amount = 0;
             $expenseObject->total_pending_amount = 0;
-
             foreach ($cardExpenses as $cardExpense) {
                 $expenseObject->periods[] = $cardExpense->period;
-
                 if ($cardExpense->cancelled == 0) {
                     $expenseObject->total_budgeted_amount += $cardExpense->budgeted_amount;
                     $expenseObject->total_realized_amount += $cardExpense->realized_amount;
                     $expenseObject->total_pending_amount = ($expenseObject->total_budgeted_amount - $expenseObject->total_realized_amount);
                 }
             }
-
             $expenseObject->expenses = $cardExpenses;
-
-            $allCreditCardExpenses[] = $expenseObject;
+            $creditCardExpenses[] = $expenseObject;
         }
-
-        // Data for the resume section...
         $resumeTotal = [];
         $resumeTotal['recipes'] = $this->recipeModel->recipesTotalSum($_SESSION['month']['id'], $_SESSION['year']);
         $resumeTotal['expenses'] = $this->expenseModel->expensesTotalSum($_SESSION['month']['id'], $_SESSION['year']);
         $resumeTotal['diff'] = floatval($resumeTotal['recipes']) - floatval($resumeTotal['expenses']);
-
         $expensesByCategories = $this->expenseModel->totalAmountExpensesByCategories($_SESSION['month']['id'], $_SESSION['year']);
         $configNumberOfInstallments = $this->appConfigModel->getNumberOfInstallments();
         $notifications = NotificationModel::where('to_user', session('user')['id'])->limit(3)->orderBy('created_at', 'desc')->get();
@@ -222,17 +162,17 @@ class DashboardController extends Controller
             'years' => $years,
             'activeRecipeCategories' => $activeRecipeCategories,
             'activeExpenseCategories' => $activeExpenseCategories,
-            'recipes' => $currentRecipes,
-            'expenses' => $expensesPeriod,
+            'recipes' => $monthRecipes,
+            'expenses' => $monthExpenses,
             'receivedExpenses' => $receivedExpenses,
-            'budgeted_amount' => $amount,
-            'budgeted_amount_expenses' => $amountExpensesPeriod,
-            'realized_amount_expenses' => $realizedExpensesPeriod,
-            'pending_amount_expenses' => $pendingExpensesPeriod,
+            'budgeted_amount' => $monthAmount,
+            'budgeted_amount_expenses' => $amountExpenses,
+            'realized_amount_expenses' => $realizedExpenses,
+            'pending_amount_expenses' => $pendingExpenses,
             'type_expenses' => '30',
-            'cards' => $cards,
-            'activeCards' => $activeCards,
-            'creditCardExpenses' => $allCreditCardExpenses,
+            'cards' => $userCards,
+            'activeCards' => $userActiveCards,
+            'creditCardExpenses' => $creditCardExpenses,
             'resumeData' => [
                 'totals' => $resumeTotal,
                 'expensesCategories' => $expensesByCategories
@@ -247,31 +187,22 @@ class DashboardController extends Controller
 
     public function config()
     {
-        if ($this->user->isFirstAccess()) {
-            return redirect()->route('initial');
-        }
-
+        if ($this->user->isFirstAccess()) return redirect()->route('initial');
         $configs = $this->appConfigModel->getAllConfigs();
 
-        return view('config', [
-            'configs' => $configs,
-        ]);
+        return view('config', ['configs' => $configs]);
     }
 
     public function firstAccess()
     {
         $data = request()->all();
-
-        User::where('id', session('user')['id'])
-            ->update([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-                'first_access' => 0,
-            ]);
-
+        User::where('id', session('user')['id'])->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'first_access' => 0,
+        ]);
         $user = User::find(session('user')['id']);
-
         session()->put('user', [
             'id' => $user->id,
             'name' => $data['name'],
@@ -280,25 +211,18 @@ class DashboardController extends Controller
             'firstAccess' => 0
         ]);
 
-        return response()->json([
-            'ok' => true,
-            'message' => 'Processo validado com sucesso!',
-        ]);
+        return response()->json(['ok' => true, 'message' => 'Processo validado com sucesso!']);
     }
 
     public function initial()
     {
-        if (!$this->user->isFirstAccess()) {
-            return redirect()->route('dashboard');
-        }
+        if (!$this->user->isFirstAccess()) return redirect()->route('dashboard');
 
         return view('initial');
     }
 
     public function appUrl()
     {
-        return response()->json([
-            'appUrl' => $_ENV['APP_URL']
-        ]);
+        return response()->json(['appUrl' => $_ENV['APP_URL']]);
     }
 }

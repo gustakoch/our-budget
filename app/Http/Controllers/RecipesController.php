@@ -3,45 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoryModel;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\RecipeModel;
-use DateTime;
 
 class RecipesController extends Controller
 {
     private $categoryModel;
+    private $recipeModel;
 
-    public function __construct(CategoryModel $categoryModel)
+    public function __construct(CategoryModel $categoryModel, RecipeModel $recipeModel)
     {
         $this->categoryModel = $categoryModel;
+        $this->recipeModel = $recipeModel;
     }
 
     public function index()
     {
         session_start();
         $month = $_SESSION['month']['id'];
-
-        $userRecipes = DB::table('recipes')
-            ->join('categories', 'recipes.category', 'categories.id')
-            ->where('recipes.user_id', '=', session('user'))['id']
-            ->select('recipes.*', 'categories.description as category_description')
-            ->get();
-
-        $monthRecipes = [];
+        $year = $_SESSION['year'];
+        $monthRecipes = $this->recipeModel->userRecipes($year, $month);
         $monthAmount = 0;
-
-        foreach ($userRecipes as $recipe) {
-            if ($recipe->month == $month) {
-                array_push($monthRecipes, $recipe);
-                $monthAmount += (float) $recipe->budgeted_amount;
-            }
+        foreach ($monthRecipes as $recipe) {
+            $monthAmount += (float) $recipe->budgeted_amount;
         }
 
-        return response()->json([
-            'recipes' => $monthRecipes,
-            'budgeted_amount' => $monthAmount
-        ]);
+        return response()->json(['recipes' => $monthRecipes, 'budgeted_amount' => $monthAmount]);
     }
 
     public function store()
@@ -49,7 +36,6 @@ class RecipesController extends Controller
         session_start();
         $data = request()->all();
         $repeatNextMonths = isset($data['repeat_next_months']) ? 1 : 0;
-
         if ($repeatNextMonths == '1') {
             for ($i = $_SESSION['month']['id']; $i <= 12; $i++) {
                 RecipeModel::create([
@@ -74,35 +60,26 @@ class RecipesController extends Controller
             ]);
         }
 
-        return response()->json([
-            'ok' => true,
-            'message' => 'Entrada cadastrada com sucesso!'
-        ]);
+        return response()->json(['ok' => true, 'message' => 'Entrada cadastrada com sucesso!']);
     }
 
     public function update()
     {
         $data = request()->all();
-
         if ($data['category_active'] == 1) {
-            RecipeModel::where('id', $data['id_recipe'])
-                ->update([
-                    'description' => mb_convert_case($data['description_edit'], MB_CASE_TITLE, "UTF-8"),
-                    'category' => $data['category_edit'],
-                    'budgeted_amount' => $data['budgeted_amount_edit']
-                ]);
+            RecipeModel::where('id', $data['id_recipe'])->update([
+                'description' => mb_convert_case($data['description_edit'], MB_CASE_TITLE, "UTF-8"),
+                'category' => $data['category_edit'],
+                'budgeted_amount' => $data['budgeted_amount_edit']
+            ]);
         } else {
-            RecipeModel::where('id', $data['id_recipe'])
-                ->update([
-                    'description' => mb_convert_case($data['description_edit'], MB_CASE_TITLE, "UTF-8"),
-                    'budgeted_amount' => $data['budgeted_amount_edit']
-                ]);
+            RecipeModel::where('id', $data['id_recipe'])->update([
+                'description' => mb_convert_case($data['description_edit'], MB_CASE_TITLE, "UTF-8"),
+                'budgeted_amount' => $data['budgeted_amount_edit']
+            ]);
         }
 
-        return response()->json([
-            'ok' => true,
-            'message' => 'Entrada atualizada com sucesso',
-        ]);
+        return response()->json(['ok' => true, 'message' => 'Entrada atualizada com sucesso']);
     }
 
     public function show($id)
@@ -118,9 +95,6 @@ class RecipesController extends Controller
         $recipe = RecipeModel::find($id);
         $recipe->delete();
 
-        return response()->json([
-            'ok' => true,
-            'msg' => 'Entrada removida com sucesso!'
-        ]);
+        return response()->json(['ok' => true, 'msg' => 'Entrada removida com sucesso!']);
     }
 }

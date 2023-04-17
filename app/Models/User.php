@@ -15,18 +15,14 @@ class User extends Authenticatable
 
     public function isFirstAccess()
     {
-        if (session('user')['firstAccess'] == 1) {
-            return true;
-        }
+        if (session('user')['firstAccess'] == 1) return true;
 
         return false;
     }
 
     public function isLoggedIn()
     {
-        if (is_null(session('user'))) {
-            return false;
-        }
+        if (is_null(session('user'))) return false;
 
         return true;
     }
@@ -93,7 +89,6 @@ class User extends Authenticatable
         $small = "abcdefghijklmnopqrstuvyxwz";
         $numbers = "0123456789";
         $symbols = "!@#$%&*()_+=";
-
         $password = "";
         $password .= str_shuffle($capital);
         $password .= str_shuffle($small);
@@ -105,16 +100,15 @@ class User extends Authenticatable
 
     public function getUserInfo($id)
     {
-        $userInfo = DB::selectOne("select
-            id
-            , name
-            , email
-            , role
-            , first_access
-            , active
-        from users
-        where id = ?
-        ", [$id]);
+        $userInfo = DB::selectOne("
+            SELECT id
+                , name
+                , email
+                , role
+                , first_access
+                , active
+              FROM users
+             WHERE id = ?", [$id]);
 
         return $userInfo;
     }

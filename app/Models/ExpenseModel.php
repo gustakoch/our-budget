@@ -69,12 +69,8 @@ class ExpenseModel extends Model
     public function cancelExpenses($id, $reasonCancelled)
     {
         $currentInstallment = ExpenseInstallmentsModel::where('expense', $id)->first();
-        $currentAndFollowingInstallments = ExpenseInstallmentsModel::where(
-            'hash_installment', $currentInstallment->hash_installment
-        )->get();
-
+        $currentAndFollowingInstallments = ExpenseInstallmentsModel::where('hash_installment', $currentInstallment->hash_installment)->get();
         $totalCancelled = 0;
-
         foreach ($currentAndFollowingInstallments as $item) {
             if ($item->expense >= $id) {
                 ExpenseModel::where('id', $item->expense)
@@ -87,10 +83,7 @@ class ExpenseModel extends Model
             }
         }
 
-        return [
-            'ok' => true,
-            'msg' => "$totalCancelled parcelas canceladas com sucesso"
-        ];
+        return ['ok' => true, 'msg' => "$totalCancelled parcelas canceladas com sucesso"];
     }
 
     public function getExpensesForPay($invoice, $month, $year)
@@ -134,22 +127,20 @@ class ExpenseModel extends Model
     public function totalAmountExpensesByCategories($month, $year)
     {
         $totalGeneral = $this->expensesTotalSum($_SESSION['month']['id'], $_SESSION['year']);
-        $expenses = DB::select('
-            SELECT
-                c.description category
+        $expenses = DB::select("
+            SELECT c.description category
                 , sum(e.budgeted_amount) total
                 , c.color
-            FROM expenses e
+              FROM expenses e
                 , categories c
-            WHERE e.category = c.id
-            AND user_id = ?
-            AND cancelled = 0
-            AND "month" = ?
-            AND "year" = ?
-            GROUP BY c.description, c.color
-            ORDER BY total DESC
-        ', [session('user')['id'], $month, $year]);
-
+             WHERE e.category = c.id
+               AND user_id = ?
+               AND cancelled = 0
+               AND month = ?
+               AND year = ?
+          GROUP BY c.description, c.color
+          ORDER BY total DESC", [session('user')['id'], $month, $year]
+        );
         foreach ($expenses as $expense) {
             $expense->percentage = number_format((($expense->total / $totalGeneral) * 100), 2);
             $expense->color_brightness = $this->getColorBrightness($expense->color);
@@ -172,11 +163,7 @@ class ExpenseModel extends Model
 
     public function getDistinctYears()
     {
-        $years = DB::select("
-                SELECT distinct year
-            FROM expenses
-            ORDER BY year
-        ");
+        $years = DB::select("SELECT distinct year FROM expenses ORDER BY year");
 
         return $years;
     }
@@ -218,6 +205,23 @@ class ExpenseModel extends Model
             ORDER BY e.month
                 , e.description
         ", [$category, $startMonth, $endMonth, $startYear, $endYear]);
+
+        return $expenses;
+    }
+
+    public function userExpenses($year, $month)
+    {
+        $expenses = DB::table('expenses')
+            ->join('categories', 'expenses.category', 'categories.id')
+            ->where('expenses.user_id', '=', session('user')['id'])
+            ->where('expenses.credit_card', '=', null)
+            ->where('expenses.year', '=', $year)
+            ->where('expenses.month', '=', $month)
+            ->select('expenses.*', 'categories.description as category_description')
+            ->orderBy(DB::raw('expenses.budgeted_amount - expenses.realized_amount = 0'), 'asc')
+            ->orderBy('expenses.description', 'asc')
+            ->orderBy('categories.description', 'asc')
+            ->get();
 
         return $expenses;
     }

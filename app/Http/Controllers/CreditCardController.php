@@ -17,26 +17,18 @@ class CreditCardController extends Controller
 
     public function index()
     {
-        if (session('user')['firstAccess'] == 1) {
-            return redirect('dashboard');
-        }
-
+        if (session('user')['firstAccess'] == 1) return redirect('dashboard');
         $cards = $this->creditCardModel->getCardsWithFlags();
         $flags = CardFlagModel::all();
 
-        return view('cards.index', [
-            'cards' => $cards,
-            'flags' => $flags
-        ]);
+        return view('cards.index', ['cards' => $cards, 'flags' => $flags]);
     }
 
     public function store()
     {
         $data = request()->all();
-
         if ($data['card_number']) {
             $cardStored = CreditCardModel::where('number', $data['card_number'])->first();
-
             if ($cardStored) {
                 return response()->json([
                     'ok' => false,
@@ -44,7 +36,6 @@ class CreditCardController extends Controller
                 ]);
             }
         }
-
         CreditCardModel::create([
             'description' => mb_convert_case($data['card_description'], MB_CASE_TITLE, "UTF-8"),
             'number' => $data['card_number'],
@@ -62,7 +53,6 @@ class CreditCardController extends Controller
     public function show($id)
     {
         $card = $this->creditCardModel->getCardsWithFlagsById($id);
-
         if (!$card->number) {
             $card->number = 'Nenhum número informado';
             $card->no_number = true;
@@ -76,18 +66,13 @@ class CreditCardController extends Controller
     public function update()
     {
         $data = request()->all();
-
-        CreditCardModel::where('id', $data['id_card'])
-            ->update([
-                'description' => mb_convert_case($data['card_description_edit'], MB_CASE_TITLE, "UTF-8"),
-                'flag' => $data['card_flag_edit'],
-                'invoice_day' => $data['invoice_day']
-            ]);
-
-        return response()->json([
-            'ok' => true,
-            'message' => 'Categoria atualizada com sucesso'
+        CreditCardModel::where('id', $data['id_card'])->update([
+            'description' => mb_convert_case($data['card_description_edit'], MB_CASE_TITLE, "UTF-8"),
+            'flag' => $data['card_flag_edit'],
+            'invoice_day' => $data['invoice_day']
         ]);
+
+        return response()->json(['ok' => true, 'message' => 'Categoria atualizada com sucesso']);
     }
 
     public function destroy($id)
@@ -105,10 +90,7 @@ class CreditCardController extends Controller
         }
         $card->delete();
 
-        return response()->json([
-            'ok' => true,
-            'message' => 'Cartão removido com sucesso!'
-        ]);
+        return response()->json(['ok' => true, 'message' => 'Cartão removido com sucesso!']);
     }
 
     public function switchStatus($id)
@@ -121,9 +103,6 @@ class CreditCardController extends Controller
             CreditCardModel::where('id', $id)->update(['active' => 1]);
         }
 
-        return response()->json([
-            'ok' => true,
-            'message' => 'Status atualizado com sucesso!'
-        ]);
+        return response()->json(['ok' => true, 'message' => 'Status atualizado com sucesso!']);
     }
 }

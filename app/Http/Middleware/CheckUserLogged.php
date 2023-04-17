@@ -16,10 +16,7 @@ class CheckUserLogged
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!session('user')) {
-            return redirect()->route('home');
-        }
-
+        if (!session('user')) return redirect()->route('home');
         $request->session()->put('loggedInTimestamp', time());
 
         return $next($request);

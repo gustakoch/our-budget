@@ -68,10 +68,7 @@ class BillingModel extends Model
 
     public function getUserSentExpense($id)
     {
-        if (!$id) {
-            return '';
-        }
-
+        if (!$id) return '';
         $submittedExpense = BillingModel::find($id);
         $user = User::find($submittedExpense->from_user);
 
@@ -80,25 +77,16 @@ class BillingModel extends Model
 
     public function isGeneratedReceipt($id)
     {
-        if (!$id) {
-            return false;
-        }
-
+        if (!$id) return false;
         $submittedExpense = BillingModel::find($id);
-
-        if (!$submittedExpense['generate_receipt']) {
-            return false;
-        }
+        if (!$submittedExpense['generate_receipt']) return false;
 
         return true;
     }
 
     public function getDocument($id)
     {
-        if (!$id) {
-            return '';
-        }
-
+        if (!$id) return '';
         $submittedExpense = BillingModel::find($id);
 
         return $submittedExpense->document;

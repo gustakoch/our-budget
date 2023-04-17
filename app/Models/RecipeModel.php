@@ -55,4 +55,19 @@ class RecipeModel extends Model
 
         return $recipes;
     }
+
+    public function userRecipes($year, $month)
+    {
+        $recipes = DB::table('recipes')
+            ->join('categories', 'recipes.category', 'categories.id')
+            ->where('recipes.user_id', '=', session('user')['id'])
+            ->where('recipes.year', '=', $year)
+            ->where('recipes.month', '=', $month)
+            ->select('recipes.*', 'categories.description as category_description')
+            ->orderBy('recipes.description', 'asc')
+            ->orderBy('categories.description', 'asc')
+            ->get();
+
+        return $recipes;
+    }
 }

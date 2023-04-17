@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\CreditCardInvoiceModel;
 use App\Models\ExpenseModel;
-use Illuminate\Http\Request;
 
 class InvoicesController extends Controller
 {
@@ -20,23 +19,16 @@ class InvoicesController extends Controller
     {
         $data = request()->all();
         $expenses = $this->expenseModel->getExpensesForPay($data['invoiceId'], $_SESSION['month']['id'], $_SESSION['year']);
-
         foreach ($expenses as $expense) {
-            ExpenseModel::where('id', $expense->id)
-                ->update([
-                    'realized_amount' => $expense->budgeted_amount
-                ]);
-        }
-
-        CreditCardInvoiceModel::where('id', $data['invoiceId'])
-            ->update([
-                'payment' => 1,
-                'pay_day' => date('Y-m-d H:i:s')
+            ExpenseModel::where('id', $expense->id)->update([
+                'realized_amount' => $expense->budgeted_amount
             ]);
-
-        return response()->json([
-            'ok' => true,
-            'message' => 'A fatura foi paga com sucesso'
+        }
+        CreditCardInvoiceModel::where('id', $data['invoiceId'])->update([
+            'payment' => 1,
+            'pay_day' => date('Y-m-d H:i:s')
         ]);
+
+        return response()->json(['ok' => true, 'message' => 'A fatura foi paga com sucesso']);
     }
 }

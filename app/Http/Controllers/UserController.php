@@ -20,10 +20,7 @@ class UserController extends Controller
 
     public function index()
     {
-        if (session('user')['role'] > 2) {
-            return redirect('dashboard');
-        }
-
+        if (session('user')['role'] > 2) return redirect('dashboard');
         $users = $this->userModel->getAll();
         $roles = $this->roleModel->getRolesExceptMaster();
         $password = $this->userModel->generatePassword(10);
@@ -39,16 +36,12 @@ class UserController extends Controller
     {
         $password = $this->userModel->generatePassword(10);
 
-        return response()->json([
-            'ok' => true,
-            'password' => $password
-        ]);
+        return response()->json(['ok' => true, 'password' => $password]);
     }
 
     public function store()
     {
         $data = request()->all();
-
         User::create([
             'name' => $data['name_user'],
             'email' => $data['email_user'],
@@ -59,16 +52,12 @@ class UserController extends Controller
             'created_by' => session('user')['id'] ?? null
         ]);
 
-        return response()->json([
-            'ok' => true,
-            'message' => 'Usuário cadastrado com sucesso!'
-        ]);
+        return response()->json(['ok' => true, 'message' => 'Usuário cadastrado com sucesso!']);
     }
 
     public function show($id)
     {
         $user = $this->userModel->getUserInfo($id);
-
         if (is_null($user)) {
             return response()->json([
                 'ok' => false,
@@ -76,35 +65,25 @@ class UserController extends Controller
             ]);
         }
 
-        return response()->json([
-            'ok' => true,
-            'user' => $user
-        ]);
+        return response()->json(['ok' => true, 'user' => $user]);
     }
 
     public function update()
     {
         $data = request()->all();
-
-        User::where('id', $data['id_user'])
-            ->update([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'role' => $data['role'],
-                'first_access' => $data['first_access'],
-                'active' => $data['active']
-            ]);
-
+        User::where('id', $data['id_user'])->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => $data['role'],
+            'first_access' => $data['first_access'],
+            'active' => $data['active']
+        ]);
         if (!is_null($data['password_user'])) {
-            User::where('id', $data['id_user'])
-                ->update([
-                    'password' => password_hash($data['password_user'], PASSWORD_DEFAULT)
-                ]);
+            User::where('id', $data['id_user'])->update([
+                'password' => password_hash($data['password_user'], PASSWORD_DEFAULT)
+            ]);
         }
 
-        return response()->json([
-            'ok' => true,
-            'message' => 'Usuário atualizado com sucesso'
-        ]);
+        return response()->json(['ok' => true, 'message' => 'Usuário atualizado com sucesso']);
     }
 }

@@ -22,14 +22,10 @@ class NotificationController extends Controller
 
     public function read()
     {
-        NotificationModel::where('to_user', session('user')['id'])
-            ->update([
-                'viewed' => 1
-            ]);
-
-        return response()->json([
-            'ok' => true,
-            'message' => 'Notificações atualizadas com sucesso!'
+        NotificationModel::where('to_user', session('user')['id'])->update([
+            'viewed' => 1
         ]);
+
+        return response()->json(['ok' => true, 'message' => 'Notificações atualizadas com sucesso!']);
     }
 }

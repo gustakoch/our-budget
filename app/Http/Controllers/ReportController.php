@@ -30,7 +30,6 @@ class ReportController extends Controller
     public function expensesByCategory()
     {
         session_start();
-
         $categories = $this->categoryModel->getOnlyExpensesCategories();
         $years = $this->expenseModel->getDistinctYears();
         $users = $this->userModel->getAll();
@@ -49,27 +48,22 @@ class ReportController extends Controller
     public function search()
     {
         $data = request()->all();
-
         if (!isset($data['category']) || empty($data['category'])) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Por favor, selecione uma categoria.'
             ]);
         }
-
         $order = [];
         $users = "";
         $searchType = $data['search-type'];
-
         if (!in_array(session('user')['role'], ['1', '2'])) {
             $users = session('user')['id'];
         } else {
             $users = implode(',', $data['user']);
         }
-
         foreach ($data['category'] as $category) {
             if ($searchType == '1') {
-                // Entradas
                 $results = $this->recipeModel->getRecipesReport(
                     $category,
                     $data['start_month'],
@@ -79,7 +73,6 @@ class ReportController extends Controller
                     $users
                 );
             } elseif ($searchType == '2') {
-                // Saídas
                 $results = $this->expenseModel->getExpensesReport(
                     $category,
                     $data['start_month'],
@@ -89,12 +82,7 @@ class ReportController extends Controller
                     $users
                 );
             }
-
-            $categoryModel = CategoryModel::where('id', $category)
-                ->select('description')
-                ->first();
-
-            // Just for order the categories who has expenses first then the others
+            $categoryModel = CategoryModel::where('id', $category)->select('description')->first();
             if (count($results) > 0) {
                 $order['have'][] = [
                     'category' => $categoryModel->description,
@@ -107,27 +95,20 @@ class ReportController extends Controller
                 ];
             }
         }
-
         if (!isset($order['have'])) {
             $order['have'] = [];
         }
-
         if (!isset($order['nothing'])) {
             $order['nothing'] = [];
         }
-
         $report = array_merge($order['have'], $order['nothing']);
 
-        return response()->json([
-            'ok' => true,
-            'data' => $report
-        ]);
+        return response()->json(['ok' => true, 'data' => $report]);
     }
 
     public function allRecipes()
     {
         session_start();
-
         $categories = $this->categoryModel->getOnlyRecipesCategories();
         $years = $this->expenseModel->getDistinctYears();
         $users = $this->userModel->getAll();

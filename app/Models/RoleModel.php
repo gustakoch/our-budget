@@ -15,10 +15,11 @@ class RoleModel extends Model
 
     public function getRolesExceptMaster()
     {
-        $roles = DB::select("SELECT *
-            FROM roles
-            WHERE id >= ?
-            ORDER BY id
+        $roles = DB::select("
+            SELECT *
+              FROM roles
+             WHERE id >= ?
+          ORDER BY id
         ", [session('user')['role']]);
 
         return $roles;

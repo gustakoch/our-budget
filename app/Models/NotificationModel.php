@@ -19,11 +19,9 @@ class NotificationModel extends Model
                 '*',
                 DB::raw("to_char(n.created_at, 'dd/mm/yyyy hh24:mi') as created_at"))
             ->where('n.to_user', session('user')['id']);
-
         if ($notViewedOnly) {
             $query->where('n.viewed', '=', 0);
         }
-
         $notifications = $query->get();
 
         return $notifications;

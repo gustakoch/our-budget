@@ -16,8 +16,7 @@ class CategoryModel extends Model
     public function getAll()
     {
         $categories = DB::select("
-            SELECT
-                id
+            SELECT id
                 , description
                 , to_char(created_at, 'DD/MM/YYYY HH24:MI') created_at
                 , CASE
@@ -27,9 +26,7 @@ class CategoryModel extends Model
                 , color
             FROM categories
             WHERE active = 1
-            ORDER BY belongs_to, description
-        ");
-
+            ORDER BY belongs_to, description");
         foreach ($categories as $category) {
             $category->color_brightness = $this->getColorBrightness($category->color);
         }
@@ -92,5 +89,28 @@ class CategoryModel extends Model
               ORDER BY description");
 
         return $recipesCategories;
+    }
+
+    public function activeRecipeCategories()
+    {
+        $categories = DB::table('categories')
+            ->where('belongs_to', 1)
+            ->where('active', 1)
+            ->whereNotIn('id', [38])
+            ->orderBy('description', 'asc')
+            ->get();
+
+        return $categories;
+    }
+
+    public function activeExpenseCategories()
+    {
+        $categories = DB::table('categories')
+            ->where('belongs_to', 2)
+            ->where('active', 1)
+            ->orderBy('description', 'asc')
+            ->get();
+
+        return $categories;
     }
 }
