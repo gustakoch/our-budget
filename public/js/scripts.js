@@ -1,3 +1,4 @@
+// @ts-nocheck
 document.addEventListener('DOMContentLoaded', function () {
     const formNewRecipe = document.querySelector('#form-new-recipe')
     const formEditRecipe = document.querySelector('#form-edit-recipe')
@@ -957,6 +958,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 jQuery('#form-edit-recipe').show()
                 jQuery('#loadingSpinnerRecipe').hide()
 
+                jQuery('.modal-title').html(`<b>#</b>${response.id} - Editando entrada`)
                 jQuery('input[name="description_edit"]').val(response.description)
                 jQuery('input[name="id_recipe"]').val(response.id)
                 jQuery('input[name="category_active"]').val(response.category_active)
@@ -1198,6 +1200,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 jQuery('.message-right-top').css('display', 'none')
                 jQuery('.message-right-top').text('')
 
+                jQuery('.modal-title').html(`<b>#</b>${response.id} - Informações da saída`)
                 jQuery('input[name="id_expense"]').val(response.id)
                 jQuery('input[name="description_expense_info"]').val(response.description)
                 Number(jQuery('select[name="category_expense_info"]').val(response.category))
@@ -1271,6 +1274,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 jQuery('#loadingSpinner').hide()
                 jQuery('#form-edit-expense').show()
 
+                jQuery('.modal-title').html(`<b>#</b>${response.id} - Editando saída`)
                 jQuery('input[name="id_expense"]').val(response.id)
                 jQuery('input[name="category_active"]').val(response.category_active)
                 jQuery('input[name="description_expense_edit"]').val(response.description)

@@ -55,6 +55,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th scope="col">Código</th>
                                         <th scope="col">Descrição da saída</th>
                                         <th scope="col">Categoria</th>
                                         <th scope="col">Parcelas</th>
@@ -74,6 +75,7 @@
                                                 {{ $expense->cancelled == 1 ? 'cancelled' : '' }}
                                                 {{ $expense->budgeted_amount - $expense->realized_amount <= 0 ? 'text-success font-bold-500' : '' }}"
                                         >
+                                            <td>{{ $expense->id }}</td>
                                             <td>
                                                 {{ $expense->description }}
                                                 @if ($expense->submitted_expense_id && $expense->generate_receipt)

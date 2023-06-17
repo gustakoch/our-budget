@@ -63,7 +63,7 @@
                                                 value="{{ $i }}"
                                                 @if ($i == 1) {{ 'selected' }} @endif
                                             >
-                                                {{ $month }}
+                                                {{ $month->description }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -80,7 +80,7 @@
                                                 value="{{ $i }}"
                                                 @if ($i == $actualMonth) {{ 'selected' }} @endif
                                             >
-                                                {{ $month }}
+                                                {{ $month->description }}
                                             </option>
                                         @endforeach
                                     </select>

@@ -119,7 +119,7 @@ class ReportController extends Controller
             'months' => $months,
             'years' => $years,
             'users' => $users,
-            'actualMonth' => $_SESSION['month'],
+            'actualMonth' => $_SESSION['month']['id'],
             'actualYear' => $_SESSION['year']
         ]);
     }

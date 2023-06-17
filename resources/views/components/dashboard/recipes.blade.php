@@ -35,6 +35,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th scope="col">Código</th>
                                         <th scope="col">Descrição da entrada</th>
                                         <th scope="col">Categoria</th>
                                         <th scope="col">Orçado (R$)</th>
@@ -44,6 +45,7 @@
                                 <tbody id="tbody-recipes">
                                     @foreach ($recipes as $recipe)
                                     <tr class="align-middle">
+                                        <td>{{ $recipe->id }}</td>
                                         <td>{{ $recipe->description }}</td>
                                         <td>{{ $recipe->category_description }}</td>
                                         <td>{{ number_format($recipe->budgeted_amount, 2, ',', '.') }}</td>

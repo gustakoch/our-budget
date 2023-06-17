@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-bottom-0" id="modalHeaderEditExpense">
-                <h5 class="modal-title" id="exampleModalLabel">Editar saída</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Editando saída</h5>
                 <small class="message-done text-success" style="display: none;">(Saída concluída)</small>
             </div>
             <div class="modal-body">
