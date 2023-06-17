@@ -334,11 +334,12 @@ input[name="year"], input[name="month"] {
     background: transparent;
     margin: 0 0 5px 1rem;
     color: #ffc107;
-
     border-radius: 10px;
     padding: 7px 12px;
-
-    transition: box-shadow 0.2s ease
+    transition: box-shadow 0.2s ease;
+    position: absolute;
+    top: 180px;
+    right: 100px;
 }
 
 .history-btn:hover {

@@ -45,6 +45,7 @@
                             <table class="table">
                                 <thead>
                                     <tr>
+                                        <th scope="col">Código</th>
                                         <th scope="col">Descrição da saída</th>
                                         <th scope="col">Categoria</th>
                                         <th scope="col">Parcelas</th>
@@ -64,6 +65,7 @@
                                                     {{ $expenseDetails->cancelled == 1 ? 'cancelled' : '' }}
                                                     {{ $expenseDetails->budgeted_amount - $expenseDetails->realized_amount <= 0 ? 'text-success font-bold-500' : '' }}"
                                             >
+                                                <td>{{ $expenseDetails->id }}</td>
                                                 <td>{{ $expenseDetails->description }}</td>
                                                 <td>{{ $expenseDetails->category_description }}</td>
                                                 <td>

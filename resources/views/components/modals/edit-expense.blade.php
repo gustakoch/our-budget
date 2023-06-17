@@ -12,7 +12,6 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-
                 <form id="form-edit-expense">
                     @csrf
 
@@ -20,8 +19,7 @@
                     <input type="hidden" name="category_active">
                     <div class="mb-3">
                         <label for="description_expense" class="form-label">Descrição da saída*</label>
-                        <input class="form-control mb-3" type="text" name="description_expense_edit"
-                            id="description_expense" placeholder="Informe a descrição" />
+                        <input class="form-control mb-3" type="text" name="description_expense_edit" id="description_expense" placeholder="Informe a descrição" />
                     </div>
                     <div class="b-3">
                         <label class="form-label" for="category_expense">Categoria*</label>
@@ -30,59 +28,39 @@
                             <option value="{{ $category->id }}">{{ $category->description }}</option>
                             @endforeach
                         </select>
-                        <small class="msg-category-cancelled"
-                            style="color: red; margin-top: -0.5rem !important; margin-bottom: 1rem; display: none;">Esta
-                            categoria foi excluída! Sua alteração náo é possível.</small>
+                        <small class="msg-category-cancelled" style="color: red; margin-top: -0.5rem !important; margin-bottom: 1rem; display: none;">
+                            Esta categoria foi excluída! Sua alteração náo é possível.
+                        </small>
                     </div>
-                    @if ($type_expenses == '15/30')
-                    <div class="mb-3">
-                        <label class="form-label" for="period_expense">Período de vencimento*</label>
-                        <select class="form-select mb-3" name="period_expense_edit" id="period_expense">
-                            <option value="1">Precisa pagar até o dia 15</option>
-                            <option value="2">Pode pagar até o fim do mês</option>
-                        </select>
-                    </div>
-                    @else
                     <input type="hidden" name="period_expense_edit" id="period_expense_edit" />
-                    @endif
-                    <div class="mb-3 col-3">
-                        <label for="installments_expense" class="form-label">Parcela*</label>
-                        <select class="form-select mb-3" name="installments_expense_edit" id="installments_expense">
-                            <option value="1">1</option>
-                            @for ($i = 2; $i <= 12; $i++) <option value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                        </select>
-                    </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="budgeted_amount_expense" class="form-label">Valor orçado* <small>(em
-                                    R$)</small></label>
-                            <input class="form-control" type="number" name="budgeted_amount_expense_edit"
-                                id="budgeted_amount_expense" placeholder="Informe o valor" />
+                        <div class="col-3">
+                            <label for="installments_expense" class="form-label">Parcela*</label>
+                            <select class="form-select mb-3" name="installments_expense_edit" id="installments_expense">
+                                <option value="1">1</option>
+                                @for ($i = 2; $i <= 12; $i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                            </select>
                         </div>
-                        <div class="col-md-6" style="margin-top: -12px;">
-                            <div class="d-flex align-items-end">
-                                <label id="label-realized-value" for="realized_amount_expense_edit"
-                                    class="form-label">Lançar valor</label>
-                                <div style="height: 42px;">
-                                    <button class="history-btn" data-toggle="modal" data-target="#modalHistoryExpenses"
-                                        title="Visualizar histórico de lançamentos" style="display: none;">
-                                        <i class="fas fa-history fa-lg"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <input class="form-control" type="number" name="realized_amount_expense_edit"
-                                id="realized_amount_expense_edit" placeholder="Informe um valor" autocomplete="off" />
+                        <div class="col-4">
+                            <label for="budgeted_amount_expense" class="form-label">Valor orçado*</label>
+                            <input class="form-control" type="number" name="budgeted_amount_expense_edit" id="budgeted_amount_expense" placeholder="Informe o valor" />
+                        </div>
+                        <div class="col-5">
+                            <label id="label-realized-value" for="realized_amount_expense_edit"class="form-label">Lançar valor</label>
+                            <button class="history-btn" data-toggle="modal" data-target="#modalHistoryExpenses"title="Visualizar histórico de lançamentos" style="display: none;">
+                                <i class="fas fa-history fa-lg"></i>
+                            </button>
+                            <input class="form-control" type="number" name="realized_amount_expense_edit" id="realized_amount_expense_edit" placeholder="Informe um valor" autocomplete="off" />
                             <input type="hidden" name="total_realized_amount" />
-                            <small id="msg-info-lancar-valor" style="display: block; margin-top: 0.5rem;">(Ex: 100 para
-                                somar, -100 para
-                                subtrair)</small>
+                            <small id="msg-info-lancar-valor">
+                                (Ex: 100 para somar, -100 para subtrair)
+                            </small>
                         </div>
                     </div>
                     <div class="form-check my-3">
-                        <input class="form-check-input was_with_credit_card_edit" type="checkbox"
-                            id="was_with_credit_card_edit">
+                        <input class="form-check-input was_with_credit_card_edit" type="checkbox" id="was_with_credit_card_edit">
                         <label class="form-check-label" for="was_with_credit_card_edit">
                             Saída do cartão de crédito
                         </label>
@@ -91,22 +69,21 @@
                         <label class="form-label" for="credit_card_edit">Diz aí, qual cartão foi?*</label>
                         <select class="form-select mb-3" name="credit_card_edit" id="credit_card_edit" disabled>
                             @if (count($cards))
-                            <option selected value="0">Selecione o cartão</option>
-                            @foreach ($cards as $card)
-                            <option value="{{ $card->id }}">{{ $card->description }}</option>
-                            @endforeach
+                                <option selected value="0">Selecione o cartão</option>
+                                @foreach ($cards as $card)
+                                    <option value="{{ $card->id }}">{{ $card->description }}</option>
+                                @endforeach
                             @else
-                            <option value="0">Não há cartões cadastrados</option>
+                                <option value="0">Não há cartões cadastrados</option>
                             @endif
                         </select>
                     </div>
                     <div class="form-check my-3">
-                        <input class="form-check-input" type="checkbox" value="1" name="expense_paid" id="expense_paid">
+                        <input class="form-check-input" type="checkbox" value="1" name="expense_paid" id="expense_paid" />
                         <label class="form-check-label" for="expense_paid">
                             Marcar saída como paga
                         </label>
                     </div>
-
                     <small>(* Dados obrigatórios)</small>
                 </form>
             </div>
