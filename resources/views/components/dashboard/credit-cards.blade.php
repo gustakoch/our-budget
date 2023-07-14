@@ -148,6 +148,7 @@
                                         <td></td>
                                         <th></th>
                                         <td></td>
+                                        <td></td>
                                         <th id="total-amount-budgeted1-card" class="text-danger">{{ number_format($cardExpense->total_budgeted_amount, 2, ',', '.') }}</th>
                                         <th id="total-amount-realized1-card" class="text-danger">{{ number_format($cardExpense->total_realized_amount, 2, ',', '.') }}</th>
                                         <th id="total-amount-pending1-card" class="text-danger">{{ number_format($cardExpense->total_pending_amount, 2, ',', '.') }}</th>

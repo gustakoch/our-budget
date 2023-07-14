@@ -221,6 +221,7 @@
                                         <td></td>
                                         <th></th>
                                         <td></td>
+                                        <td></td>
                                         <th id="total-amount-budgeted0" class="text-danger">{{ number_format($budgeted_amount_expenses, 2, ',', '.') }}</th>
                                         <th id="total-amount-realized0" class="text-danger">{{ number_format($realized_amount_expenses, 2, ',', '.') }}</th>
                                         <th id="total-amount-pending0" class="text-danger">{{ number_format($pending_amount_expenses, 2, ',', '.') }}</th>

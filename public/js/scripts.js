@@ -2432,6 +2432,117 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
 
+    jQuery(document).on('click', '.search-maintenance', function (e) {
+        e.preventDefault()
+        const button = jQuery(this)
+        const expenseId = jQuery('input[name="id_expense"]').val()
+        const expenseDescription = jQuery('input[name="description_expense"]').val()
+
+        if (!expenseId && !expenseDescription) {
+            swalNotification('Presta atenção aí', 'Informe o código ou a descrição da saída.', 'error', 'Tá, entendi')
+            return false
+        }
+
+        jQuery.ajax({
+            url: 'maintenance/search',
+            type: 'post',
+            dataType: 'json',
+            timeout: 20000,
+            data: jQuery('#form-search-maintenance').serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            },
+            beforeSend: function () {
+                showLoadingOnButton(button, 'Carregando...')
+            },
+            error: function (xhr, status, error) {
+                swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
+                stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
+            },
+            success: function (response) {
+                stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
+                console.log(response)
+
+                if (response.ok) {
+                    jQuery('#btn-accordion-search').click()
+
+                    let table = `
+                    <div class="accordion" id="accordionResults">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingResults">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResults" aria-expanded="true" aria-controls="collapseResults">
+                                <strong>Resultados da pesquisa</strong>
+                            </button>
+                            </h2>
+                            <div id="collapseResults" class="accordion-collapse collapse show" aria-labelledby="headingResults" data-bs-parent="#accordionResults">
+                                <div class="accordion-body">`
+                    if (response.expenses.length == 0) {
+                        table += `<span class="text gray-text-color">Não foram encontrados registros.</span>`
+                    } else {
+                        table += `
+                            <table id="table-reports" class="table bg-white table-hover" style="vertical-align: middle">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Descrição da saída</th>
+                                        <th>Categoria</th>
+                                        <th>Parcela</th>
+                                        <th>Mês/Ano</th>
+                                        <th>Vlr. Orçado (R$)</th>
+                                        <th>Vlr. Realizado (R$)</th>
+                                        <th>Vlr. Pendente (R$)</th>
+                                        <th>Lançado por</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="gray-text-color">`
+                    }
+                    let budgetedSum = 0
+                    let realizedSum = 0
+                    let pendingSum = 0
+
+                    jQuery(response.expenses).each((i, expense) => {
+                        budgetedSum += Number(expense.budgeted_amount)
+                        realizedSum += Number(expense.realized_amount)
+                        pendingSum += Number(expense.pending_amount)
+                        table += `
+                            <tr>
+                                <td>${expense.id}</td>
+                                <td>${expense.description}</td>
+                                <td>${expense.category_description}</td>
+                                <td>${expense.installment} de ${expense.installments}</td>
+                                <td>${expense.month_description}/${expense.year}</td>
+                                <td>${amountParseFloat(expense.budgeted_amount)}</td>
+                                <td>${amountParseFloat(expense.realized_amount)}</td>
+                                <td>${amountParseFloat(expense.pending_amount)}</td>
+                                <td>${expense.user_name}</td>
+                                <td>
+                                    <div class="input-group" style="width: auto !important;">
+                                        <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center btn-options" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <svg height="14" widht="14" style="enable-background:new 0 0 24 24;" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="info"/><g id="icons"><path d="M22.2,14.4L21,13.7c-1.3-0.8-1.3-2.7,0-3.5l1.2-0.7c1-0.6,1.3-1.8,0.7-2.7l-1-1.7c-0.6-1-1.8-1.3-2.7-0.7   L18,5.1c-1.3,0.8-3-0.2-3-1.7V2c0-1.1-0.9-2-2-2h-2C9.9,0,9,0.9,9,2v1.3c0,1.5-1.7,2.5-3,1.7L4.8,4.4c-1-0.6-2.2-0.2-2.7,0.7   l-1,1.7C0.6,7.8,0.9,9,1.8,9.6L3,10.3C4.3,11,4.3,13,3,13.7l-1.2,0.7c-1,0.6-1.3,1.8-0.7,2.7l1,1.7c0.6,1,1.8,1.3,2.7,0.7L6,18.9   c1.3-0.8,3,0.2,3,1.7V22c0,1.1,0.9,2,2,2h2c1.1,0,2-0.9,2-2v-1.3c0-1.5,1.7-2.5,3-1.7l1.2,0.7c1,0.6,2.2,0.2,2.7-0.7l1-1.7   C23.4,16.2,23.1,15,22.2,14.4z M12,16c-2.2,0-4-1.8-4-4c0-2.2,1.8-4,4-4s4,1.8,4,4C16,14.2,14.2,16,12,16z" id="settings"/></g></svg>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item d-flex align-items-center edit-expense" id="${expense.id}" data-bs-toggle="modal" data-bs-target="#editExpenseModal">
+                                                <img class="me-2" src="https://budget.gustakoch.com.br/images/icons/edit-icon.png" alt="Checar">
+                                                Checar
+                                            </a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        `
+                    })
+                    table += `</tbody></table>`
+                    table += `</div></div></div></div>`
+
+                    jQuery('#table-search-maintenance').html(table)
+                } else {
+                    swalNotification('Presta atenção aí', response.message, 'error', 'Tá, entendi')
+                }
+            }
+        })
+    })
+
     jQuery(document).on('click', '#search-recipes-by-categories', function (e) {
         let button = jQuery(this)
 

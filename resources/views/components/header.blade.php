@@ -61,7 +61,14 @@
                     </ul>
                 </li>
             @endif
-
+            @if (in_array(session('user')['role'], ['1', '2']))
+                <li>
+                    <a href="{{ route('maintenance.index') }}">
+                        <i class="fas fa-sliders-h"></i>
+                        Manutenções
+                    </a>
+                </li>
+            @endif
             <li>
                 @if (session('user')['firstAccess'] != 1)
                     <a href="{{ route('config') }}">

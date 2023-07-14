@@ -225,4 +225,40 @@ class ExpenseModel extends Model
 
         return $expenses;
     }
+
+    public function getFilteredExpenses($params)
+    {
+        $binds = [];
+        $sql = "
+            SELECT e.id
+                , e.description
+                , e.category
+                , e.installments
+                , e.installment
+                , e.month
+                , e.year
+                , e.budgeted_amount
+                , e.realized_amount
+                , (e.budgeted_amount - e.realized_amount) pending_amount
+                , c.description as category_description
+                , m.description as month_description
+                , u.nickname as user_name
+              FROM expenses e
+                , categories c
+                , months m
+                , users u
+             WHERE e.category = c.id
+               AND e.month = m.id
+               AND e.user_id = u.id";
+        if ($params['id_expense']) {
+            $sql .= " AND e.id = ? ";
+            array_push($binds, $params['id_expense']);
+        }
+        if ($params['description_expense']) {
+            $sql .= " AND e.description LIKE '%".$params['description_expense']."%'";
+        }
+        $expenses = DB::select($sql, $binds);
+
+        return $expenses;
+    }
 }

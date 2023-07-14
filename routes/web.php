@@ -12,6 +12,7 @@ use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvestmentsController;
 use App\Http\Controllers\InvoicesController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TicketController;
@@ -82,4 +83,6 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/notifications',                    [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/get',                [NotificationController::class, 'get']);
     Route::get('/notifications/read',               [NotificationController::class, 'read']);
+    Route::get('/maintenance',                      [MaintenanceController::class, 'index'])->name('maintenance.index');
+    Route::post('/maintenance/search',              [MaintenanceController::class, 'search']);
 });
