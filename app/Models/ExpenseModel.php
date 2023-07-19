@@ -250,6 +250,7 @@ class ExpenseModel extends Model
             AND e.month = m.id
             AND e.user_id = u.id
             AND e.id = ?", [$id]);
+        dd($expenses);
 
         return $expenses;
     }
