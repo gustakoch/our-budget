@@ -43,7 +43,8 @@ class MaintenanceController extends Controller
         if (!$params['id_expense']) {
             return response()->json(['ok' => false, 'message' => 'É necessário informar uma saída.']);
         }
-        $expenses = $this->expenseModel->getFilteredExpenses($params);
+        // $expenses = $this->expenseModel->getFilteredExpenses($params);
+        $expenses = [];
 
         return response()->json(['ok' => true, 'expenses' => $expenses]);
     }

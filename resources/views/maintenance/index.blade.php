@@ -71,12 +71,7 @@
                                                 <label for="id_expense" class="form-label">Código da saída</label>
                                                 <input class="form-control mb-3" type="number" name="id_expense" />
                                             </div>
-                                            <div class="col-6">
-                                                <label for="description_expense" class="form-label">Descrição da saída</label>
-                                                <input class="form-control mb-3" type="text" name="description_expense" />
-                                            </div>
                                         </div>
-
                                         <div class="row mb-3">
                                             <div class="col-4">
                                                 <button type="submit" class="btn btn-primary search-maintenance">
