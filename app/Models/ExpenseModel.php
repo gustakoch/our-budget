@@ -228,13 +228,12 @@ class ExpenseModel extends Model
 
     public function getFilteredExpenses($id)
     {
-        $expenses = DB::table('expenses e')
-            ->select('e.*', 'c.description as category_description, m.description as month_description, u.nickname as user_name')
-            ->select(DB::raw('(e.budgeted_amount - e.realized_amount) as pending_amount'))
-            ->join('categories c', 'e.category', 'c.id')
-            ->join('months m', 'e.month', 'm.id')
-            ->join('users u', 'e.user_id', 'u.id')
-            ->where('e.id', '=', $id)
+        $expenses = DB::table('expenses')
+            ->select('expenses.*', 'categories.description as category_description', 'months.description as month_description', 'users.nickname as user_name')
+            ->join('categories', 'expenses.category', 'categories.id')
+            ->join('months', 'expenses.month', 'months.id')
+            ->join('users', 'expenses.user_id', 'users.id')
+            ->where('expenses.id', '=', $id)
             ->get();
 
         return $expenses;

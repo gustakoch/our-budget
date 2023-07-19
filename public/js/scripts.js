@@ -2514,7 +2514,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <td>${expense.month_description}/${expense.year}</td>
                                 <td>${amountParseFloat(expense.budgeted_amount)}</td>
                                 <td>${amountParseFloat(expense.realized_amount)}</td>
-                                <td>${amountParseFloat(expense.pending_amount)}</td>
+                                <td>${amountParseFloat(expense.budgeted_amount - expense.realized_amount)}</td>
                                 <td>${expense.user_name}</td>
                                 <td>
                                     <div class="input-group" style="width: auto !important;">
