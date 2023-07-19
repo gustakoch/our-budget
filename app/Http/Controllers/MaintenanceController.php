@@ -40,8 +40,8 @@ class MaintenanceController extends Controller
     public function search()
     {
         $params = request()->all();
-        dd($params);
         $expenses = $this->expenseModel->getFilteredExpenses($params);
+        dd($expenses);
 
         return response()->json(['ok' => true, 'expenses' => $expenses]);
     }

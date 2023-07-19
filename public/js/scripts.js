@@ -2457,12 +2457,11 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             error: function (xhr, status, error) {
                 swalNotification('Houve um erro', `${status} ${error}`, 'error', 'Tentar novamente')
-                console.log('xhr', xhr);
+                console.log('xhr', xhr.responseText);
                 stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
             },
             success: function (response) {
                 stopLoadingOnButton(button, '<i class="fas fa-search"></i> Pesquisar')
-                console.log(response)
 
                 if (response.ok) {
                     jQuery('#btn-accordion-search').click()
