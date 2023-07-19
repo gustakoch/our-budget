@@ -226,7 +226,7 @@ class ExpenseModel extends Model
         return $expenses;
     }
 
-    public function getFilteredExpenses($params)
+    public function getFilteredExpenses($id)
     {
         $expenses = DB::select("
             SELECT e.id
@@ -249,7 +249,7 @@ class ExpenseModel extends Model
             WHERE e.category = c.id
             AND e.month = m.id
             AND e.user_id = u.id
-            AND e.id = ?", [$params['id_expense']]);
+            AND e.id = ?", [$id]);
 
         return $expenses;
     }
