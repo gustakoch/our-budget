@@ -228,8 +228,7 @@ class ExpenseModel extends Model
 
     public function getFilteredExpenses($params)
     {
-        $binds = [];
-        $sql = "
+        $expenses = DB::select("
             SELECT e.id
                 , e.description
                 , e.category
@@ -243,21 +242,14 @@ class ExpenseModel extends Model
                 , c.description as category_description
                 , m.description as month_description
                 , u.nickname as user_name
-              FROM expenses e
+            FROM expenses e
                 , categories c
                 , months m
                 , users u
-             WHERE e.category = c.id
-               AND e.month = m.id
-               AND e.user_id = u.id";
-        if ($params['id_expense']) {
-            $sql .= " AND e.id = ? ";
-            array_push($binds, $params['id_expense']);
-        }
-        if ($params['description_expense']) {
-            $sql .= " AND e.description LIKE '%".$params['description_expense']."%'";
-        }
-        $expenses = DB::select($sql, $binds);
+            WHERE e.category = c.id
+            AND e.month = m.id
+            AND e.user_id = u.id
+            AND e.id = ?", [$params['id_expense']]);
 
         return $expenses;
     }
