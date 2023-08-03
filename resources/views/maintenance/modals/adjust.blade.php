@@ -43,7 +43,7 @@
             </div>
             <div class="modal-footer border-top-0" id="modalFooterEditExpense" style="display: flex; justify-content: space-between;">
                 <div class="start-button">
-                    <button type="button" class="btn btn-danger delete-expense">Excluir saída</button>
+                    <button type="button" class="btn btn-danger maintenance-btn-delete delete-expense" id="">Excluir saída</button>
                 </div>
                 <div class="end-buttons">
                     <button type="button" class="btn btn-secondary cancel-expense" data-bs-dismiss="modal">Fechar</button>

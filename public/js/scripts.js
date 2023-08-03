@@ -1327,6 +1327,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 jQuery('input[name="id_expense"]').val(response.id)
                 jQuery('input[name="description_expense"]').val(response.description)
                 Number(jQuery('select[name="category_expense"]').val(response.category))
+                jQuery('.maintenance-btn-delete').attr('id', response.id);
             }
         })
     })
