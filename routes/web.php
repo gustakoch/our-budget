@@ -85,4 +85,5 @@ Route::middleware(['is.authenticated'])->group(function() {
     Route::get('/notifications/read',               [NotificationController::class, 'read']);
     Route::get('/maintenance',                      [MaintenanceController::class, 'index'])->name('maintenance.index');
     Route::post('/maintenance/search',              [MaintenanceController::class, 'search']);
+    Route::post('/maintenance/expenses/update',     [MaintenanceController::class, 'update']);
 });

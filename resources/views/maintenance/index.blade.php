@@ -98,7 +98,7 @@
     </span>
 </section>
 
-@include('components.modals.edit-expense', [
+@include('maintenance.modals.adjust', [
     'expenseCategories' => $expenseCategories,
     'type_expenses' => $typeExpenses,
     'installments' => $installments,
