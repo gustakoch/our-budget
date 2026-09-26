@@ -1,0 +1,38 @@
+name: Deploy staging
+
+# A branch padrao do repo hoje e master; main entra aqui tambem para o dia em
+# que o repo passar a usar esse nome.
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy na VPS Staging
+    runs-on: [self-hosted, our-budget-vps]
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        working-directory: /root/workspaces/guga/our-budget
+        run: |
+          git fetch origin "${GITHUB_REF_NAME}"
+          git checkout "${GITHUB_REF_NAME}"
+          git reset --hard "origin/${GITHUB_REF_NAME}"
+          ./scripts/deploy.sh
+
+      - name: Smoke test
+        run: |
+          code="$(curl -sS -o /dev/null -w '%{http_code}' https://budget.staging.bigworks.com.br/)"
+          echo "home respondeu ${code}"
+          test "${code}" = "200"

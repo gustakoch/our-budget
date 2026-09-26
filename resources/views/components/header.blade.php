@@ -1,15 +1,16 @@
+@php($authUser = session('user'))
 <nav id="sidebar">
     <div class="sidebar-header">
         <h3>Our <br /> Budget</h3>
 
         <div class="user-info">
-            <small>Olá, {{ session('user')['name'] ?? 'Visitante' }}</small>
+            <small>Olá, {{ $authUser['name'] ?? 'Visitante' }}</small>
         </div>
     </div>
 
     <ul class="list-unstyled components">
         <li>
-            @if (session('user')['firstAccess'] != 1)
+            @if ($authUser && ($authUser['firstAccess'] ?? 0) != 1)
                 <a href="{{ route('dashboard') }}">
                     <i class="fas fa-tachometer-alt"></i>
                     Dashboard
@@ -27,7 +28,7 @@
                         <a href="{{ route('cards.index') }}">Cartões de crédito</a>
                     </li>
 
-                    @if (in_array(session('user')['role'], ['1', '2']))
+                    @if ($authUser && in_array($authUser['role'] ?? '', ['1', '2']))
                         <li>
                             <a href="{{ route('users.index') }}">Usuários</a>
                         </li>
@@ -39,7 +40,7 @@
                     Investimentos
                 </a>
 
-                @if (in_array(session('user')['role'], ['1', '2', '3']))
+                @if ($authUser && in_array($authUser['role'] ?? '', ['1', '2', '3']))
                     <a href="{{ route('billing.index') }}">
                         <i class="fas fa-money-check-alt"></i>
                         Cobranças enviadas
@@ -61,7 +62,7 @@
                     </ul>
                 </li>
             @endif
-            @if (in_array(session('user')['role'], ['1', '2']))
+            @if ($authUser && in_array($authUser['role'] ?? '', ['1', '2']))
                 <li>
                     <a href="{{ route('maintenance.index') }}">
                         <i class="fas fa-sliders-h"></i>
@@ -70,7 +71,7 @@
                 </li>
             @endif
             <li>
-                @if (session('user')['firstAccess'] != 1)
+                @if ($authUser && ($authUser['firstAccess'] ?? 0) != 1)
                     <a href="{{ route('config') }}">
                         <i class="fas fa-cogs"></i>
                         Configurações

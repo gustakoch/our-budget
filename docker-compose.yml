@@ -1,0 +1,79 @@
+# Ambiente de staging na VPS BigWorks Staging.
+#
+#   ./scripts/deploy.sh
+#   IMAGE_TAG=$(git rev-parse --short HEAD) docker compose -p our-budget up -d --build
+#
+# Dominio: budget.staging.bigworks.com.br (Traefik, rede externa "traefik").
+# Variaveis sensiveis (APP_KEY, senha do banco) ficam em .env, fora do git.
+
+networks:
+  traefik:
+    external: true
+  internal:
+
+volumes:
+  db_data:
+
+services:
+  app:
+    build: .
+    image: our-budget-app:${IMAGE_TAG:-local}
+    container_name: our_budget_app
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./storage:/var/www/html/storage
+    networks:
+      - internal
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    image: nginx:1.27-alpine
+    container_name: our_budget_web
+    restart: always
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/var/www/html/public:ro
+    networks:
+      - traefik
+      - internal
+    depends_on:
+      - app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.our-budget-web.rule=Host(`budget.staging.bigworks.com.br`) || Host(`budget.gustakoch.com.br`)"
+      - "traefik.http.routers.our-budget-web.entrypoints=websecure"
+      - "traefik.http.routers.our-budget-web.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.our-budget-web.tls.domains[0].main=budget.gustakoch.com.br"
+      - "traefik.http.routers.our-budget-web.tls.domains[0].sans=www.budget.gustakoch.com.br"
+      - "traefik.http.routers.our-budget-web.middlewares=our-budget-headers,compress-all@file"
+      - "traefik.http.middlewares.our-budget-headers.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
+      - "traefik.http.middlewares.our-budget-headers.headers.customResponseHeaders.X-Frame-Options=SAMEORIGIN"
+      - "traefik.http.middlewares.our-budget-headers.headers.customResponseHeaders.Referrer-Policy=strict-origin-when-cross-origin"
+      - "traefik.http.services.our-budget-web.loadbalancer.server.port=8080"
+      - "traefik.docker.network=traefik"
+
+  db:
+    image: mysql:8.0
+    container_name: our_budget_db
+    restart: always
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-our_budget}
+      MYSQL_USER: ${DB_USERNAME:-our_budget}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?defina DB_ROOT_PASSWORD no .env}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
