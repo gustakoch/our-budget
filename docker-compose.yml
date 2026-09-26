@@ -22,10 +22,6 @@ services:
     restart: always
     env_file:
       - .env
-    environment:
-      DB_CONNECTION: mysql
-      DB_HOST: our_budget_db
-      DB_PORT: "3306"
     volumes:
       - ./storage:/var/www/html/storage
     networks:
@@ -48,9 +44,11 @@ services:
       - app
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.our-budget-web.rule=Host(`budget.staging.bigworks.com.br`)"
+      - "traefik.http.routers.our-budget-web.rule=Host(`budget.staging.bigworks.com.br`) || Host(`budget.gustakoch.com.br`)"
       - "traefik.http.routers.our-budget-web.entrypoints=websecure"
       - "traefik.http.routers.our-budget-web.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.our-budget-web.tls.domains[0].main=budget.gustakoch.com.br"
+      - "traefik.http.routers.our-budget-web.tls.domains[0].sans=www.budget.gustakoch.com.br"
       - "traefik.http.routers.our-budget-web.middlewares=our-budget-headers,compress-all@file"
       - "traefik.http.middlewares.our-budget-headers.headers.customResponseHeaders.X-Content-Type-Options=nosniff"
       - "traefik.http.middlewares.our-budget-headers.headers.customResponseHeaders.X-Frame-Options=SAMEORIGIN"

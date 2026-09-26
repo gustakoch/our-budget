@@ -9,11 +9,13 @@ RUN apk add --no-cache \
         icu-dev \
         libzip-dev \
         oniguruma-dev \
+        postgresql-dev \
         unzip \
     && docker-php-ext-install -j"$(nproc)" \
         bcmath \
         intl \
         pdo_mysql \
+        pdo_pgsql \
         zip \
     && rm -rf /var/cache/apk/*
 
