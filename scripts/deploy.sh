@@ -28,7 +28,12 @@ for _ in $(seq 1 30); do
 done
 
 echo "[deploy] migrations"
-docker compose -p "$PROJECT" exec -T app php artisan migrate --force
+DB_CONN="$(grep -E '^DB_CONNECTION=' .env | cut -d= -f2- | tr -d '\r\"' | tr -d ' ')"
+if [[ "${DB_CONN}" == "pgsql" ]]; then
+  echo "[deploy] DB pgsql externo: migrations omitidas (schema ja existe no banco de producao)"
+else
+  docker compose -p "$PROJECT" exec -T app php artisan migrate --force
+fi
 
 echo "[deploy] cache de config e rotas"
 docker compose -p "$PROJECT" exec -T app php artisan config:clear
