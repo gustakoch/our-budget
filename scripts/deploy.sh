@@ -19,6 +19,10 @@ fi
 echo "[deploy] subindo containers (tag ${IMAGE_TAG})"
 docker compose -p "$PROJECT" up -d --build
 
+# Nginx resolve o upstream do php-fpm no start; recreate do app muda o IP.
+echo "[deploy] recarregar nginx (upstream php-fpm)"
+docker compose -p "$PROJECT" restart web
+
 echo "[deploy] aguardando o php-fpm responder"
 for _ in $(seq 1 30); do
   if docker compose -p "$PROJECT" exec -T app php -v >/dev/null 2>&1; then
