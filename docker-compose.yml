@@ -4,15 +4,13 @@
 #   IMAGE_TAG=$(git rev-parse --short HEAD) docker compose -p our-budget up -d --build
 #
 # Dominio: budget.staging.bigworks.com.br (Traefik, rede externa "traefik").
-# Variaveis sensiveis (APP_KEY, senha do banco) ficam em .env, fora do git.
+# Variaveis sensiveis (APP_KEY, credenciais) ficam em .env, fora do git.
+# Banco: Postgres na ValueHost (DB_* no .env). Sem MySQL local na Stage.
 
 networks:
   traefik:
     external: true
   internal:
-
-volumes:
-  db_data:
 
 services:
   app:
@@ -26,9 +24,6 @@ services:
       - ./storage:/var/www/html/storage
     networks:
       - internal
-    depends_on:
-      db:
-        condition: service_healthy
 
   web:
     image: nginx:1.27-alpine
@@ -55,25 +50,3 @@ services:
       - "traefik.http.middlewares.our-budget-headers.headers.customResponseHeaders.Referrer-Policy=strict-origin-when-cross-origin"
       - "traefik.http.services.our-budget-web.loadbalancer.server.port=8080"
       - "traefik.docker.network=traefik"
-
-  db:
-    image: mysql:8.0
-    container_name: our_budget_db
-    restart: always
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE:-our_budget}
-      MYSQL_USER: ${DB_USERNAME:-our_budget}
-      MYSQL_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no .env}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?defina DB_ROOT_PASSWORD no .env}
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - internal
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p$$MYSQL_ROOT_PASSWORD --silent"]
-      interval: 10s
-      timeout: 5s
-      retries: 12
