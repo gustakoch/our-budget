@@ -1,8 +1,8 @@
 # Imagem da aplicacao (PHP-FPM). O nginx vem do compose, com a mesma raiz em volume.
 #
-# PHP 8.0: o composer.lock trava nette/schema e nette/utils em versoes que
-# exigem php < 8.1. Subir a imagem pede atualizar o lock primeiro.
-FROM php:8.0-fpm-alpine
+# PHP 8.4 com Laravel 12. A tag de patch fica fixa para o build ser reprodutível;
+# atualizar o PHP é trocar a tag aqui.
+FROM php:8.4.27-fpm-alpine3.24
 
 RUN apk add --no-cache \
         git \
