@@ -4,6 +4,9 @@
 # atualizar o PHP é trocar a tag aqui.
 FROM php:8.4.27-fpm-alpine3.24
 
+# Correções de segurança do Alpine sobre a base (ex. brotli-libs CVE-2026-111497).
+RUN apk upgrade --no-cache
+
 RUN apk add --no-cache \
         git \
         icu-dev \
