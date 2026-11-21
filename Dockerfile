@@ -2,7 +2,7 @@
 #
 # PHP 8.4 com Laravel 12. A tag de patch fica fixa para o build ser reprodutível;
 # atualizar o PHP é trocar a tag aqui.
-FROM php:8.4.27-fpm-alpine3.24
+FROM php:8.4.28-fpm-alpine3.24
 
 # Correções de segurança do Alpine sobre a base (ex. brotli-libs CVE-2026-111497).
 RUN apk upgrade --no-cache
